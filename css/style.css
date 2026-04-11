@@ -5,10 +5,10 @@
 
 /* ---------- CSS Custom Properties ---------- */
 :root {
-  --color-primary:    #1B3A6B;   /* Deep navy blue  */
-  --color-primary-dark: #122850;
-  --color-accent:     #C9A84C;   /* Gold             */
-  --color-accent-dark:#B8923A;
+  --color-primary:    #3D6491;   /* Soft slate blue  */
+  --color-primary-dark: #2E5080;
+  --color-accent:     #B89A5A;   /* Muted warm gold  */
+  --color-accent-dark:#9E8348;
   --color-white:      #FFFFFF;
   --color-light:      #F5F7FA;
   --color-mid:        #E4E9F0;
