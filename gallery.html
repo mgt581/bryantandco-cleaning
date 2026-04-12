@@ -19,70 +19,200 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <style>
-    /* Gallery filter tabs */
-    .gallery-filters {
+    /* ── Slideshow ── */
+    .slideshow-wrap {
+      position: relative;
+      background: #000;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      aspect-ratio: 16/9;
+      max-height: 600px;
+    }
+    .slideshow-track {
       display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 0.75rem;
-      margin-bottom: 2.5rem;
+      height: 100%;
+      transition: transform 0.55s cubic-bezier(.4,0,.2,1);
     }
-    .gallery-filter-btn {
-      padding: 0.55rem 1.3rem;
-      border-radius: 50px;
-      border: 1.5px solid var(--color-mid);
-      background: var(--color-white);
-      color: var(--color-text-muted);
-      font-family: var(--font-body);
-      font-size: 0.9rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all .2s;
+    .slideshow-slide {
+      min-width: 100%;
+      height: 100%;
+      position: relative;
+      flex-shrink: 0;
     }
-    .gallery-filter-btn.active,
-    .gallery-filter-btn:hover {
-      background: var(--color-primary);
-      border-color: var(--color-primary);
-      color: var(--color-white);
+    .slideshow-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .slide-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(27,58,107,.92) 0%, transparent 100%);
+      color: #fff;
+      padding: 2.5rem 2rem 1.5rem;
+    }
+    .slide-caption__label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      display: block;
+      margin-bottom: 0.3rem;
+    }
+    .slide-caption h3 {
+      color: #fff;
+      font-size: 1.25rem;
+      margin: 0;
     }
 
-    /* Placeholder gallery items */
-    .gallery-ph {
-      border-radius: var(--radius-md);
-      aspect-ratio: 4/3;
+    /* Nav arrows */
+    .slideshow-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,.18);
+      backdrop-filter: blur(4px);
+      border: 2px solid rgba(255,255,255,.4);
+      color: #fff;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      font-size: 1.4rem;
+      cursor: pointer;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 0.75rem;
-      border: 2px dashed var(--color-mid);
-      background: var(--color-light);
-      color: var(--color-text-muted);
-      font-size: 0.85rem;
-      text-align: center;
-      padding: 1rem;
-      transition: all .25s;
-      position: relative;
-      overflow: hidden;
+      transition: all .2s;
+      z-index: 10;
     }
-    .gallery-ph .ph-emoji { font-size: 3rem; opacity: .5; }
-    .gallery-ph .ph-label { font-weight: 600; color: var(--color-primary); opacity: .7; }
-    .gallery-ph .ph-sub   { font-size: 0.78rem; }
+    .slideshow-btn:hover {
+      background: var(--color-accent);
+      border-color: var(--color-accent);
+    }
+    .slideshow-btn--prev { left: 1rem; }
+    .slideshow-btn--next { right: 1rem; }
 
-    /* Upload notice */
-    .upload-notice {
-      background: rgba(201,168,76,.08);
-      border: 1.5px solid rgba(201,168,76,.3);
-      border-radius: var(--radius-md);
-      padding: 1.5rem 2rem;
-      margin-bottom: 3rem;
+    /* Dot indicators */
+    .slideshow-dots {
       display: flex;
-      align-items: flex-start;
-      gap: 1rem;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1.25rem;
     }
-    .upload-notice__icon { font-size: 1.8rem; flex-shrink: 0; margin-top: .1rem; }
-    .upload-notice h3 { font-size: 1rem; margin-bottom: 0.25rem; color: var(--color-primary); }
-    .upload-notice p  { font-size: 0.88rem; margin-bottom: 0; }
+    .slideshow-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--color-mid);
+      border: none;
+      cursor: pointer;
+      transition: background .2s, transform .2s;
+      padding: 0;
+    }
+    .slideshow-dot.active {
+      background: var(--color-accent);
+      transform: scale(1.25);
+    }
+
+    /* Slide counter */
+    .slide-counter {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(0,0,0,.5);
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.3rem 0.75rem;
+      border-radius: 50px;
+      z-index: 10;
+    }
+
+    /* CTA strip below slideshow */
+    .gallery-cta-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      align-items: center;
+      margin-top: 2rem;
+      padding: 1.75rem 2rem;
+      background: var(--color-light);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-mid);
+    }
+    .gallery-cta-strip p {
+      margin: 0;
+      font-weight: 600;
+      color: var(--color-primary);
+      font-size: 1.05rem;
+    }
+
+    /* ── Gallery grid (below slideshow) ── */
+    .gallery-grid-label {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 3rem 0 1.5rem;
+    }
+    .gallery-grid-label::before,
+    .gallery-grid-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--color-mid);
+    }
+    .gallery-grid-label span {
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+
+    /* ── Contact form section on gallery page ── */
+    .gallery-contact-section {
+      background: var(--color-light);
+      border-radius: var(--radius-lg);
+      padding: 3.5rem 2.5rem;
+      margin-top: 1rem;
+    }
+    .gallery-contact-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 3rem;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .gallery-contact-layout { grid-template-columns: 1fr; }
+      .slideshow-btn { width: 40px; height: 40px; font-size: 1.1rem; }
+    }
+
+    @media (max-width: 600px) {
+      /* Taller aspect ratio so images aren't short-cropped on phones */
+      .slideshow-wrap {
+        aspect-ratio: 4/3;
+        max-height: none;
+        border-radius: var(--radius-sm);
+      }
+      .slide-caption { padding: 1.5rem 1rem 1rem; }
+      .slide-caption h3 { font-size: 1rem; }
+      /* Smaller, more thumb-friendly arrow buttons */
+      .slideshow-btn { width: 36px; height: 36px; font-size: 1rem; }
+      .slideshow-btn--prev { left: 0.5rem; }
+      .slideshow-btn--next { right: 0.5rem; }
+      /* Gallery CTA strip stacks on mobile */
+      .gallery-cta-strip { padding: 1.25rem 1rem; flex-direction: column; align-items: flex-start; }
+      .gallery-cta-strip p { font-size: 0.95rem; }
+      /* Gallery contact section less padding on mobile */
+      .gallery-contact-section { padding: 2rem 1.25rem; border-radius: var(--radius-md); }
+    }
   </style>
 </head>
 <body>
@@ -107,7 +237,7 @@
     <div class="container">
       <a href="index.html" class="logo" aria-label="Bryant and Co Cleaning — Home">
         <div class="logo__mark">
-          <img src="images/logo.svg" alt="Bryant and Co Cleaning logo" onerror="this.parentElement.innerHTML='<span style=\'color:#fff;font-weight:700;font-size:1.2rem;\'>B&amp;C</span>'">
+          <img src="images/logo.png" alt="Bryant and Co Cleaning logo" onerror="this.parentElement.innerHTML='<span style=\'color:#fff;font-weight:700;font-size:1.2rem;\'>B&amp;C</span>'">
         </div>
         <div class="logo__text">
           <span class="logo__name">Bryant &amp; Co</span>
@@ -148,98 +278,258 @@
   <section class="section" aria-labelledby="gallery-heading">
     <div class="container">
 
-      <div class="upload-notice fade-up" role="note">
-        <span class="upload-notice__icon">📸</span>
-        <div>
-          <h3>Gallery Coming Soon</h3>
-          <p>We're currently building our gallery of stunning before-and-after cleaning photos. Check back soon, or <a href="contact.html">contact us</a> to see examples of our work. In the meantime, our placeholder grid below shows the categories we cover — real photos will be added as we complete jobs!</p>
+      <div class="section-header fade-up">
+        <span class="section-tag">Before &amp; After</span>
+        <h2 id="gallery-heading">See the Results for Yourself</h2>
+        <p>Swipe through our latest cleaning transformations across Bournemouth and Dorset — real homes, real results.</p>
+      </div>
+
+      <!-- ── Slideshow ── -->
+      <div class="slideshow-wrap fade-up" id="gallery-slideshow" aria-label="Gallery slideshow" role="region">
+        <div class="slideshow-track" id="slideshow-track">
+
+          <div class="slideshow-slide">
+            <img src="gallery-content/kitchen-after.png" alt="Kitchen after deep clean — sparkling surfaces and hob" loading="lazy">
+            <div class="slide-caption">
+              <span class="slide-caption__label">After</span>
+              <h3>Kitchen Deep Clean</h3>
+            </div>
+          </div>
+
+          <div class="slideshow-slide">
+            <img src="gallery-content/kitchen-sink-before.png" alt="Kitchen sink before cleaning" loading="lazy">
+            <div class="slide-caption">
+              <span class="slide-caption__label">Before</span>
+              <h3>Kitchen Sink — Before</h3>
+            </div>
+          </div>
+
+          <div class="slideshow-slide">
+            <img src="gallery-content/kitchen-sink-after.png" alt="Kitchen sink after cleaning — spotless finish" loading="lazy">
+            <div class="slide-caption">
+              <span class="slide-caption__label">After</span>
+              <h3>Kitchen Sink — After</h3>
+            </div>
+          </div>
+
+          <div class="slideshow-slide">
+            <img src="gallery-content/kitchen-surface.png" alt="Kitchen surface cleaned and sanitised" loading="lazy">
+            <div class="slide-caption">
+              <span class="slide-caption__label">After</span>
+              <h3>Kitchen Surfaces Sanitised</h3>
+            </div>
+          </div>
+
+          <div class="slideshow-slide">
+            <img src="gallery-content/bedroom-after.png" alt="Bedroom after professional clean — fresh and tidy" loading="lazy">
+            <div class="slide-caption">
+              <span class="slide-caption__label">After</span>
+              <h3>Bedroom Refresh</h3>
+            </div>
+          </div>
+
+          <div class="slideshow-slide">
+            <img src="gallery-content/bathroom-sink-before.png" alt="Bathroom sink before cleaning" loading="lazy">
+            <div class="slide-caption">
+              <span class="slide-caption__label">Before</span>
+              <h3>Bathroom Sink — Before</h3>
+            </div>
+          </div>
+
+          <div class="slideshow-slide">
+            <img src="gallery-content/smalll-bathroom-after.png" alt="Small bathroom after professional clean" loading="lazy">
+            <div class="slide-caption">
+              <span class="slide-caption__label">After</span>
+              <h3>Bathroom Full Clean</h3>
+            </div>
+          </div>
+
+          <div class="slideshow-slide">
+            <img src="gallery-content/shower-before.png" alt="Shower cubicle before deep clean" loading="lazy">
+            <div class="slide-caption">
+              <span class="slide-caption__label">Before</span>
+              <h3>Shower Cubicle — Before</h3>
+            </div>
+          </div>
+
+          <div class="slideshow-slide">
+            <img src="gallery-content/shower-after.png" alt="Shower cubicle after deep clean — crystal clear" loading="lazy">
+            <div class="slide-caption">
+              <span class="slide-caption__label">After</span>
+              <h3>Shower Cubicle — After</h3>
+            </div>
+          </div>
+
+          <div class="slideshow-slide">
+            <img src="gallery-content/shower-tap-before.png" alt="Shower tap and fittings before cleaning" loading="lazy">
+            <div class="slide-caption">
+              <span class="slide-caption__label">Before</span>
+              <h3>Shower Tap &amp; Fittings — Before</h3>
+            </div>
+          </div>
+
+          <div class="slideshow-slide">
+            <img src="gallery-content/shower-tap-after.png" alt="Shower tap and fittings after cleaning — gleaming" loading="lazy">
+            <div class="slide-caption">
+              <span class="slide-caption__label">After</span>
+              <h3>Shower Tap &amp; Fittings — After</h3>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Slide counter -->
+        <div class="slide-counter" aria-live="polite" aria-atomic="true" id="slide-counter">1 / 11</div>
+
+        <!-- Arrows -->
+        <button class="slideshow-btn slideshow-btn--prev" id="slideshow-prev" aria-label="Previous slide">&#8592;</button>
+        <button class="slideshow-btn slideshow-btn--next" id="slideshow-next" aria-label="Next slide">&#8594;</button>
+      </div>
+
+      <!-- Dot indicators -->
+      <div class="slideshow-dots" id="slideshow-dots" role="tablist" aria-label="Slideshow navigation"></div>
+
+      <!-- CTA strip -->
+      <div class="gallery-cta-strip fade-up">
+        <p>Impressed by our results? Let us transform your space too.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
+          <a href="contact.html" class="btn btn--primary">Get a Free Quote</a>
+          <a href="tel:07376416077" class="btn btn--outline-dark">📞 07376 416077</a>
+          <a href="services.html" class="btn btn--outline-dark">View Our Services</a>
         </div>
       </div>
 
-      <!-- Filter Tabs -->
-      <div class="gallery-filters fade-up" role="tablist" aria-label="Gallery categories">
-        <button class="gallery-filter-btn active" data-filter="all"          role="tab" aria-selected="true">All Work</button>
-        <button class="gallery-filter-btn"         data-filter="domestic"    role="tab" aria-selected="false">Domestic</button>
-        <button class="gallery-filter-btn"         data-filter="commercial"  role="tab" aria-selected="false">Commercial</button>
-        <button class="gallery-filter-btn"         data-filter="tenancy"     role="tab" aria-selected="false">End of Tenancy</button>
-        <button class="gallery-filter-btn"         data-filter="deep"        role="tab" aria-selected="false">Deep Clean</button>
-        <button class="gallery-filter-btn"         data-filter="afterbuild"  role="tab" aria-selected="false">After-Build</button>
+    </div>
+  </section>
+
+  <!-- ── Contact Form Section ── -->
+  <section class="section" aria-labelledby="gallery-contact-heading">
+    <div class="container">
+      <div class="gallery-contact-section fade-up">
+        <div class="section-header" style="margin-bottom:2rem;">
+          <span class="section-tag">Free Quote</span>
+          <h2 id="gallery-contact-heading">Book Your Clean Today</h2>
+          <p>Fill in the form and we'll get back to you with a personalised, no-obligation quote within one hour during business hours.</p>
+        </div>
+
+        <div class="gallery-contact-layout">
+          <!-- Contact details -->
+          <div class="contact-info">
+            <div class="contact-info__item">
+              <div class="contact-info__icon" aria-hidden="true">📞</div>
+              <div>
+                <span class="contact-info__label">Call Us</span>
+                <div class="contact-info__value">
+                  <a href="tel:07376416077">07376 416077</a> (Megan)<br>
+                  <a href="tel:07843969254">07843 969254</a> (Alex)
+                </div>
+              </div>
+            </div>
+            <div class="contact-info__item">
+              <div class="contact-info__icon" aria-hidden="true">✉️</div>
+              <div>
+                <span class="contact-info__label">Email</span>
+                <div class="contact-info__value">
+                  <a href="mailto:bryantcleaning25@gmail.co.uk">bryantcleaning25@gmail.co.uk</a>
+                </div>
+              </div>
+            </div>
+            <div class="contact-info__item">
+              <div class="contact-info__icon" aria-hidden="true">⏰</div>
+              <div>
+                <span class="contact-info__label">Hours</span>
+                <div class="contact-info__value">
+                  Mon–Fri: 8am–6pm<br>
+                  Sat: 9am–4pm
+                </div>
+              </div>
+            </div>
+            <div class="contact-info__item">
+              <div class="contact-info__icon" aria-hidden="true">📍</div>
+              <div>
+                <span class="contact-info__label">Coverage</span>
+                <div class="contact-info__value">Bournemouth &amp; all of Dorset</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form -->
+          <div>
+            <form class="contact-form js-contact-form" data-action="" novalidate aria-label="Gallery page quote request form" id="gallery-quote-form">
+              <h3 style="margin-bottom:1.25rem;font-size:1.2rem;">Quick Quote Request</h3>
+
+              <!-- Service selector cards -->
+              <div class="form-group">
+                <label style="margin-bottom:.75rem;display:block;">Select a Service *</label>
+                <div class="service-selector" role="group" aria-label="Select a cleaning service">
+                  <input class="service-card-radio" type="radio" name="gallery_service" id="gs-domestic"   value="Domestic Cleaning"        required>
+                  <label class="service-card-label" for="gs-domestic">   <span class="svc-icon">🏠</span>Domestic</label>
+
+                  <input class="service-card-radio" type="radio" name="gallery_service" id="gs-commercial" value="Commercial Cleaning">
+                  <label class="service-card-label" for="gs-commercial"> <span class="svc-icon">🏢</span>Commercial</label>
+
+                  <input class="service-card-radio" type="radio" name="gallery_service" id="gs-tenancy"    value="End of Tenancy">
+                  <label class="service-card-label" for="gs-tenancy">    <span class="svc-icon">🔑</span>End of Tenancy</label>
+
+                  <input class="service-card-radio" type="radio" name="gallery_service" id="gs-deep"       value="Deep Cleaning">
+                  <label class="service-card-label" for="gs-deep">       <span class="svc-icon">✨</span>Deep Clean</label>
+
+                  <input class="service-card-radio" type="radio" name="gallery_service" id="gs-afterbuild" value="After-Build Cleaning">
+                  <label class="service-card-label" for="gs-afterbuild"> <span class="svc-icon">🏗️</span>After-Build</label>
+
+                  <input class="service-card-radio" type="radio" name="gallery_service" id="gs-windows"    value="Window Cleaning">
+                  <label class="service-card-label" for="gs-windows">    <span class="svc-icon">🪟</span>Windows</label>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="g-first-name">First Name *</label>
+                  <input type="text" id="g-first-name" name="first_name" placeholder="Jane" required autocomplete="given-name">
+                </div>
+                <div class="form-group">
+                  <label for="g-last-name">Last Name *</label>
+                  <input type="text" id="g-last-name" name="last_name" placeholder="Smith" required autocomplete="family-name">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="g-email">Email Address *</label>
+                  <input type="email" id="g-email" name="email" placeholder="jane@example.com" required autocomplete="email">
+                </div>
+                <div class="form-group">
+                  <label for="g-phone">Phone Number *</label>
+                  <input type="tel" id="g-phone" name="phone" placeholder="07700 900 000" required autocomplete="tel">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="g-postcode">Postcode</label>
+                <input type="text" id="g-postcode" name="postcode" placeholder="BH1 1AA" autocomplete="postal-code">
+              </div>
+
+              <div class="form-group">
+                <label for="g-message">Tell Us More</label>
+                <textarea id="g-message" name="message" placeholder="Any specific requirements, preferred dates, or questions..."></textarea>
+              </div>
+
+              <div class="form-group">
+                <label style="display:flex;align-items:flex-start;gap:.5rem;font-weight:400;cursor:pointer;">
+                  <input type="checkbox" name="consent" required style="width:auto;margin-top:.2rem;">
+                  <span style="font-size:.88rem;">I agree to my data being used to provide a quote as per the <a href="privacy.html" target="_blank">Privacy Policy</a>. *</span>
+                </label>
+              </div>
+
+              <button type="submit" class="btn btn--primary btn--lg" style="width:100%;justify-content:center;">
+                Send My Quote Request ✉️
+              </button>
+              <p class="form-note">* Required fields. We'll never share your details. See our <a href="privacy.html">Privacy Policy</a>.</p>
+              <div class="form-success" role="alert">✅ Thank you! We'll be in touch within the hour!</div>
+            </form>
+          </div>
+        </div>
       </div>
-
-      <!-- Gallery Grid -->
-      <div class="gallery-grid fade-up" id="gallery-grid" aria-label="Gallery images">
-
-        <!-- Domestic -->
-        <div class="gallery-ph" data-category="domestic">
-          <span class="ph-emoji" aria-hidden="true">🏠</span>
-          <span class="ph-label">Kitchen Deep Clean</span>
-          <span class="ph-sub">Bournemouth — Domestic</span>
-        </div>
-        <div class="gallery-ph" data-category="domestic">
-          <span class="ph-emoji" aria-hidden="true">🛁</span>
-          <span class="ph-label">Bathroom Sparkle</span>
-          <span class="ph-sub">Poole — Domestic</span>
-        </div>
-        <div class="gallery-ph" data-category="domestic">
-          <span class="ph-emoji" aria-hidden="true">🛋️</span>
-          <span class="ph-label">Living Room Refresh</span>
-          <span class="ph-sub">Christchurch — Domestic</span>
-        </div>
-
-        <!-- Commercial -->
-        <div class="gallery-ph" data-category="commercial">
-          <span class="ph-emoji" aria-hidden="true">🏢</span>
-          <span class="ph-label">Office Deep Clean</span>
-          <span class="ph-sub">Bournemouth — Commercial</span>
-        </div>
-        <div class="gallery-ph" data-category="commercial">
-          <span class="ph-emoji" aria-hidden="true">🗂️</span>
-          <span class="ph-label">Workspace Sanitisation</span>
-          <span class="ph-sub">Poole — Commercial</span>
-        </div>
-
-        <!-- End of Tenancy -->
-        <div class="gallery-ph" data-category="tenancy">
-          <span class="ph-emoji" aria-hidden="true">🔑</span>
-          <span class="ph-label">Full Property Clean</span>
-          <span class="ph-sub">Bournemouth — End of Tenancy</span>
-        </div>
-        <div class="gallery-ph" data-category="tenancy">
-          <span class="ph-emoji" aria-hidden="true">🍳</span>
-          <span class="ph-label">Oven &amp; Kitchen Restore</span>
-          <span class="ph-sub">Ferndown — End of Tenancy</span>
-        </div>
-        <div class="gallery-ph" data-category="tenancy">
-          <span class="ph-emoji" aria-hidden="true">🪟</span>
-          <span class="ph-label">Window &amp; Frame Clean</span>
-          <span class="ph-sub">Wimborne — End of Tenancy</span>
-        </div>
-
-        <!-- Deep Clean -->
-        <div class="gallery-ph" data-category="deep">
-          <span class="ph-emoji" aria-hidden="true">✨</span>
-          <span class="ph-label">Full Deep Clean</span>
-          <span class="ph-sub">Christchurch — Deep Clean</span>
-        </div>
-        <div class="gallery-ph" data-category="deep">
-          <span class="ph-emoji" aria-hidden="true">🧴</span>
-          <span class="ph-label">Bathroom Deep Clean</span>
-          <span class="ph-sub">Poole — Deep Clean</span>
-        </div>
-
-        <!-- After Build -->
-        <div class="gallery-ph" data-category="afterbuild">
-          <span class="ph-emoji" aria-hidden="true">🏗️</span>
-          <span class="ph-label">Post-Renovation Clean</span>
-          <span class="ph-sub">Bournemouth — After-Build</span>
-        </div>
-        <div class="gallery-ph" data-category="afterbuild">
-          <span class="ph-emoji" aria-hidden="true">🧱</span>
-          <span class="ph-label">New Build Clean</span>
-          <span class="ph-sub">Weymouth — After-Build</span>
-        </div>
-      </div>
-
     </div>
   </section>
 
@@ -262,7 +552,7 @@
         <div class="footer-brand">
           <a href="index.html" class="logo">
             <div class="logo__mark">
-              <img src="images/logo.svg" alt="" onerror="this.parentElement.innerHTML='<span style=\'color:#fff;font-weight:700;font-size:1.1rem;\'>B&amp;C</span>'">
+              <img src="images/logo.png" alt="" onerror="this.parentElement.innerHTML='<span style=\'color:#fff;font-weight:700;font-size:1.1rem;\'>B&amp;C</span>'">
             </div>
             <div class="logo__text">
               <span class="logo__name">Bryant &amp; Co</span>
@@ -285,12 +575,12 @@
         <div class="footer-col">
           <h4>Our Services</h4>
           <nav class="footer-links">
-            <a href="services.html#domestic">Domestic Cleaning</a>
-            <a href="services.html#commercial">Commercial Cleaning</a>
-            <a href="services.html#tenancy">End of Tenancy</a>
-            <a href="services.html#deep">Deep Cleaning</a>
-            <a href="services.html#after-build">After-Build Cleaning</a>
-            <a href="services.html#windows">Window Cleaning</a>
+            <a href="domestic-cleaning.html">Domestic Cleaning</a>
+            <a href="commercial-cleaning.html">Commercial Cleaning</a>
+            <a href="end-of-tenancy-cleaning.html">End of Tenancy</a>
+            <a href="deep-cleaning.html">Deep Cleaning</a>
+            <a href="after-build-cleaning.html">After-Build Cleaning</a>
+            <a href="window-cleaning.html">Window Cleaning</a>
           </nav>
         </div>
         <div class="footer-col">
@@ -328,26 +618,63 @@
 
   <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
   <script>
-    // Gallery filter logic
-    const filterBtns  = document.querySelectorAll('.gallery-filter-btn');
-    const galleryItems = document.querySelectorAll('#gallery-grid > [data-category]');
+    // ── Slideshow logic ──
+    (function () {
+      const track   = document.getElementById('slideshow-track');
+      const slides  = track.querySelectorAll('.slideshow-slide');
+      const dotsWrap = document.getElementById('slideshow-dots');
+      const counter  = document.getElementById('slide-counter');
+      const total    = slides.length;
+      let current    = 0;
+      let autoTimer;
 
-    filterBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        filterBtns.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
-        btn.classList.add('active');
-        btn.setAttribute('aria-selected','true');
-
-        const filter = btn.dataset.filter;
-        galleryItems.forEach(item => {
-          if (filter === 'all' || item.dataset.category === filter) {
-            item.style.display = '';
-          } else {
-            item.style.display = 'none';
-          }
-        });
+      // Build dots
+      slides.forEach((_, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'slideshow-dot' + (i === 0 ? ' active' : '');
+        btn.setAttribute('role', 'tab');
+        btn.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+        btn.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+        btn.addEventListener('click', () => goTo(i));
+        dotsWrap.appendChild(btn);
       });
-    });
+
+      function goTo(n) {
+        const dots = dotsWrap.querySelectorAll('.slideshow-dot');
+        dots[current].classList.remove('active');
+        dots[current].setAttribute('aria-selected', 'false');
+        current = (n + total) % total;
+        track.style.transform = 'translateX(-' + current * 100 + '%)';
+        dots[current].classList.add('active');
+        dots[current].setAttribute('aria-selected', 'true');
+        counter.textContent = (current + 1) + ' / ' + total;
+        resetAuto();
+      }
+
+      function resetAuto() {
+        clearInterval(autoTimer);
+        autoTimer = setInterval(() => goTo(current + 1), 5000);
+      }
+
+      document.getElementById('slideshow-prev').addEventListener('click', () => goTo(current - 1));
+      document.getElementById('slideshow-next').addEventListener('click', () => goTo(current + 1));
+
+      // Keyboard
+      document.getElementById('gallery-slideshow').addEventListener('keydown', e => {
+        if (e.key === 'ArrowLeft')  goTo(current - 1);
+        if (e.key === 'ArrowRight') goTo(current + 1);
+      });
+
+      // Touch swipe
+      let touchStartX = 0;
+      track.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+      track.addEventListener('touchend',   e => {
+        const diff = touchStartX - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 50) goTo(diff > 0 ? current + 1 : current - 1);
+      });
+
+      resetAuto();
+    })();
   </script>
   <script src="js/main.js"></script>
 </body>
