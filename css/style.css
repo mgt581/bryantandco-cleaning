@@ -1118,6 +1118,23 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
   transform: translateY(0);
 }
 
+/* ---------- WhatsApp Button ---------- */
+.btn--whatsapp {
+  background: #25D366;
+  color: #fff;
+  border-color: #25D366;
+}
+.btn--whatsapp:hover {
+  background: #1ebe5d;
+  border-color: #1ebe5d;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ---------- Mobile Phone in Header (hidden on desktop) ---------- */
+.mobile-phone { display: none; }
+
 /* ---------- Accreditation Logos ---------- */
 .accreditation-bar {
   padding: 2rem 0;
@@ -1149,4 +1166,137 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
   padding: 0.55rem 1rem;
   font-size: 0.85rem;
   font-weight: 600;
+}
+
+/* ==============================================
+   MOBILE-FIRST HEADER & HERO OVERRIDES (≤768px)
+   ============================================== */
+@media (max-width: 768px) {
+
+  /* Hide utility bars — phone is shown inside header */
+  .notif-bar { display: none; }
+  .top-bar    { display: none; }
+
+  /* ---- Header: dark, stacked, centred ---- */
+  .site-header {
+    background: var(--color-primary);
+    box-shadow: 0 2px 12px rgba(0,0,0,.25);
+  }
+  .site-header .container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.85rem;
+    padding-block: 1.1rem;
+  }
+
+  /* Logo text on dark background */
+  .logo__name { color: var(--color-white); }
+  .logo__tag  { color: var(--color-accent); }
+
+  /* Hide hamburger — nav links shown directly as pills */
+  .nav-toggle { display: none !important; }
+
+  /* Nav: pill buttons in a wrapping row */
+  .nav {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 0.6rem;
+  }
+  .nav__list {
+    display: flex !important;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.45rem;
+    position: static !important;
+    background: transparent !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+  .nav__link {
+    border: 2px solid rgba(255,255,255,.75);
+    border-radius: 50px;
+    color: rgba(255,255,255,.9) !important;
+    background: transparent !important;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.45rem 1.1rem;
+  }
+  .nav__link:hover,
+  .nav__link.active {
+    background: var(--color-white) !important;
+    color: var(--color-primary) !important;
+  }
+  /* Hide desktop CTA button inside nav — phone links replace it */
+  .nav__cta { display: none !important; }
+
+  /* Hide "Call Now" button in hero on mobile — phone shown in header */
+  .hero__call-btn { display: none; }
+
+  /* Phone links displayed in header on mobile */
+  .mobile-phone {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.55rem;
+    width: 100%;
+  }
+  .mobile-phone__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background: var(--color-white);
+    color: var(--color-primary);
+    font-weight: 700;
+    font-size: 0.82rem;
+    padding: 0.45rem 1.1rem;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all var(--transition);
+  }
+  .mobile-phone__link:hover {
+    background: var(--color-accent);
+    color: var(--color-white);
+  }
+
+  /* ---- Hero: full image, no text overlay, CTA buttons at bottom ---- */
+  .hero {
+    min-height: 60vh;
+    align-items: flex-end;
+  }
+  .hero__overlay {
+    /* Fade only from bottom so image is fully visible in upper area */
+    background: linear-gradient(to top, rgba(0,0,0,.6) 0%, rgba(0,0,0,0) 55%);
+  }
+  .hero__content {
+    max-width: 100%;
+    padding: 0;
+    width: 100%;
+  }
+  /* Hide text block — only CTA buttons visible on the image */
+  .hero__text { display: none; }
+  .hero__actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.65rem;
+    padding: 1.25rem 1.25rem 1.5rem;
+    width: 100%;
+  }
+  .hero__actions .btn {
+    width: 100%;
+    max-width: none;
+    justify-content: center;
+    font-size: 1rem;
+    padding: 0.95rem 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero { min-height: 55vh; }
+  .nav__link { font-size: 0.74rem; padding: 0.4rem 0.9rem; }
+  .mobile-phone__link { font-size: 0.78rem; padding: 0.4rem 0.9rem; }
 }
