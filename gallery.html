@@ -19,141 +19,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
   <style>
-    /* ── Slideshow ── */
-    .slideshow-wrap {
-      position: relative;
-      background: #000;
-      border-radius: var(--radius-md);
-      overflow: hidden;
-      box-shadow: var(--shadow-lg);
-      aspect-ratio: 16/9;
-      max-height: 600px;
-    }
-    .slideshow-track {
-      display: flex;
-      height: 100%;
-      transition: transform 0.55s cubic-bezier(.4,0,.2,1);
-    }
-    .slideshow-slide {
-      min-width: 100%;
-      height: 100%;
-      position: relative;
-      flex-shrink: 0;
-    }
-    .slideshow-slide img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-    .slide-caption {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: linear-gradient(to top, rgba(27,58,107,.92) 0%, transparent 100%);
-      color: #fff;
-      padding: 2.5rem 2rem 1.5rem;
-    }
-    .slide-caption__label {
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--color-accent);
-      display: block;
-      margin-bottom: 0.3rem;
-    }
-    .slide-caption h3 {
-      color: #fff;
-      font-size: 1.25rem;
-      margin: 0;
-    }
-
-    /* Nav arrows */
-    .slideshow-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(255,255,255,.18);
-      backdrop-filter: blur(4px);
-      border: 2px solid rgba(255,255,255,.4);
-      color: #fff;
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      font-size: 1.4rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all .2s;
-      z-index: 10;
-    }
-    .slideshow-btn:hover {
-      background: var(--color-accent);
-      border-color: var(--color-accent);
-    }
-    .slideshow-btn--prev { left: 1rem; }
-    .slideshow-btn--next { right: 1rem; }
-
-    /* Dot indicators */
-    .slideshow-dots {
-      display: flex;
-      justify-content: center;
-      gap: 0.5rem;
-      margin-top: 1.25rem;
-    }
-    .slideshow-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--color-mid);
-      border: none;
-      cursor: pointer;
-      transition: background .2s, transform .2s;
-      padding: 0;
-    }
-    .slideshow-dot.active {
-      background: var(--color-accent);
-      transform: scale(1.25);
-    }
-
-    /* Slide counter */
-    .slide-counter {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      background: rgba(0,0,0,.5);
-      color: #fff;
-      font-size: 0.8rem;
-      font-weight: 600;
-      padding: 0.3rem 0.75rem;
-      border-radius: 50px;
-      z-index: 10;
-    }
-
-    /* CTA strip below slideshow */
-    .gallery-cta-strip {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: center;
-      align-items: center;
-      margin-top: 2rem;
-      padding: 1.75rem 2rem;
-      background: var(--color-light);
-      border-radius: var(--radius-md);
-      border: 1px solid var(--color-mid);
-    }
-    .gallery-cta-strip p {
-      margin: 0;
-      font-weight: 600;
-      color: var(--color-primary);
-      font-size: 1.05rem;
-    }
-
-    /* ── Gallery grid (below slideshow) ── */
+    /* ── CTA strip below gallery slider ── */
     .gallery-grid-label {
       display: flex;
       align-items: center;
@@ -191,26 +57,8 @@
     }
     @media (max-width: 900px) {
       .gallery-contact-layout { grid-template-columns: 1fr; }
-      .slideshow-btn { width: 40px; height: 40px; font-size: 1.1rem; }
     }
-
     @media (max-width: 600px) {
-      /* Taller aspect ratio so images aren't short-cropped on phones */
-      .slideshow-wrap {
-        aspect-ratio: 4/3;
-        max-height: none;
-        border-radius: var(--radius-sm);
-      }
-      .slide-caption { padding: 1.5rem 1rem 1rem; }
-      .slide-caption h3 { font-size: 1rem; }
-      /* Smaller, more thumb-friendly arrow buttons */
-      .slideshow-btn { width: 36px; height: 36px; font-size: 1rem; }
-      .slideshow-btn--prev { left: 0.5rem; }
-      .slideshow-btn--next { right: 0.5rem; }
-      /* Gallery CTA strip stacks on mobile */
-      .gallery-cta-strip { padding: 1.25rem 1rem; flex-direction: column; align-items: flex-start; }
-      .gallery-cta-strip p { font-size: 0.95rem; }
-      /* Gallery contact section less padding on mobile */
       .gallery-contact-section { padding: 2rem 1.25rem; border-radius: var(--radius-md); }
     }
   </style>
@@ -274,128 +122,48 @@
     </div>
   </div>
 
-  <!-- Gallery Section -->
-  <section class="section" aria-labelledby="gallery-heading">
+  <!-- Gallery Section Header -->
+  <section class="section" style="padding-bottom:0;" aria-labelledby="gallery-heading">
     <div class="container">
-
       <div class="section-header fade-up">
         <span class="section-tag">Before &amp; After</span>
         <h2 id="gallery-heading">See the Results for Yourself</h2>
         <p>Swipe through our latest cleaning transformations across Bournemouth and Dorset — real homes, real results.</p>
       </div>
+    </div>
+  </section>
 
-      <!-- ── Slideshow ── -->
-      <div class="slideshow-wrap fade-up" id="gallery-slideshow" aria-label="Gallery slideshow" role="region">
-        <div class="slideshow-track" id="slideshow-track">
+  <!-- ── Gallery Slider (full-width charcoal section) ── -->
+  <section class="gallery-slider fade-up" aria-label="Photo gallery slider">
+    <div class="gallery-wrap">
 
-          <div class="slideshow-slide">
-            <img src="gallery-content/kitchen-after.png" alt="Kitchen after deep clean — sparkling surfaces and hob" loading="lazy">
-            <div class="slide-caption">
-              <span class="slide-caption__label">After</span>
-              <h3>Kitchen Deep Clean</h3>
-            </div>
-          </div>
-
-          <div class="slideshow-slide">
-            <img src="gallery-content/kitchen-sink-before.png" alt="Kitchen sink before cleaning" loading="lazy">
-            <div class="slide-caption">
-              <span class="slide-caption__label">Before</span>
-              <h3>Kitchen Sink — Before</h3>
-            </div>
-          </div>
-
-          <div class="slideshow-slide">
-            <img src="gallery-content/kitchen-sink-after.png" alt="Kitchen sink after cleaning — spotless finish" loading="lazy">
-            <div class="slide-caption">
-              <span class="slide-caption__label">After</span>
-              <h3>Kitchen Sink — After</h3>
-            </div>
-          </div>
-
-          <div class="slideshow-slide">
-            <img src="gallery-content/kitchen-surface.png" alt="Kitchen surface cleaned and sanitised" loading="lazy">
-            <div class="slide-caption">
-              <span class="slide-caption__label">After</span>
-              <h3>Kitchen Surfaces Sanitised</h3>
-            </div>
-          </div>
-
-          <div class="slideshow-slide">
-            <img src="gallery-content/bedroom-after.png" alt="Bedroom after professional clean — fresh and tidy" loading="lazy">
-            <div class="slide-caption">
-              <span class="slide-caption__label">After</span>
-              <h3>Bedroom Refresh</h3>
-            </div>
-          </div>
-
-          <div class="slideshow-slide">
-            <img src="gallery-content/bathroom-sink-before.png" alt="Bathroom sink before cleaning" loading="lazy">
-            <div class="slide-caption">
-              <span class="slide-caption__label">Before</span>
-              <h3>Bathroom Sink — Before</h3>
-            </div>
-          </div>
-
-          <div class="slideshow-slide">
-            <img src="gallery-content/smalll-bathroom-after.png" alt="Small bathroom after professional clean" loading="lazy">
-            <div class="slide-caption">
-              <span class="slide-caption__label">After</span>
-              <h3>Bathroom Full Clean</h3>
-            </div>
-          </div>
-
-          <div class="slideshow-slide">
-            <img src="gallery-content/shower-before.png" alt="Shower cubicle before deep clean" loading="lazy">
-            <div class="slide-caption">
-              <span class="slide-caption__label">Before</span>
-              <h3>Shower Cubicle — Before</h3>
-            </div>
-          </div>
-
-          <div class="slideshow-slide">
-            <img src="gallery-content/shower-after.png" alt="Shower cubicle after deep clean — crystal clear" loading="lazy">
-            <div class="slide-caption">
-              <span class="slide-caption__label">After</span>
-              <h3>Shower Cubicle — After</h3>
-            </div>
-          </div>
-
-          <div class="slideshow-slide">
-            <img src="gallery-content/shower-tap-before.png" alt="Shower tap and fittings before cleaning" loading="lazy">
-            <div class="slide-caption">
-              <span class="slide-caption__label">Before</span>
-              <h3>Shower Tap &amp; Fittings — Before</h3>
-            </div>
-          </div>
-
-          <div class="slideshow-slide">
-            <img src="gallery-content/shower-tap-after.png" alt="Shower tap and fittings after cleaning — gleaming" loading="lazy">
-            <div class="slide-caption">
-              <span class="slide-caption__label">After</span>
-              <h3>Shower Tap &amp; Fittings — After</h3>
-            </div>
-          </div>
-
+      <!-- Image card -->
+      <div class="gallery-card">
+        <img id="gallery-img" src="gallery-content/kitchen-after.png" alt="Kitchen after deep clean — sparkling surfaces and hob">
+        <div class="gallery-overlay">
+          <h3 id="gallery-caption">Kitchen Deep Clean</h3>
         </div>
-
-        <!-- Slide counter -->
-        <div class="slide-counter" aria-live="polite" aria-atomic="true" id="slide-counter">1 / 11</div>
-
-        <!-- Arrows -->
-        <button class="slideshow-btn slideshow-btn--prev" id="slideshow-prev" aria-label="Previous slide">&#8592;</button>
-        <button class="slideshow-btn slideshow-btn--next" id="slideshow-next" aria-label="Next slide">&#8594;</button>
       </div>
 
-      <!-- Dot indicators -->
-      <div class="slideshow-dots" id="slideshow-dots" role="tablist" aria-label="Slideshow navigation"></div>
+      <!-- Counter + Dots -->
+      <div class="gallery-meta">
+        <div class="gallery-count" id="gallery-count" aria-live="polite" aria-atomic="true">1 / 11</div>
+        <div class="gallery-dots" id="gallery-dots" role="tablist" aria-label="Gallery navigation"></div>
+      </div>
+
+      <!-- Prev / Next arrows (overlaid beside the dots row) -->
+      <div class="gallery-controls" aria-hidden="true">
+        <button class="gallery-arrow" id="gallery-prev" aria-label="Previous photo" aria-hidden="false">&#8592;</button>
+        <button class="gallery-arrow" id="gallery-next" aria-label="Next photo" aria-hidden="false">&#8594;</button>
+      </div>
 
       <!-- CTA strip -->
-      <div class="gallery-cta-strip fade-up">
+      <div class="gallery-cta-strip-new fade-up">
         <p>Impressed by our results? Let us transform your space too.</p>
-        <div style="display:flex;flex-wrap:wrap;gap:.75rem;">
-          <a href="contact.html" class="btn btn--primary">Get a Free Quote</a>
-          <a href="tel:07376416077" class="btn btn--outline-dark">📞 07376 416077</a>
-          <a href="services.html" class="btn btn--outline-dark">View Our Services</a>
+        <div style="display:flex;flex-wrap:wrap;gap:.75rem;justify-content:center;margin-top:.5rem;">
+          <a href="https://wa.me/447376416077" class="btn btn--whatsapp">💬 WhatsApp Us</a>
+          <a href="contact.html" class="btn btn--primary">✉️ Get a Free Quote</a>
+          <a href="services.html" class="btn btn--outline-white">View Our Services</a>
         </div>
       </div>
 
@@ -618,59 +386,80 @@
 
   <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
   <script>
-    // ── Slideshow logic ──
+    // ── Gallery Slider ──
     (function () {
-      const track   = document.getElementById('slideshow-track');
-      const slides  = track.querySelectorAll('.slideshow-slide');
-      const dotsWrap = document.getElementById('slideshow-dots');
-      const counter  = document.getElementById('slide-counter');
+      const slides = [
+        { src: 'gallery-content/kitchen-after.png',       alt: 'Kitchen after deep clean — sparkling surfaces and hob', caption: 'Kitchen Deep Clean' },
+        { src: 'gallery-content/kitchen-sink-before.png', alt: 'Kitchen sink before cleaning',                          caption: 'Kitchen Sink — Before' },
+        { src: 'gallery-content/kitchen-sink-after.png',  alt: 'Kitchen sink after cleaning — spotless finish',         caption: 'Kitchen Sink — After' },
+        { src: 'gallery-content/kitchen-surface.png',     alt: 'Kitchen surface cleaned and sanitised',                 caption: 'Kitchen Surfaces Sanitised' },
+        { src: 'gallery-content/bedroom-after.png',       alt: 'Bedroom after professional clean — fresh and tidy',     caption: 'Bedroom Refresh' },
+        { src: 'gallery-content/bathroom-sink-before.png',alt: 'Bathroom sink before cleaning',                         caption: 'Bathroom Sink — Before' },
+        { src: 'gallery-content/smalll-bathroom-after.png',alt:'Small bathroom after professional clean',               caption: 'Bathroom Full Clean' },
+        { src: 'gallery-content/shower-before.png',       alt: 'Shower cubicle before deep clean',                      caption: 'Shower Cubicle — Before' },
+        { src: 'gallery-content/shower-after.png',        alt: 'Shower cubicle after deep clean — crystal clear',       caption: 'Shower Cubicle — After' },
+        { src: 'gallery-content/shower-tap-before.png',   alt: 'Shower tap and fittings before cleaning',               caption: 'Shower Tap & Fittings — Before' },
+        { src: 'gallery-content/shower-tap-after.png',    alt: 'Shower tap and fittings after cleaning — gleaming',     caption: 'Shower Tap & Fittings — After' },
+      ];
+
+      const img      = document.getElementById('gallery-img');
+      const caption  = document.getElementById('gallery-caption');
+      const count    = document.getElementById('gallery-count');
+      const dotsWrap = document.getElementById('gallery-dots');
+      const btnPrev  = document.getElementById('gallery-prev');
+      const btnNext  = document.getElementById('gallery-next');
       const total    = slides.length;
       let current    = 0;
       let autoTimer;
 
-      // Build dots
-      slides.forEach((_, i) => {
+      // Build dot buttons
+      slides.forEach(function (_, i) {
         const btn = document.createElement('button');
-        btn.className = 'slideshow-dot' + (i === 0 ? ' active' : '');
+        btn.className = (i === 0 ? 'active' : '');
         btn.setAttribute('role', 'tab');
-        btn.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+        btn.setAttribute('aria-label', 'Go to photo ' + (i + 1));
         btn.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
-        btn.addEventListener('click', () => goTo(i));
+        btn.addEventListener('click', function () { goTo(i); });
         dotsWrap.appendChild(btn);
       });
 
       function goTo(n) {
-        const dots = dotsWrap.querySelectorAll('.slideshow-dot');
+        const dots = dotsWrap.querySelectorAll('button');
         dots[current].classList.remove('active');
         dots[current].setAttribute('aria-selected', 'false');
         current = (n + total) % total;
-        track.style.transform = 'translateX(-' + current * 100 + '%)';
+        const slide = slides[current];
+        img.src = slide.src;
+        img.alt = slide.alt;
+        caption.textContent = slide.caption;
+        count.textContent = (current + 1) + ' / ' + total;
         dots[current].classList.add('active');
         dots[current].setAttribute('aria-selected', 'true');
-        counter.textContent = (current + 1) + ' / ' + total;
         resetAuto();
       }
 
       function resetAuto() {
         clearInterval(autoTimer);
-        autoTimer = setInterval(() => goTo(current + 1), 5000);
+        autoTimer = setInterval(function () { goTo(current + 1); }, 5000);
       }
 
-      document.getElementById('slideshow-prev').addEventListener('click', () => goTo(current - 1));
-      document.getElementById('slideshow-next').addEventListener('click', () => goTo(current + 1));
+      btnPrev.addEventListener('click', function () { goTo(current - 1); });
+      btnNext.addEventListener('click', function () { goTo(current + 1); });
 
-      // Keyboard
-      document.getElementById('gallery-slideshow').addEventListener('keydown', e => {
+      // Keyboard navigation
+      document.addEventListener('keydown', function (e) {
         if (e.key === 'ArrowLeft')  goTo(current - 1);
         if (e.key === 'ArrowRight') goTo(current + 1);
       });
 
       // Touch swipe
-      let touchStartX = 0;
-      track.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
-      track.addEventListener('touchend',   e => {
-        const diff = touchStartX - e.changedTouches[0].clientX;
-        if (Math.abs(diff) > 50) goTo(diff > 0 ? current + 1 : current - 1);
+      var touchStartX = 0;
+      img.parentElement.addEventListener('touchstart', function (e) {
+        touchStartX = e.touches[0].clientX;
+      }, { passive: true });
+      img.parentElement.addEventListener('touchend', function (e) {
+        var diff = touchStartX - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 48) goTo(diff > 0 ? current + 1 : current - 1);
       });
 
       resetAuto();

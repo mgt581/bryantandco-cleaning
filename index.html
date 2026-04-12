@@ -131,17 +131,27 @@
   </header>
 
   <!-- Hero -->
-  <section class="hero">
-    <div class="hero__overlay" aria-hidden="true"></div>
-    <div class="hero__content">
-      <div class="hero__text">
+  <section class="hero" aria-label="Hero banner">
+    <div class="hero__card">
+      <div class="hero__overlay" aria-hidden="true"></div>
+
+      <!-- Promo card overlay -->
+      <div class="hero__promo">
         <span class="section-tag">Bournemouth &amp; Dorset</span>
         <h1>Professional Cleaning<br>Services You Can Trust</h1>
         <p>Domestic, commercial &amp; specialist cleaning across Bournemouth, Poole, Christchurch &amp; all of Dorset.</p>
       </div>
-      <div class="hero__actions">
-        <a href="contact.html" class="btn btn--primary btn--lg">Get Your Free Quote</a>
-        <a href="tel:07376416077" class="btn btn--outline btn--lg">📞 Call Now</a>
+
+      <!-- CTA buttons at the bottom of the card -->
+      <div class="hero__content">
+        <div class="hero__actions">
+          <a href="https://wa.me/447376416077" class="btn btn--whatsapp btn--lg" aria-label="Chat on WhatsApp">
+            💬 WhatsApp Us
+          </a>
+          <a href="contact.html" class="btn btn--primary btn--lg">
+            ✉️ Get a Free Quote
+          </a>
+        </div>
       </div>
     </div>
   </section>
