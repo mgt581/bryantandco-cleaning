@@ -193,6 +193,26 @@
       .gallery-contact-layout { grid-template-columns: 1fr; }
       .slideshow-btn { width: 40px; height: 40px; font-size: 1.1rem; }
     }
+
+    @media (max-width: 600px) {
+      /* Taller aspect ratio so images aren't short-cropped on phones */
+      .slideshow-wrap {
+        aspect-ratio: 4/3;
+        max-height: none;
+        border-radius: var(--radius-sm);
+      }
+      .slide-caption { padding: 1.5rem 1rem 1rem; }
+      .slide-caption h3 { font-size: 1rem; }
+      /* Smaller, more thumb-friendly arrow buttons */
+      .slideshow-btn { width: 36px; height: 36px; font-size: 1rem; }
+      .slideshow-btn--prev { left: 0.5rem; }
+      .slideshow-btn--next { right: 0.5rem; }
+      /* Gallery CTA strip stacks on mobile */
+      .gallery-cta-strip { padding: 1.25rem 1rem; flex-direction: column; align-items: flex-start; }
+      .gallery-cta-strip p { font-size: 0.95rem; }
+      /* Gallery contact section less padding on mobile */
+      .gallery-contact-section { padding: 2rem 1.25rem; border-radius: var(--radius-md); }
+    }
   </style>
 </head>
 <body>
