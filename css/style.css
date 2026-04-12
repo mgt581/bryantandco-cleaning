@@ -136,6 +136,19 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
   transform: translateY(-2px);
 }
 
+.btn--whatsapp {
+  background: #25D366;
+  color: var(--color-white);
+  border-color: #25D366;
+}
+.btn--whatsapp:hover {
+  background: #1ebe5d;
+  border-color: #1ebe5d;
+  color: var(--color-white);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
 .btn--outline-dark {
   background: transparent;
   color: var(--color-primary);
@@ -292,8 +305,8 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(135deg, rgba(27,58,107,.95) 0%, rgba(18,40,80,.85) 100%),
-    url('../images/hero-bg.jpg') center/cover no-repeat;
+    linear-gradient(135deg, rgba(27,58,107,.85) 0%, rgba(18,40,80,.75) 100%),
+    url('../images/hero.PNG') center/cover no-repeat;
 }
 
 .hero__pattern {
