@@ -204,7 +204,7 @@
           </div>
         </div>
 
-        <!-- Contact Form -->
+        <!-- Enhanced Contact Form -->
         <div class="fade-up">
           <form
             class="contact-form js-contact-form"
@@ -213,6 +213,33 @@
             aria-label="Quote request form"
           >
             <h3 style="margin-bottom:1.5rem;font-size:1.3rem;">Quick Quote Request</h3>
+
+            <!-- Visual service selector -->
+            <div class="form-group">
+              <label style="margin-bottom:.75rem;display:block;">Select a Service *</label>
+              <div class="service-selector" role="group" aria-label="Select a cleaning service">
+                <input class="service-card-radio" type="radio" name="service" id="svc-domestic"   value="Domestic Cleaning"   required>
+                <label class="service-card-label" for="svc-domestic">   <span class="svc-icon">🏠</span>Domestic</label>
+
+                <input class="service-card-radio" type="radio" name="service" id="svc-commercial" value="Commercial Cleaning">
+                <label class="service-card-label" for="svc-commercial"> <span class="svc-icon">🏢</span>Commercial</label>
+
+                <input class="service-card-radio" type="radio" name="service" id="svc-tenancy"    value="End of Tenancy">
+                <label class="service-card-label" for="svc-tenancy">    <span class="svc-icon">🔑</span>End of Tenancy</label>
+
+                <input class="service-card-radio" type="radio" name="service" id="svc-deep"       value="Deep Cleaning">
+                <label class="service-card-label" for="svc-deep">       <span class="svc-icon">✨</span>Deep Clean</label>
+
+                <input class="service-card-radio" type="radio" name="service" id="svc-afterbuild" value="After-Build Cleaning">
+                <label class="service-card-label" for="svc-afterbuild"> <span class="svc-icon">🏗️</span>After-Build</label>
+
+                <input class="service-card-radio" type="radio" name="service" id="svc-windows"    value="Window Cleaning">
+                <label class="service-card-label" for="svc-windows">    <span class="svc-icon">🪟</span>Windows</label>
+
+                <input class="service-card-radio" type="radio" name="service" id="svc-other"      value="Other / Not Sure">
+                <label class="service-card-label" for="svc-other">      <span class="svc-icon">💬</span>Not Sure</label>
+              </div>
+            </div>
 
             <div class="form-row">
               <div class="form-group">
@@ -225,46 +252,39 @@
               </div>
             </div>
 
-            <div class="form-group">
-              <label for="email">Email Address *</label>
-              <input type="email" id="email" name="email" placeholder="jane@example.com" required autocomplete="email">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" name="email" placeholder="jane@example.com" required autocomplete="email">
+              </div>
+              <div class="form-group">
+                <label for="phone">Phone Number *</label>
+                <input type="tel" id="phone" name="phone" placeholder="07700 900 000" required autocomplete="tel">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="postcode">Postcode</label>
+                <input type="text" id="postcode" name="postcode" placeholder="BH1 1AA" autocomplete="postal-code">
+              </div>
+              <div class="form-group">
+                <label for="property-size">Property Size</label>
+                <select id="property-size" name="property_size">
+                  <option value="">— Please select —</option>
+                  <option value="studio">Studio / Bedsit</option>
+                  <option value="1bed">1 Bedroom</option>
+                  <option value="2bed">2 Bedrooms</option>
+                  <option value="3bed">3 Bedrooms</option>
+                  <option value="4bed">4+ Bedrooms</option>
+                  <option value="commercial">Commercial Property</option>
+                </select>
+              </div>
             </div>
 
             <div class="form-group">
-              <label for="phone">Phone Number *</label>
-              <input type="tel" id="phone" name="phone" placeholder="07700 900 000" required autocomplete="tel">
-            </div>
-
-            <div class="form-group">
-              <label for="postcode">Postcode</label>
-              <input type="text" id="postcode" name="postcode" placeholder="BH1 1AA" autocomplete="postal-code">
-            </div>
-
-            <div class="form-group">
-              <label for="service">Service Required *</label>
-              <select id="service" name="service" required>
-                <option value="">— Please select —</option>
-                <option value="domestic">Domestic Cleaning</option>
-                <option value="commercial">Commercial Cleaning</option>
-                <option value="tenancy">End of Tenancy Cleaning</option>
-                <option value="deep">Deep Cleaning</option>
-                <option value="after-build">After-Build Cleaning</option>
-                <option value="windows">Window Cleaning</option>
-                <option value="other">Other / Not Sure</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="property-size">Property Size</label>
-              <select id="property-size" name="property_size">
-                <option value="">— Please select —</option>
-                <option value="studio">Studio / Bedsit</option>
-                <option value="1bed">1 Bedroom</option>
-                <option value="2bed">2 Bedrooms</option>
-                <option value="3bed">3 Bedrooms</option>
-                <option value="4bed">4+ Bedrooms</option>
-                <option value="commercial">Commercial Property</option>
-              </select>
+              <label for="preferred-date">Preferred Date (optional)</label>
+              <input type="date" id="preferred-date" name="preferred_date">
             </div>
 
             <div class="form-group">
@@ -280,7 +300,7 @@
             </div>
 
             <button type="submit" class="btn btn--primary btn--lg" style="width:100%;justify-content:center;">
-              Send My Quote Request
+              Send My Quote Request ✉️
             </button>
 
             <p class="form-note">* Required fields. We'll never share your details with third parties. See our <a href="privacy.html">Privacy Policy</a>.</p>

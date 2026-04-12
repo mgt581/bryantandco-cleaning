@@ -352,6 +352,161 @@
     </div>
   </section>
 
+  <!-- Home Contact Form -->
+  <section class="section section--light" aria-labelledby="home-contact-heading">
+    <div class="container">
+      <div class="section-header fade-up">
+        <span class="section-tag">Get in Touch</span>
+        <h2 id="home-contact-heading">Request Your Free Quote</h2>
+        <p>Fill in your details below and we'll get back to you with a personalised, no-obligation quote within one hour during business hours.</p>
+      </div>
+
+      <div class="home-contact-grid fade-up">
+
+        <!-- Contact highlights -->
+        <div class="contact-info">
+          <div class="contact-info__item">
+            <div class="contact-info__icon" aria-hidden="true">📞</div>
+            <div>
+              <span class="contact-info__label">Call Us</span>
+              <div class="contact-info__value">
+                <a href="tel:07376416077">07376 416077</a> (Megan)<br>
+                <a href="tel:07843969254">07843 969254</a> (Alex)
+              </div>
+            </div>
+          </div>
+          <div class="contact-info__item">
+            <div class="contact-info__icon" aria-hidden="true">✉️</div>
+            <div>
+              <span class="contact-info__label">Email</span>
+              <div class="contact-info__value">
+                <a href="mailto:bryantcleaning25@gmail.co.uk">bryantcleaning25@gmail.co.uk</a>
+              </div>
+            </div>
+          </div>
+          <div class="contact-info__item">
+            <div class="contact-info__icon" aria-hidden="true">⏰</div>
+            <div>
+              <span class="contact-info__label">Opening Hours</span>
+              <div class="contact-info__value">
+                Mon–Fri: 8:00am – 6:00pm<br>
+                Saturday: 9:00am – 4:00pm<br>
+                Sunday: By appointment
+              </div>
+            </div>
+          </div>
+          <div class="contact-info__item">
+            <div class="contact-info__icon" aria-hidden="true">📍</div>
+            <div>
+              <span class="contact-info__label">Coverage Area</span>
+              <div class="contact-info__value">Bournemouth, Poole, Christchurch &amp; all of Dorset</div>
+            </div>
+          </div>
+          <div class="contact-info__item">
+            <div class="contact-info__icon" aria-hidden="true">✅</div>
+            <div>
+              <span class="contact-info__label">Our Promise</span>
+              <div class="contact-info__value">Free quotes · No obligation · Reply within 1 hour</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form -->
+        <div>
+          <form class="contact-form js-contact-form" data-action="" novalidate aria-label="Home page quote request form" id="home-quote-form">
+            <h3 style="margin-bottom:1.25rem;font-size:1.2rem;">Quick Quote Request</h3>
+
+            <!-- Visual service selector -->
+            <div class="form-group">
+              <label style="margin-bottom:.75rem;display:block;">Select a Service *</label>
+              <div class="service-selector" role="group" aria-label="Select a cleaning service">
+                <input class="service-card-radio" type="radio" name="home_service" id="h-domestic"   value="Domestic Cleaning"   required>
+                <label class="service-card-label" for="h-domestic">   <span class="svc-icon">🏠</span>Domestic</label>
+
+                <input class="service-card-radio" type="radio" name="home_service" id="h-commercial" value="Commercial Cleaning">
+                <label class="service-card-label" for="h-commercial"> <span class="svc-icon">🏢</span>Commercial</label>
+
+                <input class="service-card-radio" type="radio" name="home_service" id="h-tenancy"    value="End of Tenancy">
+                <label class="service-card-label" for="h-tenancy">    <span class="svc-icon">🔑</span>End of Tenancy</label>
+
+                <input class="service-card-radio" type="radio" name="home_service" id="h-deep"       value="Deep Cleaning">
+                <label class="service-card-label" for="h-deep">       <span class="svc-icon">✨</span>Deep Clean</label>
+
+                <input class="service-card-radio" type="radio" name="home_service" id="h-afterbuild" value="After-Build Cleaning">
+                <label class="service-card-label" for="h-afterbuild"> <span class="svc-icon">🏗️</span>After-Build</label>
+
+                <input class="service-card-radio" type="radio" name="home_service" id="h-windows"    value="Window Cleaning">
+                <label class="service-card-label" for="h-windows">    <span class="svc-icon">🪟</span>Windows</label>
+
+                <input class="service-card-radio" type="radio" name="home_service" id="h-other"      value="Other / Not Sure">
+                <label class="service-card-label" for="h-other">      <span class="svc-icon">💬</span>Not Sure</label>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="h-first-name">First Name *</label>
+                <input type="text" id="h-first-name" name="first_name" placeholder="Jane" required autocomplete="given-name">
+              </div>
+              <div class="form-group">
+                <label for="h-last-name">Last Name *</label>
+                <input type="text" id="h-last-name" name="last_name" placeholder="Smith" required autocomplete="family-name">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="h-email">Email Address *</label>
+                <input type="email" id="h-email" name="email" placeholder="jane@example.com" required autocomplete="email">
+              </div>
+              <div class="form-group">
+                <label for="h-phone">Phone Number *</label>
+                <input type="tel" id="h-phone" name="phone" placeholder="07700 900 000" required autocomplete="tel">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="h-postcode">Postcode</label>
+                <input type="text" id="h-postcode" name="postcode" placeholder="BH1 1AA" autocomplete="postal-code">
+              </div>
+              <div class="form-group">
+                <label for="h-property-size">Property Size</label>
+                <select id="h-property-size" name="property_size">
+                  <option value="">— Please select —</option>
+                  <option value="studio">Studio / Bedsit</option>
+                  <option value="1bed">1 Bedroom</option>
+                  <option value="2bed">2 Bedrooms</option>
+                  <option value="3bed">3 Bedrooms</option>
+                  <option value="4bed">4+ Bedrooms</option>
+                  <option value="commercial">Commercial Property</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="h-message">Additional Details</label>
+              <textarea id="h-message" name="message" placeholder="Tell us about your property, preferred cleaning schedule, or any specific requirements..."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label style="display:flex;align-items:flex-start;gap:.5rem;font-weight:400;cursor:pointer;">
+                <input type="checkbox" name="consent" required style="width:auto;margin-top:.2rem;">
+                <span style="font-size:.88rem;">I agree to my data being used to provide a quote as per the <a href="privacy.html" target="_blank">Privacy Policy</a>. *</span>
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn--primary btn--lg" style="width:100%;justify-content:center;">
+              Send My Quote Request ✉️
+            </button>
+            <p class="form-note">* Required fields. We'll never share your details. See our <a href="privacy.html">Privacy Policy</a>.</p>
+            <div class="form-success" role="alert">✅ Thank you! Your quote request has been received. We'll be in touch within the hour!</div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Footer -->
   <footer class="site-footer" aria-label="Site footer">
     <div class="container">
