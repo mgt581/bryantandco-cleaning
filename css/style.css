@@ -283,10 +283,45 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
   position: relative;
   min-height: 90vh;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
-  background: url('../images/hero.PNG') center/cover no-repeat;
+  background: url('../images/hero.PNG') center top/cover no-repeat;
   overflow: hidden;
+}
+
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,.35) 0%, rgba(0,0,0,.6) 100%);
+}
+
+.hero__content {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 2rem 1.25rem;
+  max-width: 780px;
+  width: 100%;
+}
+
+.hero__text { margin-bottom: 2rem; }
+
+.hero__text .section-tag {
+  background: var(--color-accent);
+  color: var(--color-white);
+}
+
+.hero__text h1 {
+  color: var(--color-white);
+  text-shadow: 0 2px 16px rgba(0,0,0,.5);
+  margin: 0.75rem 0 1rem;
+}
+
+.hero__text p {
+  color: rgba(255,255,255,.92);
+  font-size: clamp(1rem, 2.5vw, 1.2rem);
+  margin-bottom: 0;
+  text-shadow: 0 1px 6px rgba(0,0,0,.4);
 }
 
 .hero__actions {
@@ -296,7 +331,7 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
   flex-wrap: wrap;
   justify-content: center;
   gap: 1rem;
-  padding: 2.5rem 1rem;
+  padding: 0;
 }
 
 /* ---------- Trust Bar ---------- */
@@ -1023,7 +1058,14 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
     margin: 1rem 1rem 0;
   }
 
-  .hero { min-height: 80vh; }
+  /* Hero mobile */
+  .hero {
+    min-height: 75vh;
+  }
+  .hero__text h1 { font-size: clamp(1.7rem, 7vw, 2.5rem); }
+  .hero__actions { flex-direction: column; align-items: center; }
+  .hero__actions .btn { width: 100%; max-width: 320px; justify-content: center; }
+
   .trust-bar .container { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
 
   .footer-grid { grid-template-columns: 1fr; }
@@ -1032,10 +1074,37 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
   .service-detail { gap: 2rem; }
   .float-cta { bottom: 1rem; right: 1rem; }
   .float-cta__btn { font-size: 0.82rem; padding: 0.65rem 1rem; }
+
+  /* Map on mobile */
+  .map-embed iframe { height: 260px; }
+
+  /* Page banner on mobile */
+  .page-banner { padding: 3rem 0 2.5rem; }
+}
+
+@media (max-width: 640px) {
+  /* Top bar: hide location/hours row, keep only contact links */
+  .top-bar__links:first-child { display: none; }
+  .top-bar .container { justify-content: center; }
+  .top-bar__links { gap: 1rem; flex-wrap: wrap; justify-content: center; }
 }
 
 @media (max-width: 540px) {
   .section { padding: 3.5rem 0; }
+  .hero { min-height: 65vh; }
+  .hero__text { margin-bottom: 1.5rem; }
+
+  /* Trust bar on small mobile */
+  .trust-bar .container { gap: 0.5rem; }
+  .trust-item { font-size: 0.82rem; }
+
+  /* Notif bar wrapping */
+  .notif-bar { font-size: 0.8rem; padding: 0.5rem 0.75rem; }
+
+  /* Float CTA: smaller on very small screens */
+  .float-cta { gap: 0.35rem; }
+  .float-cta__btn span { display: none; }
+  .float-cta__btn { width: 48px; height: 48px; border-radius: 50%; padding: 0; justify-content: center; font-size: 1.2rem; }
 }
 
 /* ---------- Scroll Animation ---------- */
