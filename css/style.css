@@ -285,7 +285,7 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
   display: flex;
   align-items: center;
   justify-content: center;
-  background: url('../images/hero.PNG') center top/cover no-repeat;
+  background: url('../images/hero2.png') center top/cover no-repeat;
   overflow: hidden;
 }
 
