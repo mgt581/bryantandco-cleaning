@@ -283,90 +283,20 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
   position: relative;
   min-height: 90vh;
   display: flex;
-  align-items: center;
-  background: var(--color-primary);
+  align-items: flex-end;
+  justify-content: center;
+  background: url('../images/hero.PNG') center/cover no-repeat;
   overflow: hidden;
 }
 
-.hero__bg {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(135deg, rgba(27,58,107,.95) 0%, rgba(18,40,80,.85) 100%),
-    url('../images/hero-bg.jpg') center/cover no-repeat;
-}
-
-.hero__pattern {
-  position: absolute;
-  inset: 0;
-  opacity: .04;
-  background-image: radial-gradient(circle, #fff 1px, transparent 1px);
-  background-size: 30px 30px;
-}
-
-.hero .container { position: relative; z-index: 1; }
-
-.hero__content {
-  max-width: 700px;
-  padding: 4rem 0;
-}
-
-.hero__badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: rgba(201,168,76,.15);
-  border: 1px solid rgba(201,168,76,.4);
-  color: var(--color-accent);
-  border-radius: 50px;
-  padding: 0.35rem 1rem;
-  font-size: 0.82rem;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin-bottom: 1.25rem;
-}
-
-.hero__title {
-  color: var(--color-white);
-  margin-bottom: 1.25rem;
-  font-size: clamp(2.2rem, 5.5vw, 4rem);
-}
-
-.hero__title span { color: var(--color-accent); }
-
-.hero__subtitle {
-  color: rgba(255,255,255,.82);
-  font-size: clamp(1rem, 2vw, 1.2rem);
-  margin-bottom: 2rem;
-  max-width: 560px;
-}
-
 .hero__actions {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 1rem;
-  margin-bottom: 3rem;
-}
-
-.hero__stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  padding-top: 2rem;
-  border-top: 1px solid rgba(255,255,255,.15);
-}
-
-.hero__stat-number {
-  display: block;
-  font-family: var(--font-heading);
-  font-size: 2rem;
-  font-weight: 700;
-  color: var(--color-accent);
-}
-.hero__stat-label {
-  font-size: 0.85rem;
-  color: rgba(255,255,255,.7);
+  padding: 2.5rem 1rem;
 }
 
 /* ---------- Trust Bar ---------- */
@@ -1047,7 +977,6 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
 }
 
 @media (max-width: 540px) {
-  .hero__stats { gap: 1.25rem; }
   .section { padding: 3.5rem 0; }
 }
 
