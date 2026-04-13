@@ -428,15 +428,9 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
 .service-card p { margin-bottom: 0; flex: 1; }
 
 .service-card__link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  color: var(--color-accent);
-  font-weight: 600;
-  font-size: 0.9rem;
   margin-top: auto;
+  align-self: flex-start;
 }
-.service-card__link:hover { color: var(--color-accent-dark); gap: 0.6rem; }
 
 /* ---------- Why Choose Us ---------- */
 .features-grid {
