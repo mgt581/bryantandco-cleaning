@@ -293,9 +293,9 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
 
 .hero__content {
   position: absolute;
-  top: 52%;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   text-align: center;
   width: 70%;
   max-width: 600px;
@@ -323,13 +323,10 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
 }
 
 .hero__actions {
-  position: absolute;
-  top: 84%;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1;
   display: flex;
   justify-content: center;
+  margin-top: 1.5rem;
+  z-index: 1;
 }
 
 .btn--booknow {
