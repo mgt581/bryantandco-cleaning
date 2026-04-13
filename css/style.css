@@ -324,7 +324,7 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
 
 .hero__actions {
   position: absolute;
-  top: 74%;
+  top: 84%;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1;
