@@ -358,8 +358,9 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
 }
 
 @media (max-width: 520px) {
-  .hero__cta-bar { gap: 0.6rem; padding: 0.75rem 0.75rem 1rem; }
-  .hero-btn { padding: 0.6rem 1rem; font-size: 0.88rem; }
+  .hero__cta-bar { flex-wrap: wrap; gap: 0.5rem; padding: 0.75rem 1rem 1rem; }
+  .hero-btn { padding: 0.5rem 0.85rem; font-size: 0.82rem; gap: 0.35rem; }
+  .hero-btn svg { width: 16px; height: 16px; }
 }
 
 
