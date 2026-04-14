@@ -1004,6 +1004,17 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
 .footer-bottom a { color: rgba(255,255,255,.6); }
 .footer-bottom a:hover { color: var(--color-accent); }
 
+.footer-built-by {
+  padding: 0.75rem 0 0.5rem;
+  text-align: center;
+  font-size: 0.72rem;
+  color: rgba(255,255,255,.35);
+  border-top: 1px solid rgba(255,255,255,.08);
+  line-height: 1.7;
+}
+.footer-built-by a { color: rgba(255,255,255,.45); }
+.footer-built-by a:hover { color: var(--color-accent); }
+
 /* ---------- Floating CTA ---------- */
 .float-cta {
   position: fixed;
