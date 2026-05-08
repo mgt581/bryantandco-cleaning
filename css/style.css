@@ -281,6 +281,11 @@ p { margin-bottom: 1rem; color: var(--color-text-muted); }
 /* ---------- Hero Section ---------- */
 .hero {
   position: relative;
+  min-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: url('../images/hero2.png') center top/cover no-repeat;
   min-height: 280px;
   overflow: hidden;
 }
