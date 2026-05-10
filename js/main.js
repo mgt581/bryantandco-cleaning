@@ -82,20 +82,32 @@
       btn.textContent = 'Sending…';
       btn.disabled    = true;
 
-      // Simulate async (replace with Formspree / EmailJS / backend endpoint)
-      await new Promise(r => setTimeout(r, 1200));
-
-      // Attempt Formspree if data-action set
-      const action = form.getAttribute('data-action');
+      const action = form.getAttribute('data-action') || (window.BRYANTCO && window.BRYANTCO.leadEndpoint);
       if (action) {
         try {
+          const payload = Object.fromEntries(new FormData(form).entries());
+          payload.form_name = form.getAttribute('aria-label') || form.id || 'quote_request';
+          payload.page_url = window.location.href;
+
           const res = await fetch(action, {
             method: 'POST',
-            headers: { 'Accept': 'application/json' },
-            body: new FormData(form),
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload),
           });
           if (!res.ok) throw new Error('Network error');
-        } catch (_) { /* fallback — still show success to user */ }
+        } catch (_) {
+          btn.textContent = origText;
+          btn.disabled = false;
+          alert('Sorry, your message could not be sent. Please call or WhatsApp us and we will help straight away.');
+          return;
+        }
+      }
+
+      if (window.BryantCoTracking) {
+        window.BryantCoTracking.trackLead(form.getAttribute('aria-label') || form.id || 'quote_request');
       }
 
       form.reset();
