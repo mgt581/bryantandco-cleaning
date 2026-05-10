@@ -4,18 +4,18 @@ This setup matches a GitHub + Cloudflare Pages deployment with Google Tag Manage
 
 ## Public Email
 
-The website displays `info@bryantcocleaning.co.uk`.
+The website displays `info@bryantandcocleaning.co.uk`.
 
 Set mailbox forwarding in your email/DNS provider:
 
-- Forward `info@bryantcocleaning.co.uk` to `bryantcocleaning@gmail.com`
-- Forward `info@bryantcocleaning.co.uk` to `alex@bryantgroupholdings.co.uk`
+- Forward `info@bryantandcocleaning.co.uk` to `bryantcocleaning@gmail.com`
+- Forward `info@bryantandcocleaning.co.uk` to `alex@bryantgroupholdings.co.uk`
 
-To reply as `info@bryantcocleaning.co.uk`, add it as a send-as alias in Gmail or Google Workspace and complete the verification email.
+To reply as `info@bryantandcocleaning.co.uk`, add it as a send-as alias in Gmail or Google Workspace and complete the verification email.
 
 ## Google Tag Manager
 
-Create a new web container in Google Tag Manager for `bryantcocleaning.co.uk`, then update `js/site-config.js`:
+Create a new web container in Google Tag Manager for `bryantandcocleaning.co.uk`, then update `js/site-config.js`:
 
 ```js
 googleTagManagerId: 'GTM-TKWBCQGM'
@@ -44,7 +44,7 @@ Deploy the repository through Cloudflare Pages from GitHub. Functions deploy wit
 
 ## Resend
 
-In Resend, verify `bryantcocleaning.co.uk` and add the DNS records Resend gives you in Cloudflare DNS.
+In Resend, verify `bryantandcocleaning.co.uk` and add the DNS records Resend gives you in Cloudflare DNS.
 
 In Cloudflare Pages, open the Bryant & Co Cleaning Pages project:
 
@@ -55,7 +55,7 @@ Settings > Variables and Secrets > Add
 Add:
 
 - `RESEND_API_KEY` as an encrypted secret
-- `LEAD_FROM_EMAIL=Bryant & Co Cleaning <info@bryantcocleaning.co.uk>`
+- `LEAD_FROM_EMAIL=Bryant & Co Cleaning <info@bryantandcocleaning.co.uk>`
 - `LEAD_TO_EMAILS=bryantcocleaning@gmail.com,alex@bryantgroupholdings.co.uk`
 
 After saving variables/secrets, redeploy the Pages project.

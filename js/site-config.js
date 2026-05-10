@@ -1,5 +1,5 @@
 window.BRYANTCO = {
-  publicEmail: 'info@bryantcocleaning.co.uk',
+  publicEmail: 'info@bryantandcocleaning.co.uk',
   leadEndpoint: '/api/send-lead',
   googleTagManagerId: 'GTM-TKWBCQGM'
 };

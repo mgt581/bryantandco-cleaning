@@ -11,7 +11,7 @@ export async function onRequestPost({ request, env }) {
     return json({ error: 'Invalid JSON body' }, 400);
   }
 
-  const fromAddress = env.LEAD_FROM_EMAIL || 'Bryant & Co Cleaning <info@bryantcocleaning.co.uk>';
+  const fromAddress = env.LEAD_FROM_EMAIL || 'Bryant & Co Cleaning <info@bryantandcocleaning.co.uk>';
   const toAddresses = (env.LEAD_TO_EMAILS || 'bryantcocleaning@gmail.com,alex@bryantgroupholdings.co.uk')
     .split(',')
     .map((email) => email.trim())
@@ -45,7 +45,7 @@ export async function onRequestPost({ request, env }) {
     body: JSON.stringify({
       from: fromAddress,
       to: toAddresses,
-      reply_to: lead.email || 'info@bryantcocleaning.co.uk',
+      reply_to: lead.email || 'info@bryantandcocleaning.co.uk',
       subject: lead.service ? `New quote request - ${lead.service}` : 'New Bryant & Co Cleaning quote request',
       text,
       html
