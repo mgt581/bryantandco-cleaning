@@ -8,8 +8,7 @@ The website displays `info@bryantandcocleaning.co.uk`.
 
 Set mailbox forwarding in your email/DNS provider:
 
-- Forward `info@bryantandcocleaning.co.uk` to `bryantcocleaning@gmail.com`
-- Forward `info@bryantandcocleaning.co.uk` to `alex@bryantgroupholdings.co.uk`
+- Forward `info@bryantandcocleaning.co.uk` to `allleadshere@yahoo.com`
 
 To reply as `info@bryantandcocleaning.co.uk`, add it as a send-as alias in Gmail or Google Workspace and complete the verification email.
 
@@ -56,6 +55,6 @@ Add:
 
 - `RESEND_API_KEY` as an encrypted secret
 - `LEAD_FROM_EMAIL=Bryant & Co Cleaning <info@bryantandcocleaning.co.uk>`
-- `LEAD_TO_EMAILS=bryantcocleaning@gmail.com,alex@bryantgroupholdings.co.uk`
+- `LEAD_TO_EMAILS=allleadshere@yahoo.com`
 
 After saving variables/secrets, redeploy the Pages project.
