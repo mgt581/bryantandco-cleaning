@@ -19,11 +19,15 @@ export async function onRequest({ request, env }) {
     return json({ error: 'Invalid JSON body' }, 400);
   }
 
-  const fromAddress = env.LEAD_FROM_EMAIL || 'Bryant & Co Cleaning <info@bryantandcocleaning.co.uk>';
+  const fromAddress = env.LEAD_FROM_EMAIL || 'Bryant & Co Cleaning <onboarding@resend.dev>';
   const toAddresses = (env.LEAD_TO_EMAILS || 'allleadshere@yahoo.com')
     .split(',')
     .map((email) => email.trim())
     .filter(Boolean);
+
+  if (!toAddresses.length) {
+    return json({ error: 'No destination email is configured' }, 500);
+  }
 
   const fields = [
     ['Page', lead.page_url],
@@ -49,8 +53,7 @@ export async function onRequest({ request, env }) {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-        'User-Agent': 'bryantandco-cleaning/1.0'
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         from: fromAddress,
@@ -65,11 +68,13 @@ export async function onRequest({ request, env }) {
     return json({
       error: 'Failed to reach Resend API',
       details: error instanceof Error ? error.message : String(error)
-    }, 502);
+    }, 500);
   }
 
   if (!response.ok) {
-    return json({ error: 'Resend email failed', details: await response.text() }, 502);
+    const details = await response.text();
+    const status = response.status >= 400 && response.status < 500 ? 400 : 500;
+    return json({ error: 'Resend email failed', details }, status);
   }
 
   return json({ ok: true });
