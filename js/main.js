@@ -5,6 +5,17 @@
 (function () {
   'use strict';
 
+  function leadDebugEnabled() {
+    const config = window.BRYANTCO || {};
+    if (config.debugLeadErrors === true) return true;
+
+    const params = new URLSearchParams(window.location.search);
+    const leadDebug = (params.get('lead_debug') || '').toLowerCase();
+    if (leadDebug === '1' || leadDebug === 'true' || leadDebug === 'yes') return true;
+
+    return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  }
+
   /* ---------- Mobile Navigation ---------- */
   const navToggle = document.querySelector('.nav-toggle');
   const nav       = document.querySelector('.nav');
@@ -97,11 +108,31 @@
             },
             body: JSON.stringify(payload),
           });
-          if (!res.ok) throw new Error('Network error');
+          if (!res.ok) {
+            let errorDetails = `HTTP ${res.status}`;
+
+            try {
+              const data = await res.clone().json();
+              const serverMessage = [data && data.error, data && data.details].filter(Boolean).join(' - ');
+              if (serverMessage) errorDetails += ` - ${serverMessage}`;
+            } catch (_) {
+              const text = await res.text();
+              if (text) errorDetails += ` - ${text.slice(0, 240)}`;
+            }
+
+            throw new Error(errorDetails);
+          }
         } catch (_) {
+          let debugSuffix = '';
+          if (leadDebugEnabled()) {
+            const debugText = _ instanceof Error ? _.message : String(_);
+            debugSuffix = `\n\nDebug details: ${debugText}`;
+            console.error('Lead form submit failed:', _);
+          }
+
           btn.textContent = origText;
           btn.disabled = false;
-          alert('Sorry, your message could not be sent. Please call or WhatsApp us and we will help straight away.');
+          alert('Sorry, your message could not be sent. Please call or WhatsApp us and we will help straight away.' + debugSuffix);
           return;
         }
       }

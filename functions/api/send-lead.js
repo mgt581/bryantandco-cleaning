@@ -1,4 +1,12 @@
-export async function onRequestPost({ request, env }) {
+export async function onRequest({ request, env }) {
+  if (request.method === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: corsHeaders() });
+  }
+
+  if (request.method !== 'POST') {
+    return json({ error: 'Method not allowed' }, 405, { Allow: 'POST, OPTIONS' });
+  }
+
   const apiKey = env.RESEND_API_KEY;
   if (!apiKey) {
     return json({ error: 'RESEND_API_KEY is not configured' }, 500);
@@ -35,36 +43,36 @@ export async function onRequestPost({ request, env }) {
     `<tr><th align="left" style="padding:6px 12px 6px 0;">${escapeHtml(label)}</th><td style="padding:6px 0;">${escapeHtml(String(value))}</td></tr>`
   )).join('') + '</table>';
 
-  const response = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-      'User-Agent': 'bryantandco-cleaning/1.0'
-    },
-    body: JSON.stringify({
-      from: fromAddress,
-      to: toAddresses,
-      reply_to: lead.email || 'info@bryantandcocleaning.co.uk',
-      subject: lead.service ? `New quote request - ${lead.service}` : 'New Bryant & Co Cleaning quote request',
-      text,
-      html
-    })
-  });
+  let response;
+  try {
+    response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        'User-Agent': 'bryantandco-cleaning/1.0'
+      },
+      body: JSON.stringify({
+        from: fromAddress,
+        to: toAddresses,
+        reply_to: lead.email || 'info@bryantandcocleaning.co.uk',
+        subject: lead.service ? `New quote request - ${lead.service}` : 'New Bryant & Co Cleaning quote request',
+        text,
+        html
+      })
+    });
+  } catch (error) {
+    return json({
+      error: 'Failed to reach Resend API',
+      details: error instanceof Error ? error.message : String(error)
+    }, 502);
+  }
 
   if (!response.ok) {
     return json({ error: 'Resend email failed', details: await response.text() }, 502);
   }
 
   return json({ ok: true });
-}
-
-export async function onRequestOptions() {
-  return new Response(null, { status: 204, headers: corsHeaders() });
-}
-
-export async function onRequest() {
-  return json({ error: 'Method not allowed' }, 405, { Allow: 'POST' });
 }
 
 function json(body, status = 200, extraHeaders = {}) {
