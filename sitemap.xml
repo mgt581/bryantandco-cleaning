@@ -7,8 +7,38 @@
   </url>
   <url>
     <loc>https://bryantandco-cleaning.co.uk/services.html</loc>
-    <changefreq>monthly</changefreq>
+    <changefreq>weekly</changefreq>
     <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://bryantandco-cleaning.co.uk/domestic-cleaning.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://bryantandco-cleaning.co.uk/commercial-cleaning.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://bryantandco-cleaning.co.uk/end-of-tenancy-cleaning.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://bryantandco-cleaning.co.uk/deep-cleaning.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://bryantandco-cleaning.co.uk/after-build-cleaning.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://bryantandco-cleaning.co.uk/window-cleaning.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://bryantandco-cleaning.co.uk/gallery.html</loc>
@@ -16,8 +46,13 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://bryantandco-cleaning.co.uk/booknow.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
     <loc>https://bryantandco-cleaning.co.uk/contact.html</loc>
-    <changefreq>monthly</changefreq>
+    <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
