@@ -24,6 +24,7 @@
     navToggle.addEventListener('click', () => {
       navToggle.classList.toggle('open');
       nav.classList.toggle('mobile-open');
+      navToggle.setAttribute('aria-expanded', nav.classList.contains('mobile-open') ? 'true' : 'false');
       document.body.style.overflow = nav.classList.contains('mobile-open') ? 'hidden' : '';
     });
 
@@ -32,6 +33,7 @@
       link.addEventListener('click', () => {
         navToggle.classList.remove('open');
         nav.classList.remove('mobile-open');
+        navToggle.setAttribute('aria-expanded', 'false');
         document.body.style.overflow = '';
       });
     });
@@ -41,6 +43,7 @@
       if (nav.classList.contains('mobile-open') && !nav.contains(e.target) && !navToggle.contains(e.target)) {
         navToggle.classList.remove('open');
         nav.classList.remove('mobile-open');
+        navToggle.setAttribute('aria-expanded', 'false');
         document.body.style.overflow = '';
       }
     });
