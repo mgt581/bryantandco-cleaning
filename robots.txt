@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /functions/
 
-Sitemap: https://bryantandco-cleaning.co.uk/sitemap.xml
+Sitemap: https://bryantandcocleaning.co.uk/sitemap.xml
