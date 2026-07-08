@@ -20,7 +20,7 @@ export async function onRequest({ request, env }) {
   }
 
   const fromAddress = env.LEAD_FROM_EMAIL || 'Bryant & Co Cleaning <onboarding@resend.dev>';
-  const toAddresses = (env.LEAD_TO_EMAILS || 'ajbryantsleads@gmail.com')
+  const toAddresses = (env.LEAD_TO_EMAILS || 'allleadshere@yahoo.com')
     .split(',')
     .map((email) => email.trim())
     .filter(Boolean);
