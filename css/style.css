@@ -293,7 +293,7 @@ p, li, a, h1, h2, h3, h4, h5 {
 /* ---------- Hero Section ---------- */
 .hero {
   position: relative;
-  min-height: clamp(420px, 78vh, 760px);
+  min-height: clamp(420px, 62vh, 620px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -307,7 +307,7 @@ p, li, a, h1, h2, h3, h4, h5 {
   z-index: 2;
   width: 100%;
   text-align: center;
-  padding-top: clamp(18rem, 44vh, 25rem);
+  padding-top: clamp(12rem, 30vh, 17rem);
 }
 
 .hero__title {
