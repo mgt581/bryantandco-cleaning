@@ -52,6 +52,7 @@
     durationInput.value = String(state.duration);
     dateInput.value = state.date;
     startInput.value = state.start;
+    if (state.date) selectedDate.textContent = niceDate(state.date) + (state.start ? ' — ' + niceTime(state.start) + ' selected' : ' — choose a start time');
 
     function pad(value) { return String(value).padStart(2, '0'); }
     function iso(date) { return date.getFullYear() + '-' + pad(date.getMonth() + 1) + '-' + pad(date.getDate()); }
