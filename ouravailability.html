@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101827">
+  <meta name="robots" content="index,follow">
+  <title>Our Availability | Bryant &amp; Co Cleaning</title>
+  <meta name="description" content="See live cleaning availability for Bryant &amp; Co Cleaning in Bournemouth and Dorset. Choose a free time to request a booking.">
+  <link rel="canonical" href="https://bryantandcocleaning.co.uk/ouravailability.html">
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/availability.css">
+</head>
+<body class="availability-body">
+  <div class="availability-app" data-availability-calendar>
+    <aside class="availability-rail" aria-label="Availability navigation">
+      <a class="availability-brand" href="index.html" aria-label="Bryant and Co Cleaning home">
+        <img src="images/logo.png" alt="">
+        <span>BRYANT &amp; CO</span>
+      </a>
+      <nav class="availability-rail__nav">
+        <a class="availability-rail__link" href="index.html">⌂ <span>Website home</span></a>
+        <a class="availability-rail__link" href="contact.html">✉ <span>Contact us</span></a>
+        <a class="availability-rail__link" href="ouravailability.html" aria-current="page">▦ <span>Availability</span></a>
+      </nav>
+      <p class="availability-rail__footer">Live cleaning availability<br>Bournemouth &amp; Dorset</p>
+    </aside>
+
+    <main class="availability-main">
+      <div class="availability-topbar">
+        <a class="availability-back" href="index.html">← Back to Bryant &amp; Co Cleaning</a>
+        <span class="availability-live">Live availability</span>
+      </div>
+
+      <div class="availability-heading-row">
+        <div>
+          <h1>Our Availability</h1>
+          <p>See cleaning times together in a clear colour-coded view.</p>
+        </div>
+        <div class="availability-heading-actions" aria-label="Calendar navigation">
+          <button class="availability-icon-btn" type="button" data-calendar-prev aria-label="Previous period">←</button>
+          <button class="availability-today" type="button" data-calendar-today>Today</button>
+          <button class="availability-icon-btn" type="button" data-calendar-next aria-label="Next period">→</button>
+        </div>
+      </div>
+
+      <div class="availability-toolbar">
+        <div class="availability-toolbar__left">
+          <strong class="availability-month-label" data-calendar-month></strong>
+          <label class="availability-legend" for="calendar-duration"><span>Cleaning length</span><select class="availability-duration" id="calendar-duration" data-calendar-duration><option value="60">1 hour</option><option value="120" selected>2 hours</option><option value="180">3 hours</option><option value="240">4 hours</option><option value="300">5 hours</option><option value="360">6 hours</option></select></label>
+        </div>
+        <div class="availability-toolbar__right">
+          <div class="availability-view-switch" role="group" aria-label="Calendar view">
+            <button class="availability-view-btn is-active" type="button" data-calendar-view="month">Month</button>
+            <button class="availability-view-btn" type="button" data-calendar-view="week">Week</button>
+            <button class="availability-view-btn" type="button" data-calendar-view="day">Day</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="availability-legend" aria-label="Calendar legend">
+        <span><i class="dot-free"></i>Free times</span>
+        <span><i class="dot-taken"></i>Taken bookings</span>
+        <span><i class="dot-closed"></i>Closed</span>
+      </div>
+      <p class="availability-status" data-calendar-status role="status" aria-live="polite">Loading live availability…</p>
+
+      <section class="availability-calendar-frame" data-calendar-surface aria-label="Shared cleaning availability calendar"></section>
+    </main>
+  </div>
+  <script src="js/availability-calendar.js"></script>
+</body>
+</html>

@@ -12,9 +12,22 @@
   widgets.forEach(function (root) {
     var now = new Date();
     var state = { month: new Date(now.getFullYear(), now.getMonth(), 1), date: '', start: '', duration: 120, recurrence: 'once', until: '', blocked: {}, ready: false };
+    var requestParams = new URLSearchParams(window.location.search);
+    var requestedDate = requestParams.get('booking_date');
+    var requestedStart = requestParams.get('booking_start');
+    var requestedDuration = Number(requestParams.get('booking_duration'));
+    if (/^\d{4}-\d{2}-\d{2}$/.test(requestedDate || '')) {
+      var requestedDateObject = new Date(requestedDate + 'T00:00:00');
+      if (!Number.isNaN(requestedDateObject.getTime())) {
+        state.date = requestedDate;
+        state.month = new Date(requestedDateObject.getFullYear(), requestedDateObject.getMonth(), 1);
+      }
+    }
+    if ([60, 120, 180, 240, 300, 360].indexOf(requestedDuration) !== -1) state.duration = requestedDuration;
+    if (/^\d{2}:\d{2}$/.test(requestedStart || '')) state.start = requestedStart;
 
     root.innerHTML = `
-      <div class="booking-widget__heading"><div><label class="booking-widget__title">Choose a date and time <span>(optional)</span></label><p>Free slots are shown below. Taken times are greyed out so you can avoid double-booking.</p></div><span class="booking-widget__badge">Live availability</span></div>
+      <div class="booking-widget__heading"><div><label class="booking-widget__title">Choose a date and time <span>(optional)</span></label><p>Free slots are shown below. Taken times are greyed out so you can avoid double-booking.</p></div><div class="booking-widget__heading-actions"><span class="booking-widget__badge">Live availability</span><a class="booking-widget__full-link" href="ouravailability.html">Open full calendar →</a></div></div>
       <div class="booking-widget__legend" aria-label="Availability legend"><span><i class="booking-dot booking-dot--free"></i>Available</span><span><i class="booking-dot booking-dot--taken"></i>Taken</span></div>
       <div class="booking-widget__status" role="status" aria-live="polite">Loading live availability…</div>
       <div class="booking-widget__calendar"><div class="calendar-header"><button class="cal-nav booking-prev" type="button" aria-label="Previous month">&#8249;</button><span class="cal-month-label booking-month"></span><button class="cal-nav booking-next" type="button" aria-label="Next month">&#8250;</button></div><div class="cal-grid booking-grid" role="grid" aria-label="Available cleaning dates"></div></div>
@@ -35,6 +48,10 @@
     var durationInput = root.querySelector('.booking-duration-value');
     var recurrenceInput = root.querySelector('.booking-recurrence-value');
     var untilValue = root.querySelector('.booking-until-value');
+    durationSelect.value = String(state.duration);
+    durationInput.value = String(state.duration);
+    dateInput.value = state.date;
+    startInput.value = state.start;
 
     function pad(value) { return String(value).padStart(2, '0'); }
     function iso(date) { return date.getFullYear() + '-' + pad(date.getMonth() + 1) + '-' + pad(date.getDate()); }

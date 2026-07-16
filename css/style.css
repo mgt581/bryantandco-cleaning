@@ -800,6 +800,9 @@ p, li, a, h1, h2, h3, h4, h5 {
 .booking-widget__title span { font-weight:500; color:var(--color-text-muted); font-size:.82rem; }
 .booking-widget__heading p { margin:0; color:var(--color-text-muted); font-size:.82rem; }
 .booking-widget__badge { white-space:nowrap; color:var(--color-success); background:rgba(39,174,96,.09); border-radius:999px; padding:.3rem .55rem; font-size:.72rem; font-weight:700; }
+.booking-widget__heading-actions { display:flex; flex-direction:column; align-items:flex-end; gap:.4rem; }
+.booking-widget__full-link { white-space:nowrap; color:var(--color-primary); font-size:.74rem; font-weight:700; }
+.booking-widget__full-link:hover { color:var(--color-accent-dark); }
 .booking-widget__legend { display:flex; flex-wrap:wrap; gap:.8rem; margin:.8rem 0 1rem; color:var(--color-text-muted); font-size:.76rem; }
 .booking-widget__legend span { display:inline-flex; align-items:center; gap:.3rem; }
 .booking-dot { display:inline-block; width:.55rem; height:.55rem; border-radius:50%; }
@@ -827,7 +830,7 @@ p, li, a, h1, h2, h3, h4, h5 {
 .booking-widget .time-slot { min-height:40px; padding:.45rem .2rem; font-size:.8rem; }
 .booking-widget .time-slot--taken { color:#8e99a7; background:#eef1f4; border-color:#d7dde4; cursor:not-allowed; text-decoration:line-through; }
 .booking-widget__taken-note, .booking-widget__hint { color:var(--color-text-muted); font-size:.78rem; margin:.7rem 0 0; }
-@media (max-width:540px) { .booking-widget { padding:.9rem; } .booking-widget__heading { display:block; } .booking-widget__badge { display:inline-block; margin-top:.6rem; } .booking-widget .time-slots { grid-template-columns:repeat(3,1fr); } }
+@media (max-width:540px) { .booking-widget { padding:.9rem; } .booking-widget__heading { display:block; } .booking-widget__heading-actions { align-items:flex-start; margin-top:.7rem; } .booking-widget__badge { display:inline-block; } .booking-widget .time-slots { grid-template-columns:repeat(3,1fr); } }
 
 /* ---------- Service Selector Cards ---------- */
 .service-selector {
