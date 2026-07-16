@@ -530,6 +530,36 @@ p, li, a, h1, h2, h3, h4, h5 {
   align-self: flex-start;
 }
 
+.service-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem;
+  margin-top: auto;
+}
+.service-card__actions .btn {
+  flex: 1 1 120px;
+  justify-content: center;
+  padding: .65rem .8rem;
+  font-size: .8rem;
+}
+.service-card__icon--emoji { color: var(--color-white); }
+
+.review-promo {
+  background: linear-gradient(135deg, rgba(31, 79, 145, .08), rgba(199, 160, 58, .12));
+}
+.review-promo__content {
+  max-width: 820px;
+  margin: 0 auto;
+  text-align: center;
+}
+.review-promo__content h2 { margin-bottom: .85rem; }
+.review-promo__content .section-tag { margin-bottom: 1rem; }
+.review-promo__note {
+  font-size: .85rem;
+  color: var(--color-text-muted);
+}
+.review-promo .cta-banner__actions { justify-content: center; margin-top: 1.5rem; }
+
 /* ---------- Why Choose Us ---------- */
 .features-grid {
   display: grid;

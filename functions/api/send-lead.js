@@ -52,6 +52,7 @@ export async function onRequest({ request, env }) {
     ['Name', [lead.first_name, lead.last_name].filter(Boolean).join(' ')],
     ['Email', lead.email],
     ['Phone', lead.phone],
+    ['Rating', lead.rating],
     ['Postcode', lead.postcode],
     ['Property size', lead.property_size],
     ['Preferred date', lead.preferred_date],

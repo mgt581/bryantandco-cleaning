@@ -11,6 +11,16 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://bryantandcocleaning.co.uk/pricing.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://bryantandcocleaning.co.uk/reviews.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://bryantandcocleaning.co.uk/domestic-cleaning.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
