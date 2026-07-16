@@ -103,17 +103,26 @@
       const action = form.getAttribute('data-action') || (window.BRYANTCO && window.BRYANTCO.leadEndpoint);
       if (action) {
         try {
-          const payload = Object.fromEntries(new FormData(form).entries());
-          payload.form_name = form.getAttribute('aria-label') || form.id || 'quote_request';
-          payload.page_url = window.location.href;
+          const isTeamApplication = form.id === 'team-application-form';
+          const headers = { 'Accept': 'application/json' };
+          let body;
+
+          if (isTeamApplication) {
+            body = new FormData(form);
+            body.set('form_name', form.getAttribute('aria-label') || form.id || 'team_application');
+            body.set('page_url', window.location.href);
+          } else {
+            const payload = Object.fromEntries(new FormData(form).entries());
+            payload.form_name = form.getAttribute('aria-label') || form.id || 'quote_request';
+            payload.page_url = window.location.href;
+            headers['Content-Type'] = 'application/json';
+            body = JSON.stringify(payload);
+          }
 
           const res = await fetch(action, {
             method: 'POST',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload),
+            headers,
+            body,
           });
           if (!res.ok) {
             let errorDetails = `HTTP ${res.status}`;
