@@ -165,7 +165,7 @@
         var value = minutesToTime(start);
         var canStart = start + state.duration <= hours.close;
         var free = canStart && availableStarts(date, state.duration).some(function (slot) { return slot.time === value && slot.free; });
-        body += '<button class="availability-slot ' + (free ? 'is-free' : 'is-taken') + '" type="button" ' + (free ? 'data-request-date="' + iso(date) + '" data-request-time="' + value + '"' : 'disabled') + '><span>' + niceTime(value) + '</span><small>' + (free ? 'Request this slot' : 'Taken / unavailable') + '</small></button>';
+        body += '<button class="availability-slot ' + (free ? 'is-free' : (canStart ? 'is-taken' : 'is-unavailable')) + '" type="button" ' + (free ? 'data-request-date="' + iso(date) + '" data-request-time="' + value + '"' : 'disabled') + '><span>' + niceTime(value) + '</span><small>' + (free ? 'Request this slot' : (canStart ? 'Taken' : 'Outside opening hours')) + '</small></button>';
       }
     }
     surface.innerHTML = '<div class="availability-calendar-head"><strong>' + niceDate(date) + '</strong><span>Cleaning duration: ' + (state.duration / 60) + ' hour' + (state.duration === 60 ? '' : 's') + '</span></div><div class="availability-day-view"><aside class="availability-day-summary"><h2>' + (hours ? 'Choose a start time' : 'Closed') + '</h2><p>Click a green slot to continue your request through the contact form.</p></aside><div class="availability-day-slots">' + body + '</div></div>';

@@ -394,6 +394,7 @@
 .availability-slot.is-free { border-color: rgba(53,208,127,.45); color: #84eab0; cursor: pointer; }
 .availability-slot.is-free:hover { background: rgba(53,208,127,.14); }
 .availability-slot.is-taken { background: rgba(192,54,233,.11); color: #c1a1ca; text-decoration: line-through; }
+.availability-slot.is-unavailable { background: #111a29; color: #667287; }
 .availability-slot small { color: inherit; font-size: .68rem; opacity: .8; }
 
 @media (max-width: 900px) {
