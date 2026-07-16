@@ -76,7 +76,7 @@
     function rangeForMonth(date) { return { from: iso(new Date(date.getFullYear(), date.getMonth(), 1)), to: iso(new Date(date.getFullYear(), date.getMonth() + 1, 0)) }; }
     function loadMonth() {
       var range = rangeForMonth(state.month); var key = range.from + ':' + range.to;
-      if (!cache[key]) cache[key] = fetch('/api/booking-availability?' + new URLSearchParams(range).toString()).then(function (response) { if (!response.ok) throw new Error('Availability request failed'); return response.json(); });
+      if (!cache[key]) cache[key] = fetch('/api/booking-availability?' + new URLSearchParams(range).toString() + '&v=' + Date.now(), { cache: 'no-store' }).then(function (response) { if (!response.ok) throw new Error('Availability request failed'); return response.json(); });
       cache[key].then(applyAvailability).catch(handleAvailabilityError);
     }
     function applyAvailability(data) {
