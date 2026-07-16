@@ -22,16 +22,26 @@ export async function onRequest({ request, env }) {
   const lastName = value(form, 'last_name');
   const email = value(form, 'email');
   const phone = value(form, 'phone');
-  const yearsCleaning = value(form, 'years_cleaning');
+  const basedIn = value(form, 'based_in');
+  const postcode = value(form, 'postcode');
+  const dateOfBirth = value(form, 'date_of_birth');
+  const gender = value(form, 'gender');
   const yearsExperience = value(form, 'years_experience');
   const licenceAndCar = value(form, 'licence_and_car');
   const englishSpeaking = value(form, 'english_speaking');
+  const whatsappGroup = value(form, 'whatsapp_group');
+  const zeroHoursAgreement = value(form, 'zero_hours_agreement');
   const about = value(form, 'about');
   const consent = value(form, 'consent');
   const selfie = form.get('selfie');
+  const portfolioFiles = form.getAll('portfolio').filter((file) => file && typeof file.arrayBuffer === 'function' && file.size);
 
-  if (!firstName || !lastName || !email || !phone || !yearsCleaning || !yearsExperience || !licenceAndCar || !englishSpeaking || !about || !consent) {
+  if (!firstName || !lastName || !email || !phone || !basedIn || !postcode || !dateOfBirth || !gender || !yearsExperience || !licenceAndCar || !englishSpeaking || !whatsappGroup || !zeroHoursAgreement || !about || !consent) {
     return json({ error: 'Please complete all required application fields.' }, 400);
+  }
+
+  if (zeroHoursAgreement === 'decline') {
+    return json({ error: 'Unfortunately, we cannot offer you a position at this time. Please agree to the zero-hours contract to submit the form.' }, 400);
   }
 
   if (!/^\S+@\S+\.\S+$/.test(email)) {
@@ -52,7 +62,29 @@ export async function onRequest({ request, env }) {
     return json({ error: 'Please upload a selfie smaller than 5MB.' }, 400);
   }
 
-  const attachmentContent = await toBase64(await selfie.arrayBuffer());
+  if (portfolioFiles.length > 6) {
+    return json({ error: 'Please upload no more than 6 portfolio pictures.' }, 400);
+  }
+
+  if (portfolioFiles.some((file) => !allowedTypes.includes(file.type) || file.size > maxBytes)) {
+    return json({ error: 'Portfolio pictures must be JPG, PNG, WEBP or GIF images smaller than 5MB each.' }, 400);
+  }
+
+  const totalUploadBytes = selfie.size + portfolioFiles.reduce((total, file) => total + file.size, 0);
+  if (totalUploadBytes > 15 * 1024 * 1024) {
+    return json({ error: 'Please keep the total selfie and portfolio upload size below 15MB.' }, 400);
+  }
+
+  const attachments = [{
+    filename: safeFilename(selfie.name || 'applicant-selfie.jpg'),
+    content: await toBase64(await selfie.arrayBuffer())
+  }];
+  for (const [index, file] of portfolioFiles.entries()) {
+    attachments.push({
+      filename: `portfolio-${index + 1}-${safeFilename(file.name || 'picture.jpg')}`,
+      content: await toBase64(await file.arrayBuffer())
+    });
+  }
   const fromAddress = env.LEAD_FROM_EMAIL || 'Bryant & Co Cleaning <onboarding@resend.dev>';
   const toAddresses = (env.LEAD_TO_EMAILS || 'ajbryantsleads@gmail.com')
     .split(',')
@@ -68,17 +100,23 @@ export async function onRequest({ request, env }) {
     ['Name', name],
     ['Email', email],
     ['Phone', phone],
-    ['Years doing cleaning work', yearsCleaning],
+    ['Based in', basedIn],
+    ['Postcode', postcode],
+    ['Date of birth', dateOfBirth],
+    ['Gender', gender],
     ['Overall work experience', yearsExperience],
     ['Owns a driving licence and car', licenceAndCar],
     ['English speaking', englishSpeaking],
+    ['Happy to join WhatsApp group', whatsappGroup],
+    ['Zero-hours contract', zeroHoursAgreement === 'agree' ? 'Agreed' : zeroHoursAgreement],
     ['About the applicant', about],
+    ['Portfolio pictures attached', String(portfolioFiles.length)],
     ['Page', value(form, 'page_url')]
   ];
   const text = fields.map(([label, fieldValue]) => `${label}: ${fieldValue}`).join('\n');
   const html = '<h2>New Bryant & Co Cleaning team application</h2><table>' + fields.map(([label, fieldValue]) => (
     `<tr><th align="left" style="padding:6px 12px 6px 0;">${escapeHtml(label)}</th><td style="padding:6px 0;">${escapeHtml(fieldValue)}</td></tr>`
-  )).join('') + '</table><p>The applicant selfie is attached to this email.</p>';
+  )).join('') + `</table><p>The applicant selfie and ${portfolioFiles.length} optional portfolio picture(s) are attached to this email.</p>`;
 
   let response;
   try {
@@ -95,10 +133,7 @@ export async function onRequest({ request, env }) {
         subject: `New team application - ${name}`,
         text,
         html,
-        attachments: [{
-          filename: safeFilename(selfie.name || 'applicant-selfie.jpg'),
-          content: attachmentContent
-        }]
+        attachments
       })
     });
   } catch (error) {

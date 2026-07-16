@@ -87,8 +87,29 @@
   /* ---------- Contact Form Handling ---------- */
   const form = document.querySelector('.js-contact-form');
   if (form) {
+    const zeroHoursSelect = form.id === 'team-application-form'
+      ? form.querySelector('[data-zero-hours-select]')
+      : null;
+    const zeroHoursMessage = form.querySelector('[data-zero-hours-message]');
+    const formSubmitButton = form.querySelector('[type="submit"]');
+    const syncZeroHoursChoice = () => {
+      if (!zeroHoursSelect || !zeroHoursMessage) return;
+      const declined = zeroHoursSelect.value === 'decline';
+      zeroHoursMessage.hidden = !declined;
+      if (formSubmitButton) formSubmitButton.disabled = declined;
+    };
+
+    if (zeroHoursSelect) {
+      zeroHoursSelect.addEventListener('change', syncZeroHoursChoice);
+      syncZeroHoursChoice();
+    }
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (zeroHoursSelect && zeroHoursSelect.value === 'decline') {
+        syncZeroHoursChoice();
+        return;
+      }
       if (!form.checkValidity()) {
         form.reportValidity();
         return;
