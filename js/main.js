@@ -151,6 +151,23 @@
         window.BryantCoTracking.trackLead(form.getAttribute('aria-label') || form.id || 'quote_request');
       }
 
+      if (form.id === 'customer-review-form') {
+        const reviewDetail = {
+          first_name: form.querySelector('[name="first_name"]')?.value || '',
+          last_name: form.querySelector('[name="last_name"]')?.value || '',
+          rating: form.querySelector('[name="rating"]')?.value || '',
+          message: form.querySelector('[name="message"]')?.value || ''
+        };
+        let reviewEvent;
+        try {
+          reviewEvent = new CustomEvent('review:submitted', { detail: reviewDetail });
+        } catch (_) {
+          reviewEvent = document.createEvent('Event');
+          reviewEvent.initEvent('review:submitted', false, false);
+          reviewEvent.detail = reviewDetail;
+        }
+        window.dispatchEvent(reviewEvent);
+      }
       form.reset();
       btn.textContent = origText;
       btn.disabled    = false;

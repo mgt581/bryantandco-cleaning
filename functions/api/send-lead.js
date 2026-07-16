@@ -19,6 +19,19 @@ export async function onRequest({ request, env }) {
     return json({ error: 'Invalid JSON body' }, 400);
   }
 
+  const isReview = lead.service === 'Customer Review' || lead.form_name === 'Customer review form';
+  if (isReview) {
+    const rating = Number.parseInt(String(lead.rating || ''), 10);
+    if (!lead.first_name || !lead.email || !Number.isInteger(rating) || rating < 1 || rating > 5 || !lead.message) {
+      return json({ error: 'Please provide your name, email, rating and review.' }, 400);
+    }
+    try {
+      await saveReview(lead, env, rating);
+    } catch (error) {
+      return json({ error: error && error.message ? error.message : 'The review could not be published yet.' }, 503);
+    }
+  }
+
   // A selected time is treated as a booking request. The D1-backed booking
   // check happens before the lead email is sent so two people cannot request
   // the same slot without one of them receiving a conflict response.
@@ -82,7 +95,7 @@ export async function onRequest({ request, env }) {
         from: fromAddress,
         to: toAddresses,
         reply_to: lead.email || 'info@bryantandcocleaning.co.uk',
-        subject: lead.service ? `New quote request - ${lead.service}` : 'New Bryant & Co Cleaning quote request',
+        subject: lead.service === 'Customer Review' ? 'New customer review - Bryant & Co Cleaning' : (lead.service ? `New quote request - ${lead.service}` : 'New Bryant & Co Cleaning quote request'),
         text,
         html
       })
@@ -101,6 +114,39 @@ export async function onRequest({ request, env }) {
   }
 
   return json({ ok: true });
+}
+
+async function saveReview(lead, env, rating) {
+  if (!env.BOOKING_DB) {
+    throw new Error('Reviews are not configured yet. Please call 07843969254.');
+  }
+
+  const db = env.BOOKING_DB;
+  await db.prepare(`
+    CREATE TABLE IF NOT EXISTS reviews (
+      id TEXT PRIMARY KEY,
+      first_name TEXT NOT NULL,
+      last_name TEXT,
+      email TEXT,
+      rating INTEGER NOT NULL,
+      message TEXT NOT NULL,
+      published INTEGER NOT NULL DEFAULT 1,
+      created_at TEXT NOT NULL
+    )
+  `).run();
+  await db.prepare('CREATE INDEX IF NOT EXISTS reviews_created_at_idx ON reviews(created_at)').run();
+  await db.prepare(`
+    INSERT INTO reviews (id, first_name, last_name, email, rating, message, published, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, 1, ?)
+  `).bind(
+    crypto.randomUUID(),
+    String(lead.first_name).trim(),
+    String(lead.last_name || '').trim(),
+    String(lead.email).trim(),
+    rating,
+    String(lead.message).trim(),
+    new Date().toISOString()
+  ).run();
 }
 
 async function reserveBooking(lead, env) {

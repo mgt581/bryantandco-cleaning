@@ -629,6 +629,24 @@ p, li, a, h1, h2, h3, h4, h5 {
 .testimonial-card__name { font-weight: 600; color: var(--color-white); font-size: 0.95rem; }
 .testimonial-card__loc  { font-size: 0.8rem; color: rgba(255,255,255,.6); }
 
+.reviews-section { background: var(--color-primary); color: var(--color-white); }
+.reviews-section .section-header h2 { color: var(--color-white); }
+.reviews-section .section-header p { color: rgba(255,255,255,.78); }
+.reviews-section .section-tag { background: rgba(255,255,255,.12); color: var(--color-accent); }
+.reviews-carousel { max-width: 760px; margin: 0 auto; text-align: center; }
+.reviews-carousel__viewport { overflow: hidden; min-height: 230px; }
+.reviews-carousel__slide { display: none; text-align: left; }
+.reviews-carousel__slide.is-active { display: block; animation: reviewSlideIn .35s ease both; }
+.reviews-carousel__controls { display: flex; align-items: center; justify-content: center; gap: 1rem; margin: 1.25rem 0 .75rem; }
+.reviews-carousel__arrow { width: 42px; height: 42px; border: 1px solid rgba(255,255,255,.3); border-radius: 50%; background: rgba(255,255,255,.08); color: var(--color-white); font-size: 1.8rem; line-height: 1; cursor: pointer; }
+.reviews-carousel__arrow:hover { background: rgba(255,255,255,.18); }
+.reviews-carousel__dots { display: flex; align-items: center; justify-content: center; gap: .45rem; }
+.reviews-carousel__dot { width: 9px; height: 9px; border: 0; border-radius: 50%; padding: 0; background: rgba(255,255,255,.35); cursor: pointer; }
+.reviews-carousel__dot.is-active { background: var(--color-accent); transform: scale(1.25); }
+.reviews-carousel__status { color: rgba(255,255,255,.62); font-size: .8rem; margin-bottom: 1rem; }
+.reviews-carousel > .btn { display: inline-flex; }
+@keyframes reviewSlideIn { from { opacity: 0; transform: translateX(18px); } to { opacity: 1; transform: translateX(0); } }
+
 /* ---------- CTA Banner ---------- */
 .cta-banner {
   background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);

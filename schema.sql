@@ -27,3 +27,16 @@ CREATE TABLE IF NOT EXISTS booking_occurrences (
 );
 
 CREATE INDEX IF NOT EXISTS booking_occurrences_date_idx ON booking_occurrences(slot_date);
+
+CREATE TABLE IF NOT EXISTS reviews (
+  id TEXT PRIMARY KEY,
+  first_name TEXT NOT NULL,
+  last_name TEXT,
+  email TEXT,
+  rating INTEGER NOT NULL,
+  message TEXT NOT NULL,
+  published INTEGER NOT NULL DEFAULT 1,
+  created_at TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS reviews_created_at_idx ON reviews(created_at);

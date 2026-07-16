@@ -362,22 +362,23 @@
     </div>
   </section>
 
-              <div class="testimonial-card__name">James H.</div>
-              <div class="testimonial-card__loc">Poole</div>
-            </div>
-          </div>
-        </article>
-        <article class="testimonial-card fade-up">
-          <div class="testimonial-card__stars" aria-label="5 stars">★★★★★</div>
-          <p class="testimonial-card__text">"Had a deep clean done before a family event and the results were incredible. The whole house smelled fresh and looked brand new. Great communication throughout too."</p>
-          <div class="testimonial-card__author">
-            <div class="testimonial-card__avatar" aria-hidden="true">L</div>
-            <div>
-              <div class="testimonial-card__name">Linda T.</div>
-              <div class="testimonial-card__loc">Christchurch</div>
-            </div>
-          </div>
-        </article>
+  <!-- Customer Reviews Slideshow -->
+  <section class="section reviews-section" id="reviews" aria-labelledby="reviews-heading">
+    <div class="container">
+      <div class="section-header fade-up">
+        <span class="section-tag">Customer Reviews</span>
+        <h2 id="reviews-heading">What our customers say</h2>
+        <p>Reviews submitted through our website are added to this slideshow automatically.</p>
+      </div>
+      <div class="reviews-carousel fade-up" data-reviews-carousel aria-live="polite">
+        <div class="reviews-carousel__viewport"><div class="reviews-carousel__track" data-reviews-track></div></div>
+        <div class="reviews-carousel__controls">
+          <button type="button" class="reviews-carousel__arrow" data-reviews-prev aria-label="Previous review">‹</button>
+          <div class="reviews-carousel__dots" data-reviews-dots aria-label="Review slides"></div>
+          <button type="button" class="reviews-carousel__arrow" data-reviews-next aria-label="Next review">›</button>
+        </div>
+        <p class="reviews-carousel__status" data-reviews-status>Loading customer reviews…</p>
+        <a href="reviews.html" class="btn btn--white">Leave a Review</a>
       </div>
     </div>
   </section>
@@ -701,6 +702,7 @@
 <script src="js/lead-tracking.js"></script>
 <script src="js/booking-widget.js?v=3c67f7d"></script>
 <script src="js/main.js"></script>
+<script src="js/reviews.js"></script>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -727,7 +729,7 @@
         "name": "Which areas do you cover?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "We cover Bournemouth, Poole, Christchurch, Ferndown, Wimborne, Weymouth and wider Dorset. Contact us if your area is nearby and we will confirm availability."
+          "text": "We cover the whole of the South West and now serve customers across the UK. Contact us with your location and we will confirm availability."
         }
       },
       {
