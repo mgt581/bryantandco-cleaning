@@ -212,7 +212,7 @@ async function reserveBooking(lead, env) {
 
 function occurrenceDates(startDate, endDate, recurrence) {
   const dates = [];
-  const current = new Date(startDate);
+  let current = new Date(startDate);
   while (current <= endDate) {
     dates.push(new Date(current));
     if (recurrence === 'once') break;
