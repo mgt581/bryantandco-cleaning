@@ -19,6 +19,22 @@ export async function onRequest({ request, env }) {
     return json({ error: 'Invalid JSON body' }, 400);
   }
 
+  // A selected time is treated as a booking request. The D1-backed booking
+  // check happens before the lead email is sent so two people cannot request
+  // the same slot without one of them receiving a conflict response.
+  let bookingId = '';
+  if (lead.booking_date) {
+    try {
+      bookingId = await reserveBooking(lead, env);
+    } catch (error) {
+      const status = error && error.status ? error.status : 500;
+      return json({
+        error: error && error.message ? error.message : 'Booking could not be created',
+        bookingId: ''
+      }, status);
+    }
+  }
+
   const fromAddress = env.LEAD_FROM_EMAIL || 'Bryant & Co Cleaning <onboarding@resend.dev>';
   const toAddresses = (env.LEAD_TO_EMAILS || 'ajbryantsleads@gmail.com')
     .split(',')
@@ -39,6 +55,12 @@ export async function onRequest({ request, env }) {
     ['Postcode', lead.postcode],
     ['Property size', lead.property_size],
     ['Preferred date', lead.preferred_date],
+    ['Requested date', lead.booking_date ? lead.booking_date : ''],
+    ['Requested start time', lead.booking_date ? lead.booking_start : ''],
+    ['Requested duration', lead.booking_date ? lead.booking_duration : ''],
+    ['Requested frequency', lead.booking_date ? lead.booking_recurrence : ''],
+    ['Recurring until', lead.booking_date && lead.booking_recurrence !== 'once' ? lead.booking_until : ''],
+    ['Booking reference', bookingId],
     ['Message', lead.message]
   ].filter(([, value]) => value);
 
@@ -78,6 +100,163 @@ export async function onRequest({ request, env }) {
   }
 
   return json({ ok: true });
+}
+
+async function reserveBooking(lead, env) {
+  const db = env.BOOKING_DB;
+  if (!db) {
+    const error = new Error('Live booking availability is not configured yet. Please call 07843969254.');
+    error.status = 503;
+    throw error;
+  }
+
+  const date = String(lead.booking_date || '');
+  const start = String(lead.booking_start || '');
+  const duration = Number(lead.booking_duration);
+  const recurrence = String(lead.booking_recurrence || 'once');
+  const until = recurrence === 'once' ? date : String(lead.booking_until || '');
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^\d{2}:\d{2}$/.test(start)) {
+    const error = new Error('Please select an available date and start time.');
+    error.status = 400;
+    throw error;
+  }
+  if (!['once', 'weekly', 'fortnightly', 'monthly'].includes(recurrence)) {
+    const error = new Error('Please select a valid booking frequency.');
+    error.status = 400;
+    throw error;
+  }
+  if (!Number.isInteger(duration) || duration < 30 || duration > 480 || duration % 30 !== 0) {
+    const error = new Error('Please select a valid cleaning duration.');
+    error.status = 400;
+    throw error;
+  }
+  if (recurrence !== 'once' && (!/^\d{4}-\d{2}-\d{2}$/.test(until) || until < date)) {
+    const error = new Error('Please select a valid end date for the recurring request.');
+    error.status = 400;
+    throw error;
+  }
+
+  const startDate = parseDate(date);
+  const endDate = parseDate(until);
+  if (!startDate || !endDate || monthsBetween(startDate, endDate) > 24) {
+    const error = new Error('Recurring booking requests can be made for up to 24 months.');
+    error.status = 400;
+    throw error;
+  }
+
+  const hours = openingHours(startDate.getUTCDay());
+  const startMinutes = timeToMinutes(start);
+  if (!hours || startMinutes === null || startMinutes < hours.open || startMinutes + duration > hours.close) {
+    const error = new Error('That time is outside our opening hours. Please choose another slot.');
+    error.status = 400;
+    throw error;
+  }
+
+  const dates = occurrenceDates(startDate, endDate, recurrence);
+  const slots = [];
+  dates.forEach((occurrenceDate) => {
+    const occurrenceHours = openingHours(occurrenceDate.getUTCDay());
+    if (!occurrenceHours || startMinutes < occurrenceHours.open || startMinutes + duration > occurrenceHours.close) {
+      const error = new Error('The selected recurring time does not fit the opening hours on every occurrence.');
+      error.status = 400;
+      throw error;
+    }
+    for (let minutes = startMinutes; minutes < startMinutes + duration; minutes += 30) {
+      slots.push({ date: formatDate(occurrenceDate), time: minutesToTime(minutes) });
+    }
+  });
+
+  const id = crypto.randomUUID();
+  const createdAt = new Date().toISOString();
+  const statements = [db.prepare(`
+    INSERT INTO bookings (
+      id, service, first_name, last_name, email, phone, postcode, property_size,
+      notes, start_date, start_time, duration_minutes, recurrence, recurrence_until,
+      status, created_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?)
+  `).bind(
+    id,
+    lead.service || lead.home_service || lead.gallery_service || 'Not specified',
+    lead.first_name || '',
+    lead.last_name || '',
+    lead.email || '',
+    lead.phone || '',
+    lead.postcode || '',
+    lead.property_size || '',
+    lead.message || '',
+    date,
+    start,
+    duration,
+    recurrence,
+    recurrence === 'once' ? null : until,
+    createdAt
+  )];
+
+  slots.forEach((slot) => {
+    statements.push(db.prepare(
+      'INSERT INTO booking_occurrences (slot_date, slot_time, booking_id) VALUES (?, ?, ?)'
+    ).bind(slot.date, slot.time, id));
+  });
+
+  try {
+    await db.batch(statements);
+  } catch (_) {
+    const error = new Error('That slot has just been requested by someone else. Please choose another available time.');
+    error.status = 409;
+    throw error;
+  }
+
+  return id;
+}
+
+function occurrenceDates(startDate, endDate, recurrence) {
+  const dates = [];
+  const current = new Date(startDate);
+  while (current <= endDate) {
+    dates.push(new Date(current));
+    if (recurrence === 'once') break;
+    if (recurrence === 'weekly') current.setUTCDate(current.getUTCDate() + 7);
+    else if (recurrence === 'fortnightly') current.setUTCDate(current.getUTCDate() + 14);
+    else {
+      const day = current.getUTCDate();
+      const nextMonth = new Date(Date.UTC(current.getUTCFullYear(), current.getUTCMonth() + 1, 1));
+      const lastDay = new Date(Date.UTC(nextMonth.getUTCFullYear(), nextMonth.getUTCMonth() + 2, 0)).getUTCDate();
+      current = new Date(Date.UTC(nextMonth.getUTCFullYear(), nextMonth.getUTCMonth(), Math.min(day, lastDay)));
+    }
+  }
+  return dates;
+}
+
+function openingHours(day) {
+  if (day === 0) return null;
+  return day === 6 ? { open: 9 * 60, close: 16 * 60 } : { open: 8 * 60, close: 18 * 60 };
+}
+
+function parseDate(value) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+  const date = new Date(`${value}T00:00:00Z`);
+  return formatDate(date) === value ? date : null;
+}
+
+function formatDate(date) {
+  return date.toISOString().slice(0, 10);
+}
+
+function timeToMinutes(value) {
+  const match = /^(\d{2}):(\d{2})$/.exec(value);
+  if (!match) return null;
+  const hours = Number(match[1]);
+  const minutes = Number(match[2]);
+  return hours <= 23 && minutes <= 59 ? hours * 60 + minutes : null;
+}
+
+function minutesToTime(value) {
+  return `${String(Math.floor(value / 60)).padStart(2, '0')}:${String(value % 60).padStart(2, '0')}`;
+}
+
+function monthsBetween(start, end) {
+  return (end.getUTCFullYear() - start.getUTCFullYear()) * 12 + end.getUTCMonth() - start.getUTCMonth();
 }
 
 function json(body, status = 200, extraHeaders = {}) {

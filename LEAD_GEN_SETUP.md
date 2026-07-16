@@ -58,3 +58,23 @@ Add:
 - `LEAD_TO_EMAILS=allleadshere@yahoo.com`
 
 After saving variables/secrets, redeploy the Pages project.
+
+## Live booking availability
+
+The calendar embedded in the homepage and contact page uses Cloudflare D1 to
+store pending/confirmed booking requests and every 30-minute time block they
+occupy. This is what makes a selected time appear as taken to the next visitor
+and prevents overlapping requests.
+
+1. Create a Cloudflare D1 database, for example `bryant-cleaning-bookings`.
+2. Run `schema.sql` against that database using Wrangler or the Cloudflare
+   dashboard.
+3. In the Pages project, add a D1 database binding named exactly `BOOKING_DB`
+   under Settings > Functions.
+4. Redeploy the site and test the calendar from both `/` and `/contact.html`.
+
+Until the binding is present, the widget deliberately shows that live
+availability is unavailable rather than displaying misleading free slots.
+Booking requests made through the form are stored as `pending` and therefore
+remain blocked until they are managed in the D1 database. The recurrence end
+date is required for recurring requests and is limited to 24 months.

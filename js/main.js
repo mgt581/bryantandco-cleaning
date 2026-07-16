@@ -89,6 +89,10 @@
   if (form) {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
       const btn     = form.querySelector('[type="submit"]');
       const success = form.querySelector('.form-success');
       const origText = btn.textContent;
@@ -123,7 +127,9 @@
               if (text) errorDetails += ` - ${text.slice(0, 240)}`;
             }
 
-            throw new Error(errorDetails);
+            const error = new Error(errorDetails);
+            error.status = res.status;
+            throw error;
           }
         } catch (_) {
           let debugSuffix = '';
@@ -135,7 +141,8 @@
 
           btn.textContent = origText;
           btn.disabled = false;
-          alert('Sorry, your message could not be sent. Please call or WhatsApp us and we will help straight away.' + debugSuffix);
+          const conflictMessage = _.status === 409 || _.status === 503 ? `\n\n${_.message.replace(/^HTTP \d+ - /, '')}` : '';
+          alert('Sorry, your message could not be sent. Please call or WhatsApp us and we will help straight away.' + conflictMessage + debugSuffix);
           return;
         }
       }
