@@ -400,13 +400,18 @@
 @media (max-width: 900px) {
   .availability-app { grid-template-columns: 1fr; }
   .availability-rail { flex-direction: row; align-items: center; gap: 1rem; padding: .8rem 1rem; }
+  .availability-brand { flex: 0 0 auto; white-space: nowrap; }
   .availability-rail__nav { display: flex; margin: 0 0 0 auto; }
-  .availability-rail__link { padding: .55rem .65rem; }
+  .availability-rail__link { padding: .55rem .65rem; white-space: nowrap; }
   .availability-rail__footer { display: none; }
 }
 
 @media (max-width: 680px) {
   .availability-body { overflow: auto; }
+  .availability-rail { display: grid; grid-template-columns: 1fr; gap: .7rem; padding: .75rem .8rem .85rem; }
+  .availability-brand { justify-content: flex-start; font-size: .78rem; }
+  .availability-rail__nav { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; gap: .3rem; margin: 0; }
+  .availability-rail__link { justify-content: center; gap: .25rem; padding: .55rem .25rem; font-size: .72rem; line-height: 1.15; }
   .availability-main { padding: 1rem; }
   .availability-heading-row, .availability-toolbar { align-items: flex-start; flex-direction: column; }
   .availability-heading-actions, .availability-toolbar__right { justify-content: flex-start; }
