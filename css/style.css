@@ -266,7 +266,9 @@ p, li, a, h1, h2, h3, h4, h5 {
 
 .nav__cta { margin-left: 0.75rem; }
 
-/* Desktop header: compact nav so CTA button text stays on one line */
+/* Desktop header: compact nav so CTA button text stays on one line.
+   769px is intentional: mobile breakpoint is max-width:768px, so 769px+
+   is the exact desktop range where the nav bar is visible. */
 @media (min-width: 769px) {
   .nav__list   { gap: 0.1rem; }
   .nav__link   { padding: 0.45rem 0.6rem; font-size: 0.9rem; }
