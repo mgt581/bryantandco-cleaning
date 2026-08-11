@@ -143,7 +143,8 @@ function consentValue(value) {
 }
 
 function normalizeLead(lead, bookingId) {
-  const name = [lead.first_name, lead.last_name].map((item) => cleanLeadValue(item, 160)).filter(Boolean).join(' ');
+  const splitName = [lead.first_name, lead.last_name].map((item) => cleanLeadValue(item, 160)).filter(Boolean).join(' ');
+  const name = cleanLeadValue(lead.name || lead.full_name || splitName, 240);
   const service = cleanLeadValue(lead.service || lead.home_service || lead.gallery_service || 'Website enquiry', 160);
   const page = cleanLeadValue(lead.page || lead.page_url, 1000);
 
