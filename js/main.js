@@ -16,6 +16,28 @@
     return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
   }
 
+  function getAttributionFields() {
+    if (window.BryantCoTracking && typeof window.BryantCoTracking.getAttribution === 'function') {
+      return window.BryantCoTracking.getAttribution();
+    }
+
+    return {
+      page: window.location.href,
+      landing_page: window.location.href,
+      referrer: document.referrer || '',
+      utm_source: '',
+      utm_medium: '',
+      utm_campaign: '',
+      utm_term: '',
+      utm_content: '',
+      gclid: '',
+      fbclid: '',
+      msclkid: '',
+      session_id: '',
+      client_id: ''
+    };
+  }
+
   /* ---------- Mobile Navigation ---------- */
   const navToggle = document.querySelector('.nav-toggle');
   const nav       = document.querySelector('.nav');
@@ -126,18 +148,30 @@
         try {
           const isTeamApplication = form.id === 'team-application-form';
           const headers = { 'Accept': 'application/json' };
+          const attribution = getAttributionFields();
           let body;
 
           if (isTeamApplication) {
             body = new FormData(form);
             body.set('form_name', form.getAttribute('aria-label') || form.id || 'team_application');
             body.set('page_url', window.location.href);
+            Object.keys(attribution).forEach((key) => {
+              body.set(key, attribution[key] || '');
+            });
           } else {
             const payload = Object.fromEntries(new FormData(form).entries());
             payload.form_name = form.getAttribute('aria-label') || form.id || 'quote_request';
             payload.page_url = window.location.href;
+            Object.assign(payload, attribution);
             headers['Content-Type'] = 'application/json';
             body = JSON.stringify(payload);
+          }
+
+          if (window.BryantCoTracking && typeof window.BryantCoTracking.trackEvent === 'function') {
+            window.BryantCoTracking.trackEvent('lead_form_submit_attempt', {
+              form_name: form.getAttribute('aria-label') || form.id || 'quote_request',
+              service: form.querySelector('[name="service"]')?.value || ''
+            });
           }
 
           const res = await fetch(action, {
@@ -173,6 +207,12 @@
           btn.disabled = false;
           const conflictMessage = _.status === 409 || _.status === 503 ? `\n\n${_.message.replace(/^HTTP \d+ - /, '')}` : '';
           alert('Sorry, your message could not be sent. Please call or WhatsApp us and we will help straight away.' + conflictMessage + debugSuffix);
+          if (window.BryantCoTracking && typeof window.BryantCoTracking.trackEvent === 'function') {
+            window.BryantCoTracking.trackEvent('lead_form_error', {
+              form_name: form.getAttribute('aria-label') || form.id || 'quote_request',
+              service: form.querySelector('[name="service"]')?.value || ''
+            });
+          }
           return;
         }
       }

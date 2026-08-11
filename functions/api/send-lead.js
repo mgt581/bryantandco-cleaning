@@ -7,11 +7,6 @@ export async function onRequest({ request, env }) {
     return json({ error: 'Method not allowed' }, 405, { Allow: 'POST, OPTIONS' });
   }
 
-  const apiKey = env.RESEND_API_KEY;
-  if (!apiKey) {
-    return json({ error: 'RESEND_API_KEY is not configured' }, 500);
-  }
-
   let lead;
   try {
     lead = await request.json();
@@ -54,10 +49,6 @@ export async function onRequest({ request, env }) {
     .map((email) => email.trim())
     .filter(Boolean);
 
-  if (!toAddresses.length) {
-    return json({ error: 'No destination email is configured' }, 500);
-  }
-
   const fields = [
     ['Page', lead.page_url],
     ['Form', lead.form_name],
@@ -75,6 +66,11 @@ export async function onRequest({ request, env }) {
     ['Requested frequency', lead.booking_date ? lead.booking_recurrence : ''],
     ['Recurring until', lead.booking_date && lead.booking_recurrence !== 'once' ? lead.booking_until : ''],
     ['Booking reference', bookingId],
+    ['Landing page', lead.landing_page],
+    ['Referrer', lead.referrer],
+    ['UTM source', lead.utm_source],
+    ['UTM medium', lead.utm_medium],
+    ['UTM campaign', lead.utm_campaign],
     ['Message', lead.message]
   ].filter(([, value]) => value);
 
@@ -83,37 +79,268 @@ export async function onRequest({ request, env }) {
     `<tr><th align="left" style="padding:6px 12px 6px 0;">${escapeHtml(label)}</th><td style="padding:6px 0;">${escapeHtml(String(value))}</td></tr>`
   )).join('') + '</table>';
 
-  let response;
-  try {
-    response = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        from: fromAddress,
-        to: toAddresses,
-        reply_to: lead.email || 'info@bryantandcocleaning.co.uk',
-        subject: lead.service === 'Customer Review' ? 'New customer review - Bryant & Co Cleaning' : (lead.service ? `New quote request - ${lead.service}` : 'New Bryant & Co Cleaning quote request'),
-        text,
-        html
-      })
-    });
-  } catch (error) {
-    return json({
-      error: 'Failed to reach Resend API',
-      details: error instanceof Error ? error.message : String(error)
-    }, 500);
+  const deliveryErrors = [];
+  let delivered = false;
+
+  if (!env.RESEND_API_KEY) {
+    deliveryErrors.push('RESEND_API_KEY is not configured');
+  } else if (!toAddresses.length) {
+    deliveryErrors.push('No destination email is configured');
+  } else {
+    try {
+      const response = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${env.RESEND_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          from: fromAddress,
+          to: toAddresses,
+          reply_to: lead.email || 'info@bryantandcocleaning.co.uk',
+          subject: lead.service === 'Customer Review' ? 'New customer review - Bryant & Co Cleaning' : (lead.service ? `New quote request - ${lead.service}` : 'New Bryant & Co Cleaning quote request'),
+          text,
+          html
+        })
+      });
+
+      if (!response.ok) {
+        const details = await response.text();
+        throw new Error(`Resend email failed: ${response.status} ${details}`);
+      }
+
+      delivered = true;
+    } catch (error) {
+      deliveryErrors.push(error instanceof Error ? error.message : String(error));
+    }
   }
 
-  if (!response.ok) {
-    const details = await response.text();
-    const status = response.status >= 400 && response.status < 500 ? 400 : 500;
-    return json({ error: 'Resend email failed', details }, status);
+  try {
+    const leadRecord = normalizeLead(lead, bookingId);
+    await storeLead(env, request, leadRecord, delivered ? 'delivered' : 'failed', deliveryErrors);
+    await storeLeadEvent(env, request, leadRecord, delivered ? 'generate_lead' : 'lead_delivery_failed');
+  } catch (error) {
+    console.error('Lead database storage failed:', error instanceof Error ? error.message : String(error));
+  }
+
+  if (!delivered) {
+    if (deliveryErrors.length) console.error('Lead delivery failed:', deliveryErrors.join(' | '));
+    return json({
+      error: 'Sorry, your message could not be sent online. Please call or WhatsApp us and we will help straight away.'
+    }, deliveryErrors.length ? 502 : 503);
   }
 
   return json({ ok: true });
+}
+
+function cleanLeadValue(value, maxLength = 1000) {
+  return String(value == null ? '' : value).trim().slice(0, maxLength);
+}
+
+function consentValue(value) {
+  const text = cleanLeadValue(value).toLowerCase();
+  return text === '1' || text === 'true' || text === 'yes' || text === 'on';
+}
+
+function normalizeLead(lead, bookingId) {
+  const name = [lead.first_name, lead.last_name].map((item) => cleanLeadValue(item, 160)).filter(Boolean).join(' ');
+  const service = cleanLeadValue(lead.service || lead.home_service || lead.gallery_service || 'Website enquiry', 160);
+  const page = cleanLeadValue(lead.page || lead.page_url, 1000);
+
+  return {
+    submittedAt: new Date().toISOString(),
+    name: name || 'Website visitor',
+    phone: cleanLeadValue(lead.phone, 80),
+    email: cleanLeadValue(lead.email, 240),
+    postcode: cleanLeadValue(lead.postcode, 80),
+    service,
+    timeframe: cleanLeadValue(lead.preferred_date || (lead.booking_date ? `${lead.booking_date} ${lead.booking_start || ''}` : ''), 240),
+    message: cleanLeadValue(lead.message, 4000),
+    page,
+    source: cleanLeadValue(lead.source || lead.utm_source || 'website', 160),
+    marketingConsent: consentValue(lead.marketing_consent || lead.consent),
+    landingPage: cleanLeadValue(lead.landing_page || page, 1000),
+    referrer: cleanLeadValue(lead.referrer, 1000),
+    utmSource: cleanLeadValue(lead.utm_source, 240),
+    utmMedium: cleanLeadValue(lead.utm_medium, 240),
+    utmCampaign: cleanLeadValue(lead.utm_campaign, 240),
+    utmTerm: cleanLeadValue(lead.utm_term, 240),
+    utmContent: cleanLeadValue(lead.utm_content, 240),
+    gclid: cleanLeadValue(lead.gclid, 300),
+    fbclid: cleanLeadValue(lead.fbclid, 300),
+    msclkid: cleanLeadValue(lead.msclkid, 300),
+    sessionId: cleanLeadValue(lead.session_id, 120),
+    clientId: cleanLeadValue(lead.client_id, 120),
+    formName: cleanLeadValue(lead.form_name, 200),
+    propertySize: cleanLeadValue(lead.property_size, 120),
+    bookingId: cleanLeadValue(bookingId, 120)
+  };
+}
+
+async function hashIp(ip) {
+  if (!ip || !crypto.subtle) return '';
+  const data = new TextEncoder().encode(ip);
+  const digest = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(digest)).map((byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
+async function ensureLeadSchema(db) {
+  await db.prepare(`
+    CREATE TABLE IF NOT EXISTS leads (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      submitted_at TEXT NOT NULL,
+      name TEXT NOT NULL,
+      phone TEXT,
+      email TEXT,
+      postcode TEXT,
+      service TEXT,
+      timeframe TEXT,
+      message TEXT,
+      page TEXT,
+      source TEXT,
+      marketing_consent INTEGER NOT NULL DEFAULT 0,
+      delivery_status TEXT NOT NULL DEFAULT 'pending',
+      delivery_errors TEXT,
+      user_agent TEXT,
+      ip_hash TEXT,
+      landing_page TEXT,
+      referrer TEXT,
+      utm_source TEXT,
+      utm_medium TEXT,
+      utm_campaign TEXT,
+      utm_term TEXT,
+      utm_content TEXT,
+      gclid TEXT,
+      fbclid TEXT,
+      msclkid TEXT,
+      session_id TEXT,
+      client_id TEXT,
+      form_name TEXT,
+      property_size TEXT,
+      booking_id TEXT
+    )
+  `).run();
+  await db.prepare('CREATE INDEX IF NOT EXISTS idx_leads_submitted_at ON leads (submitted_at DESC)').run();
+  await db.prepare('CREATE INDEX IF NOT EXISTS idx_leads_source ON leads (source)').run();
+
+  await db.prepare(`
+    CREATE TABLE IF NOT EXISTS lead_events (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      occurred_at TEXT NOT NULL,
+      event_name TEXT NOT NULL,
+      page TEXT,
+      landing_page TEXT,
+      referrer TEXT,
+      source TEXT,
+      medium TEXT,
+      campaign TEXT,
+      term TEXT,
+      content TEXT,
+      gclid TEXT,
+      fbclid TEXT,
+      msclkid TEXT,
+      service TEXT,
+      link_url TEXT,
+      link_text TEXT,
+      phone_number TEXT,
+      whatsapp_number TEXT,
+      session_id TEXT,
+      client_id TEXT,
+      user_agent TEXT,
+      ip_hash TEXT
+    )
+  `).run();
+  await db.prepare('CREATE INDEX IF NOT EXISTS idx_lead_events_occurred_at ON lead_events (occurred_at DESC)').run();
+  await db.prepare('CREATE INDEX IF NOT EXISTS idx_lead_events_event_name ON lead_events (event_name)').run();
+  await db.prepare('CREATE INDEX IF NOT EXISTS idx_lead_events_session_id ON lead_events (session_id)').run();
+}
+
+async function storeLead(env, request, lead, deliveryStatus, deliveryErrors) {
+  if (!env.LEADS_DB) return false;
+  await ensureLeadSchema(env.LEADS_DB);
+
+  const ipHash = await hashIp(request.headers.get('cf-connecting-ip') || '');
+  const userAgent = cleanLeadValue(request.headers.get('user-agent'), 1000);
+
+  await env.LEADS_DB.prepare(`
+    INSERT INTO leads (
+      submitted_at, name, phone, email, postcode, service, timeframe, message,
+      page, source, marketing_consent, delivery_status, delivery_errors,
+      user_agent, ip_hash, landing_page, referrer, utm_source, utm_medium,
+      utm_campaign, utm_term, utm_content, gclid, fbclid, msclkid, session_id,
+      client_id, form_name, property_size, booking_id
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).bind(
+    lead.submittedAt,
+    lead.name,
+    lead.phone,
+    lead.email,
+    lead.postcode,
+    lead.service,
+    lead.timeframe,
+    lead.message,
+    lead.page,
+    lead.source,
+    lead.marketingConsent ? 1 : 0,
+    deliveryStatus,
+    deliveryErrors.join(' | '),
+    userAgent,
+    ipHash,
+    lead.landingPage,
+    lead.referrer,
+    lead.utmSource,
+    lead.utmMedium,
+    lead.utmCampaign,
+    lead.utmTerm,
+    lead.utmContent,
+    lead.gclid,
+    lead.fbclid,
+    lead.msclkid,
+    lead.sessionId,
+    lead.clientId,
+    lead.formName,
+    lead.propertySize,
+    lead.bookingId
+  ).run();
+
+  return true;
+}
+
+async function storeLeadEvent(env, request, lead, eventName) {
+  if (!env.LEADS_DB) return false;
+  await ensureLeadSchema(env.LEADS_DB);
+
+  const ipHash = await hashIp(request.headers.get('cf-connecting-ip') || '');
+  const userAgent = cleanLeadValue(request.headers.get('user-agent'), 1000);
+
+  await env.LEADS_DB.prepare(`
+    INSERT INTO lead_events (
+      occurred_at, event_name, page, landing_page, referrer, source, medium,
+      campaign, term, content, gclid, fbclid, msclkid, service, session_id,
+      client_id, user_agent, ip_hash
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `).bind(
+    new Date().toISOString(),
+    eventName,
+    lead.page,
+    lead.landingPage,
+    lead.referrer,
+    lead.utmSource || lead.source,
+    lead.utmMedium,
+    lead.utmCampaign,
+    lead.utmTerm,
+    lead.utmContent,
+    lead.gclid,
+    lead.fbclid,
+    lead.msclkid,
+    lead.service,
+    lead.sessionId,
+    lead.clientId,
+    userAgent,
+    ipHash
+  ).run();
+
+  return true;
 }
 
 async function saveReview(lead, env, rating) {

@@ -22,10 +22,15 @@ googleTagManagerId: 'GTM-TKWBCQGM'
 
 The site pushes these events into `dataLayer`:
 
-- `phone_call_click`
+- `page_view`
+- `phone_click`
 - `email_click`
 - `whatsapp_click`
-- `lead_form_submit`
+- `quote_cta_click`
+- `lead_form_submit_attempt`
+- `generate_lead`
+- `lead_form_error`
+- `lead_thank_you_view`
 
 In Google Tag Manager, create triggers for those custom event names and attach your Google Ads / GA4 tags.
 
@@ -39,7 +44,37 @@ Cloudflare Pages maps that route from:
 functions/api/send-lead.js
 ```
 
+The browser event tracker posts page views, click events and form journey events to:
+
+```text
+functions/api/lead-event.js
+```
+
 Deploy the repository through Cloudflare Pages from GitHub. Functions deploy with the Pages project when the `functions` directory is present at the project root.
+
+## Private lead dashboard
+
+The private lead dashboard is available at `/dashboard` and loads its data from `/api/dashboard`.
+
+Keep dashboard access protected with Cloudflare Access. Do not share token URLs publicly and do not add the export token to public HTML or JavaScript.
+
+In Cloudflare Pages, add:
+
+- `LEADS_DB`: D1 database binding for lead and event storage.
+- `LEADS_EXPORT_TOKEN`: encrypted secret fallback for private API/CSV access.
+
+The dashboard and CSV exports support Cloudflare Access authenticated requests. The export routes are:
+
+- `/api/leads/export`
+- `/api/lead-events/export`
+
+Create a dedicated D1 database for Bryant & Co Cleaning leads, for example `bryant-cleaning-leads`, then run:
+
+```text
+migrations/0001_lead_tracking.sql
+```
+
+The functions also create missing lead tables automatically on first use, but running the migration first is cleaner.
 
 ## Resend
 
