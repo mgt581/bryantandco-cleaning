@@ -154,6 +154,23 @@ function consentValue(value) {
   return text === '1' || text === 'true' || text === 'yes' || text === 'on';
 }
 
+function inferredLeadSource(lead) {
+  const utmSource = cleanLeadValue(lead.utm_source, 160).toLowerCase();
+  const suppliedSource = cleanLeadValue(lead.source, 160).toLowerCase();
+  const referrer = cleanLeadValue(lead.referrer, 1000).toLowerCase();
+
+  if (utmSource) return utmSource;
+  if (lead.fbclid || referrer.includes('facebook.com') || referrer.includes('fb.com')) return 'facebook';
+  if (referrer.includes('instagram.com')) return 'instagram';
+  if (lead.gclid || referrer.includes('google.') || referrer.includes('g.co')) return 'google';
+  if (lead.msclkid || referrer.includes('bing.com')) return 'bing';
+  if (referrer.includes('linkedin.com')) return 'linkedin';
+  if (referrer.includes('twitter.com') || referrer.includes('x.com')) return 'x / twitter';
+  if (referrer.includes('whatsapp.com') || referrer.includes('wa.me')) return 'whatsapp';
+  if (suppliedSource && suppliedSource !== 'website') return suppliedSource;
+  return 'direct / unknown';
+}
+
 async function ensurePipelineColumns(db) {
   const result = await db.prepare('PRAGMA table_info(leads)').all();
   const columns = new Set((result.results || []).map((item) => item.name));
@@ -187,7 +204,7 @@ function normalizeLead(lead, bookingId) {
     timeframe: cleanLeadValue(lead.preferred_date || (lead.booking_date ? `${lead.booking_date} ${lead.booking_start || ''}` : ''), 240),
     message: cleanLeadValue(lead.message, 4000),
     page,
-    source: cleanLeadValue(lead.source || lead.utm_source || 'website', 160),
+    source: inferredLeadSource(lead),
     marketingConsent: consentValue(lead.marketing_consent || lead.consent),
     landingPage: cleanLeadValue(lead.landing_page || page, 1000),
     referrer: cleanLeadValue(lead.referrer, 1000),
