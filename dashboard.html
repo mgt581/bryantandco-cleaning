@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow" />
+  <meta name="referrer" content="no-referrer" />
+  <title>Bryant &amp; Co Cleaning — Lead Dashboard</title>
+  <style>
+    :root {
+      --bg: #0f1720;
+      --panel: #18222d;
+      --panel-2: #21313f;
+      --line: rgba(255,255,255,0.08);
+      --text: #edf2f7;
+      --muted: #9fb0bf;
+      --accent: #7bc36b;
+      --accent-2: #4e9645;
+      --warn: #f2c14e;
+      --bad: #ff8b8b;
+      --good: #8de0a1;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background: radial-gradient(circle at top, #1d2a36 0, #0f1720 55%);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    a { color: inherit; }
+
+    .wrap {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: .78rem;
+      color: var(--accent);
+      margin: 0 0 6px;
+      font-weight: 800;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(1.8rem, 3vw, 2.7rem);
+    }
+
+    .subtle {
+      margin: 8px 0 0;
+      color: var(--muted);
+      max-width: 860px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.94rem;
+    }
+
+    .button.primary {
+      background: linear-gradient(135deg, var(--accent-2), var(--accent));
+      color: #fff;
+      border: 0;
+    }
+
+    .panel {
+      background: rgba(24,34,45,.94);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 20px 50px rgba(0,0,0,.24);
+      overflow: hidden;
+    }
+
+    .panel-inner {
+      padding: 18px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .metrics {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+
+    .metric {
+      background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.015));
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 16px;
+      min-height: 118px;
+    }
+
+    .metric-label {
+      margin: 0 0 8px;
+      color: var(--muted);
+      font-size: .86rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-weight: 800;
+    }
+
+    .metric-value {
+      margin: 0;
+      font-size: clamp(1.7rem, 3vw, 2.4rem);
+      font-weight: 900;
+    }
+
+    .metric-note {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: .92rem;
+    }
+
+    .sections {
+      margin-top: 16px;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+
+    .card {
+      grid-column: span 6;
+      background: rgba(255,255,255,.025);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    .card.wide {
+      grid-column: span 12;
+    }
+
+    .card h2 {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,.02);
+    }
+
+    .card-body {
+      padding: 0;
+      overflow: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .94rem;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: .82rem;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      white-space: nowrap;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(123,195,107,.12);
+      color: #dff4d8;
+      border: 1px solid rgba(123,195,107,.24);
+      font-size: .84rem;
+      font-weight: 700;
+    }
+
+    .pill.bad {
+      background: rgba(255,139,139,.12);
+      color: #ffd9d9;
+      border-color: rgba(255,139,139,.24);
+    }
+
+    .pill.warn {
+      background: rgba(242,193,78,.12);
+      color: #fbe7b4;
+      border-color: rgba(242,193,78,.24);
+    }
+
+    .empty {
+      padding: 24px 18px;
+      color: var(--muted);
+    }
+
+    .error {
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: rgba(255,139,139,.08);
+      border: 1px solid rgba(255,139,139,.22);
+      color: #ffd9d9;
+    }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: .88rem;
+      word-break: break-word;
+    }
+
+    .pipeline-controls {
+      display: grid;
+      grid-template-columns: minmax(118px, 1fr) 92px 92px auto;
+      gap: 7px;
+      align-items: center;
+      min-width: 430px;
+    }
+
+    .pipeline-controls select,
+    .pipeline-controls input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px;
+      background: var(--panel-2);
+      color: var(--text);
+    }
+
+    .pipeline-controls button {
+      cursor: pointer;
+      border: 0;
+      border-radius: 8px;
+      padding: 9px 12px;
+      background: var(--accent-2);
+      color: #fff;
+      font-weight: 800;
+    }
+
+    .footer {
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    @media (max-width: 1080px) {
+      .metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .card { grid-column: span 12; }
+    }
+
+    @media (max-width: 720px) {
+      .wrap { padding: 18px; }
+      .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      th, td { padding: 10px 12px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <div class="topbar">
+      <div>
+        <p class="eyebrow">Private lead dashboard</p>
+        <h1>Bryant &amp; Co Cleaning — Lead Tracking</h1>
+        <p class="subtle">A simple live view of lead volume, source clues, delivery status and recent enquiry activity. Admin access is handled securely by Cloudflare Access.</p>
+      </div>
+      <div class="actions">
+        <a class="button" id="exportLeads" href="#">Download leads CSV</a>
+        <a class="button" id="exportEvents" href="#">Download events CSV</a>
+        <a class="button primary" href="/contact.html">Open Contact Page</a>
+      </div>
+    </div>
+
+    <section class="panel">
+      <div class="panel-inner">
+        <div class="grid metrics" id="metrics"></div>
+        <div id="notice" class="error" style="display:none;"></div>
+
+        <div class="grid sections" id="sections" style="display:none;">
+          <article class="card wide">
+            <div class="card-head">
+              <h2>Lead trend</h2>
+              <span class="pill" id="dailyCount">0 days</span>
+            </div>
+            <div class="card-body">
+              <table>
+                <thead><tr><th>Date</th><th>Leads</th></tr></thead>
+                <tbody id="dailyBody"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-head">
+              <h2>Lead origins</h2>
+              <span class="pill" id="originCount">0 sources</span>
+            </div>
+            <div class="card-body">
+              <table>
+                <thead><tr><th>Origin</th><th>Leads</th></tr></thead>
+                <tbody id="originBody"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-head">
+              <h2>Lead pipeline</h2>
+              <span class="pill" id="pipelineCount">0 stages</span>
+            </div>
+            <div class="card-body">
+              <table>
+                <thead><tr><th>Status</th><th>Leads</th></tr></thead>
+                <tbody id="pipelineBody"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="card wide">
+            <div class="card-head">
+              <h2>Revenue by lead origin</h2>
+              <span class="pill" id="revenueOriginCount">0 sources</span>
+            </div>
+            <div class="card-body">
+              <table>
+                <thead><tr><th>Origin</th><th>Leads</th><th>Won</th><th>Quoted</th><th>Won revenue</th></tr></thead>
+                <tbody id="revenueOriginBody"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-head">
+              <h2>Services requested</h2>
+              <span class="pill" id="serviceCount">0 services</span>
+            </div>
+            <div class="card-body">
+              <table>
+                <thead><tr><th>Service</th><th>Leads</th></tr></thead>
+                <tbody id="serviceBody"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-head">
+              <h2>Top landing pages</h2>
+              <span class="pill" id="landingCount">0 pages</span>
+            </div>
+            <div class="card-body">
+              <table>
+                <thead><tr><th>Page</th><th>Count</th></tr></thead>
+                <tbody id="landingBody"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-head">
+              <h2>Event activity</h2>
+              <span class="pill" id="eventCount">0 event types</span>
+            </div>
+            <div class="card-body">
+              <table>
+                <thead><tr><th>Event</th><th>Count</th></tr></thead>
+                <tbody id="eventBody"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="card wide">
+            <div class="card-head">
+              <h2>Recent leads</h2>
+              <span class="pill" id="leadCount">0 leads</span>
+            </div>
+            <div class="card-body">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Name</th>
+                    <th>Service</th>
+                    <th>Origin</th>
+                    <th>Page</th>
+                    <th>Delivery</th>
+                    <th>Pipeline / values (£)</th>
+                  </tr>
+                </thead>
+                <tbody id="leadBody"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="card wide">
+            <div class="card-head">
+              <h2>Recent events</h2>
+              <span class="pill" id="recentEventCount">0 rows</span>
+            </div>
+            <div class="card-body">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Event</th>
+                    <th>Page</th>
+                    <th>Link / detail</th>
+                  </tr>
+                </thead>
+                <tbody id="recentEventBody"></tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <p class="footer">This dashboard is intentionally simple: it shows the lead flow, the obvious source clues, and the paths people use most often. For deeper analysis, use the CSV exports or the external analytics tools connected to the site.</p>
+  </main>
+
+  <script>
+    (function () {
+      var statusNotice = document.getElementById("notice");
+      var sections = document.getElementById("sections");
+
+      function esc(value) {
+        return String(value == null ? "" : value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function row(label, value, note, kind) {
+        var wrap = document.createElement("article");
+        wrap.className = "metric";
+        wrap.innerHTML = [
+          '<p class="metric-label">' + esc(label) + '</p>',
+          '<p class="metric-value">' + esc(value) + '</p>',
+          note ? '<p class="metric-note">' + esc(note) + '</p>' : ''
+        ].join("");
+        if (kind === "good") wrap.style.borderColor = "rgba(123,195,107,.34)";
+        if (kind === "bad") wrap.style.borderColor = "rgba(255,139,139,.34)";
+        if (kind === "warn") wrap.style.borderColor = "rgba(242,193,78,.34)";
+        return wrap;
+      }
+
+      function setTable(bodyId, rows, render) {
+        var body = document.getElementById(bodyId);
+        body.innerHTML = rows.length ? rows.map(render).join("") : '<tr><td colspan="4" class="empty">No data yet.</td></tr>';
+      }
+
+      function formatTime(value) {
+        if (!value) return "—";
+        var date = new Date(value);
+        return Number.isNaN(date.getTime()) ? value : date.toLocaleString("en-GB", { hour12: false });
+      }
+
+      function shortText(value, limit) {
+        var text = String(value == null ? "" : value);
+        if (text.length <= limit) return text;
+        return text.slice(0, limit - 1) + "…";
+      }
+
+      function moneyFromPence(value) {
+        return "£" + (Number(value || 0) / 100).toFixed(2);
+      }
+
+      function statusOptions(selected) {
+        return ["TEST", "NEW", "GENUINE", "SPAM", "CONTACTED", "QUOTED", "WON", "LOST"].map(function (status) {
+          return '<option value="' + status + '"' + (status === selected ? " selected" : "") + '>' + status + '</option>';
+        }).join("");
+      }
+
+      function originLabel(item) {
+        var utmSource = String(item && item.utm_source ? item.utm_source : "").trim().toLowerCase();
+        if (utmSource) return utmSource;
+
+        var referrer = String(item && item.referrer ? item.referrer : "").trim();
+        if (!referrer) return String(item && item.source ? item.source : "direct / unknown");
+
+        try {
+          var host = new URL(referrer).hostname.toLowerCase();
+          if (host.indexOf("facebook.com") !== -1 || host.indexOf("fb.com") !== -1) return "facebook";
+          if (host.indexOf("instagram.com") !== -1) return "instagram";
+          if (host.indexOf("google.") !== -1 || host.indexOf("google.com") !== -1 || host.indexOf("g.co") !== -1) return "google";
+          if (host.indexOf("bing.com") !== -1) return "bing";
+          if (host.indexOf("linkedin.com") !== -1) return "linkedin";
+          if (host.indexOf("twitter.com") !== -1 || host.indexOf("x.com") !== -1) return "x / twitter";
+          if (host.indexOf("whatsapp.com") !== -1 || host.indexOf("wa.me") !== -1) return "whatsapp";
+          if (host.indexOf("youtube.com") !== -1 || host.indexOf("youtu.be") !== -1) return "youtube";
+          return host;
+        } catch (error) {
+          return referrer;
+        }
+      }
+
+      document.getElementById("exportLeads").href = "/api/leads/export";
+      document.getElementById("exportEvents").href = "/api/lead-events/export";
+
+      fetch("/api/dashboard", {
+        headers: { accept: "application/json" }
+      })
+        .then(function (response) {
+          if (!response.ok) {
+            return response.text().then(function (text) {
+              throw new Error(text || "Unable to load dashboard.");
+            });
+          }
+          return response.json();
+        })
+        .then(function (data) {
+          var totals = data.totals || {};
+          var events = data.event_totals || {};
+          var eventEntries = Object.keys(events).sort(function (a, b) { return events[b] - events[a] || a.localeCompare(b); });
+
+          var metricNodes = [
+            row("Leads received", totals.leads || 0, "Stored in D1"),
+            row("Delivered leads", totals.delivered_leads || 0, "Emails/webhook delivered", totals.delivered_leads ? "good" : "warn"),
+            row("Failed leads", totals.failed_leads || 0, "Needs delivery attention", totals.failed_leads ? "bad" : "good"),
+            row("Phone clicks", events.phone_click || 0, "Tap-to-call tracking"),
+            row("WhatsApp clicks", events.whatsapp_click || 0, "Tap-to-chat tracking"),
+            row("Email clicks", events.email_click || 0, "mailto: tracking")
+          ];
+
+          metricNodes.push(
+            row("Form submits", events.lead_form_submit_attempt || 0, "Attempted form sends"),
+            row("Lead successes", events.generate_lead || 0, "Completed enquiries", events.generate_lead ? "good" : "warn"),
+            row("Form errors", events.lead_form_error || 0, "Needs attention", events.lead_form_error ? "bad" : "good"),
+            row("Chat leads", events.chat_lead || 0, "Chat to human handoff"),
+            row("Chat errors", events.chat_lead_error || 0, "Chat delivery issues", events.chat_lead_error ? "bad" : "good"),
+            row("Page views", events.page_view || 0, "Tracked on first touch")
+          );
+
+          metricNodes.push(
+            row("Won leads", totals.won_leads || 0, "Pipeline status WON", totals.won_leads ? "good" : "warn"),
+            row("Quoted value", moneyFromPence(totals.quoted_value_pence), "Total stored quote value"),
+            row("Won revenue", moneyFromPence(totals.won_revenue_pence), "Revenue attributed to leads", totals.won_revenue_pence ? "good" : "warn")
+          );
+
+          var metrics = document.getElementById("metrics");
+          metrics.innerHTML = "";
+          metricNodes.forEach(function (node) {
+            metrics.appendChild(node);
+          });
+
+          document.getElementById("originCount").textContent = (data.origin_summary || []).length + " sources";
+          document.getElementById("serviceCount").textContent = (data.service_summary || []).length + " services";
+          document.getElementById("landingCount").textContent = (data.landing_page_summary || []).length + " pages";
+          document.getElementById("eventCount").textContent = eventEntries.length + " event types";
+          document.getElementById("dailyCount").textContent = (data.daily_leads || []).length + " days";
+          document.getElementById("leadCount").textContent = (data.recent_leads || []).length + " leads";
+          document.getElementById("recentEventCount").textContent = (data.recent_events || []).length + " rows";
+          document.getElementById("pipelineCount").textContent = (data.pipeline_summary || []).length + " stages";
+          document.getElementById("revenueOriginCount").textContent = (data.revenue_origin_summary || []).length + " sources";
+
+          setTable("dailyBody", data.daily_leads || [], function (item) {
+            return "<tr><td>" + esc(item.day || "—") + "</td><td>" + esc(item.count) + "</td></tr>";
+          });
+
+          setTable("originBody", data.origin_summary || [], function (item) {
+            return "<tr><td>" + esc(item.origin) + "</td><td>" + esc(item.count) + "</td></tr>";
+          });
+
+          setTable("serviceBody", data.service_summary || [], function (item) {
+            return "<tr><td>" + esc(item.service) + "</td><td>" + esc(item.count) + "</td></tr>";
+          });
+
+          setTable("landingBody", data.landing_page_summary || [], function (item) {
+            return "<tr><td>" + esc(shortText(item.landing_page, 58)) + "</td><td>" + esc(item.count) + "</td></tr>";
+          });
+
+          setTable("eventBody", eventEntries.map(function (eventName) {
+            return { event_name: eventName, count: events[eventName] };
+          }), function (item) {
+            return "<tr><td>" + esc(item.event_name) + "</td><td>" + esc(item.count) + "</td></tr>";
+          });
+
+          setTable("pipelineBody", data.pipeline_summary || [], function (item) {
+            return "<tr><td>" + esc(item.status || "NEW") + "</td><td>" + esc(item.count) + "</td></tr>";
+          });
+
+          setTable("revenueOriginBody", data.revenue_origin_summary || [], function (item) {
+            return [
+              "<tr>",
+              "<td>" + esc(item.origin || "direct / unknown") + "</td>",
+              "<td>" + esc(item.leads || 0) + "</td>",
+              "<td>" + esc(item.won_leads || 0) + "</td>",
+              "<td>" + esc(moneyFromPence(item.quote_value_pence)) + "</td>",
+              "<td>" + esc(moneyFromPence(item.won_revenue_pence)) + "</td>",
+              "</tr>"
+            ].join("");
+          });
+
+          setTable("leadBody", data.recent_leads || [], function (item) {
+            var origin = originLabel(item);
+            return [
+              "<tr>",
+              "<td>" + esc(formatTime(item.submitted_at)) + "</td>",
+              "<td>" + esc(shortText(item.name || "—", 24)) + "</td>",
+              "<td>" + esc(shortText(item.service || "Website enquiry", 26)) + "</td>",
+              "<td>" + esc(shortText(origin, 36)) + "</td>",
+              "<td>" + esc(shortText(item.page || item.landing_page || "—", 42)) + "</td>",
+              "<td><span class=\"pill " + (item.delivery_status === "delivered" ? "" : "bad") + "\">" + esc(item.delivery_status || "pending") + "</span></td>",
+              '<td><div class="pipeline-controls" data-lead-id="' + esc(item.id) + '">',
+              '<select aria-label="Lead status">' + statusOptions(item.lead_status || "NEW") + '</select>',
+              '<input type="number" min="0" step="0.01" aria-label="Quote value in pounds" value="' + esc((Number(item.quote_value_pence || 0) / 100).toFixed(2)) + '">',
+              '<input type="number" min="0" step="0.01" aria-label="Won revenue in pounds" value="' + esc((Number(item.won_revenue_pence || 0) / 100).toFixed(2)) + '">',
+              '<button type="button">Save</button>',
+              "</div></td>",
+              "</tr>"
+            ].join("");
+          });
+
+          setTable("recentEventBody", data.recent_events || [], function (item) {
+            var detail = item.link_text || item.link_url || item.service || item.medium || item.campaign || "—";
+            return [
+              "<tr>",
+              "<td>" + esc(formatTime(item.occurred_at)) + "</td>",
+              "<td>" + esc(item.event_name || "—") + "</td>",
+              "<td>" + esc(shortText(item.page || item.landing_page || "—", 42)) + "</td>",
+              "<td>" + esc(shortText(detail, 52)) + "</td>",
+              "</tr>"
+            ].join("");
+          });
+
+          sections.style.display = "grid";
+
+          document.getElementById("leadBody").addEventListener("click", function (event) {
+            var button = event.target.closest("button");
+            if (!button) return;
+            var controls = button.closest("[data-lead-id]");
+            var inputs = controls.querySelectorAll("input");
+            var payload = {
+              lead_status: controls.querySelector("select").value,
+              quote_value_pence: Math.round(Number(inputs[0].value || 0) * 100),
+              won_revenue_pence: Math.round(Number(inputs[1].value || 0) * 100)
+            };
+            button.disabled = true;
+            button.textContent = "Saving…";
+            fetch("/api/leads/" + encodeURIComponent(controls.dataset.leadId), {
+              method: "PATCH",
+              headers: { "content-type": "application/json", accept: "application/json" },
+              body: JSON.stringify(payload)
+            }).then(function (response) {
+              if (!response.ok) return response.json().then(function (body) { throw new Error(body.error || "Update failed."); });
+              window.location.reload();
+            }).catch(function (error) {
+              button.disabled = false;
+              button.textContent = "Retry";
+              statusNotice.style.display = "block";
+              statusNotice.textContent = error.message || "Lead update failed.";
+            });
+          });
+        })
+        .catch(function (error) {
+          statusNotice.style.display = "block";
+          statusNotice.textContent = error && error.message ? error.message : "Sign in with your admin account to view the private dashboard.";
+          sections.style.display = "none";
+        });
+    })();
+  </script>
+</body>
+</html>

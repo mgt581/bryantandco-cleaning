@@ -951,6 +951,31 @@
       try {
         var endpoint = window.BRYANTCO && window.BRYANTCO.leadEndpoint;
         if (endpoint) {
+          var attribution = window.BryantCoTracking && typeof window.BryantCoTracking.getAttribution === 'function'
+            ? window.BryantCoTracking.getAttribution()
+            : {
+                page: window.location.href,
+                landing_page: window.location.href,
+                referrer: document.referrer || '',
+                utm_source: '',
+                utm_medium: '',
+                utm_campaign: '',
+                utm_term: '',
+                utm_content: '',
+                gclid: '',
+                fbclid: '',
+                msclkid: '',
+                session_id: '',
+                client_id: ''
+              };
+
+          if (window.BryantCoTracking && typeof window.BryantCoTracking.trackEvent === 'function') {
+            window.BryantCoTracking.trackEvent('lead_form_submit_attempt', {
+              form_name: 'Booking request form',
+              service: state.service
+            });
+          }
+
           var res = await fetch(endpoint, {
             method: 'POST',
             headers: {
@@ -968,7 +993,20 @@
               postcode: state.postcode,
               property_size: state.propertySize,
               preferred_date: formatDate(state.date) + ' ' + formatTime(state.time),
-              message: state.notes
+              message: state.notes,
+              page: attribution.page,
+              landing_page: attribution.landing_page,
+              referrer: attribution.referrer,
+              utm_source: attribution.utm_source,
+              utm_medium: attribution.utm_medium,
+              utm_campaign: attribution.utm_campaign,
+              utm_term: attribution.utm_term,
+              utm_content: attribution.utm_content,
+              gclid: attribution.gclid,
+              fbclid: attribution.fbclid,
+              msclkid: attribution.msclkid,
+              session_id: attribution.session_id,
+              client_id: attribution.client_id
             })
           });
           if (!res.ok) throw new Error('Lead send failed');
