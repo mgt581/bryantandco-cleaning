@@ -200,6 +200,56 @@ test("lead-event stores supported tracking events", async () => {
   assert.equal(db.rows.events[0][5], "facebook");
 });
 
+test("plain-domain Facebook visits retain Facebook attribution", async () => {
+  const originalFetch = globalThis.fetch;
+  const db = captureDb();
+  globalThis.fetch = async () => new Response("", { status: 200 });
+
+  try {
+    const response = await sendLeadApi.onRequest({
+      env: {
+        RESEND_API_KEY: "test-key",
+        LEAD_TO_EMAILS: "owner@example.test",
+        LEAD_FROM_EMAIL: "Bryant & Co Cleaning <info@example.test>",
+        LEADS_DB: db
+      },
+      request: request("https://example.test/api/send-lead", {
+        first_name: "Facebook",
+        last_name: "Visitor",
+        email: "facebook@example.test",
+        service: "Domestic Cleaning",
+        page: "https://example.test/contact",
+        landing_page: "https://example.test/",
+        referrer: "https://m.facebook.com/",
+        source: "website",
+        session_id: "session-facebook",
+        client_id: "client-facebook"
+      })
+    });
+
+    assert.equal(response.status, 200);
+    assert.equal(db.rows.leads[0][9], "facebook");
+
+    const eventResponse = await leadEventApi.onRequestPost({
+      env: { LEADS_DB: db },
+      request: request("https://example.test/api/lead-event", {
+        event_name: "page_view",
+        page: "https://example.test/",
+        landing_page: "https://example.test/",
+        referrer: "https://lm.facebook.com/",
+        source: "website",
+        session_id: "session-facebook",
+        client_id: "client-facebook"
+      })
+    });
+
+    assert.equal(eventResponse.status, 200);
+    assert.equal(db.rows.events.at(-1)[5], "facebook");
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test("dashboard and exports support private Access auth and reject missing auth", async () => {
   const db = captureDb();
   const env = { LEADS_DB: db, LEADS_EXPORT_TOKEN: "secret-token", CLOUDFLARE_ACCESS_ENABLED: "true" };

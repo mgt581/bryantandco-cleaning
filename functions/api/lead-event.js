@@ -74,6 +74,23 @@ function allowedEventName(value) {
   ].indexOf(name) !== -1 ? name : "";
 }
 
+function inferredEventSource(payload) {
+  var utmSource = clean(payload.utm_source).toLowerCase();
+  var suppliedSource = clean(payload.source).toLowerCase();
+  var referrer = clean(payload.referrer).toLowerCase();
+
+  if (utmSource) return utmSource;
+  if (payload.fbclid || referrer.indexOf('facebook.com') !== -1 || referrer.indexOf('fb.com') !== -1) return 'facebook';
+  if (referrer.indexOf('instagram.com') !== -1) return 'instagram';
+  if (payload.gclid || referrer.indexOf('google.') !== -1 || referrer.indexOf('g.co') !== -1) return 'google';
+  if (payload.msclkid || referrer.indexOf('bing.com') !== -1) return 'bing';
+  if (referrer.indexOf('linkedin.com') !== -1) return 'linkedin';
+  if (referrer.indexOf('twitter.com') !== -1 || referrer.indexOf('x.com') !== -1) return 'x / twitter';
+  if (referrer.indexOf('whatsapp.com') !== -1 || referrer.indexOf('wa.me') !== -1) return 'whatsapp';
+  if (suppliedSource && suppliedSource !== 'website') return suppliedSource;
+  return 'direct / unknown';
+}
+
 export async function onRequestPost(context) {
   try {
     var env = context.env || {};
@@ -124,7 +141,7 @@ export async function onRequestPost(context) {
       clean(payload.page),
       clean(payload.landing_page),
       clean(payload.referrer),
-      clean(payload.utm_source || payload.source),
+      inferredEventSource(payload),
       clean(payload.utm_medium || payload.medium),
       clean(payload.utm_campaign || payload.campaign),
       clean(payload.utm_term || payload.term),

@@ -226,7 +226,11 @@ export async function onRequestGet(context) {
       `SELECT
         CASE
           WHEN COALESCE(NULLIF(utm_source, ''), '') <> '' THEN LOWER(utm_source)
+          WHEN COALESCE(NULLIF(fbclid, ''), '') <> '' THEN 'facebook'
+          WHEN COALESCE(NULLIF(gclid, ''), '') <> '' THEN 'google'
+          WHEN COALESCE(NULLIF(msclkid, ''), '') <> '' THEN 'bing'
           WHEN COALESCE(NULLIF(referrer, ''), '') <> '' THEN ${normalizedOriginSql("referrer")}
+          WHEN COALESCE(NULLIF(source, ''), '') <> '' AND LOWER(source) <> 'website' THEN LOWER(source)
           ELSE 'direct / unknown'
         END AS origin,
         COUNT(*) AS count
@@ -234,7 +238,11 @@ export async function onRequestGet(context) {
       GROUP BY
         CASE
           WHEN COALESCE(NULLIF(utm_source, ''), '') <> '' THEN LOWER(utm_source)
+          WHEN COALESCE(NULLIF(fbclid, ''), '') <> '' THEN 'facebook'
+          WHEN COALESCE(NULLIF(gclid, ''), '') <> '' THEN 'google'
+          WHEN COALESCE(NULLIF(msclkid, ''), '') <> '' THEN 'bing'
           WHEN COALESCE(NULLIF(referrer, ''), '') <> '' THEN ${normalizedOriginSql("referrer")}
+          WHEN COALESCE(NULLIF(source, ''), '') <> '' AND LOWER(source) <> 'website' THEN LOWER(source)
           ELSE 'direct / unknown'
         END
       ORDER BY count DESC, origin ASC
@@ -257,7 +265,11 @@ export async function onRequestGet(context) {
       `SELECT
         CASE
           WHEN COALESCE(NULLIF(utm_source, ''), '') <> '' THEN LOWER(utm_source)
+          WHEN COALESCE(NULLIF(fbclid, ''), '') <> '' THEN 'facebook'
+          WHEN COALESCE(NULLIF(gclid, ''), '') <> '' THEN 'google'
+          WHEN COALESCE(NULLIF(msclkid, ''), '') <> '' THEN 'bing'
           WHEN COALESCE(NULLIF(referrer, ''), '') <> '' THEN ${normalizedOriginSql("referrer")}
+          WHEN COALESCE(NULLIF(source, ''), '') <> '' AND LOWER(source) <> 'website' THEN LOWER(source)
           ELSE 'direct / unknown'
         END AS origin,
         COUNT(*) AS leads,
@@ -268,7 +280,11 @@ export async function onRequestGet(context) {
       GROUP BY
         CASE
           WHEN COALESCE(NULLIF(utm_source, ''), '') <> '' THEN LOWER(utm_source)
+          WHEN COALESCE(NULLIF(fbclid, ''), '') <> '' THEN 'facebook'
+          WHEN COALESCE(NULLIF(gclid, ''), '') <> '' THEN 'google'
+          WHEN COALESCE(NULLIF(msclkid, ''), '') <> '' THEN 'bing'
           WHEN COALESCE(NULLIF(referrer, ''), '') <> '' THEN ${normalizedOriginSql("referrer")}
+          WHEN COALESCE(NULLIF(source, ''), '') <> '' AND LOWER(source) <> 'website' THEN LOWER(source)
           ELSE 'direct / unknown'
         END
       ORDER BY won_revenue_pence DESC, leads DESC, origin ASC

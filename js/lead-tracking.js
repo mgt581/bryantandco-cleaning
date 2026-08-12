@@ -84,6 +84,21 @@
     return attribution;
   }
 
+  function inferSource(attribution) {
+    var utmSource = clean(attribution.utm_source).toLowerCase();
+    var referrer = clean(attribution.referrer).toLowerCase();
+
+    if (utmSource) return utmSource;
+    if (attribution.fbclid || referrer.indexOf('facebook.com') !== -1 || referrer.indexOf('fb.com') !== -1) return 'facebook';
+    if (referrer.indexOf('instagram.com') !== -1) return 'instagram';
+    if (attribution.gclid || referrer.indexOf('google.') !== -1 || referrer.indexOf('g.co') !== -1) return 'google';
+    if (attribution.msclkid || referrer.indexOf('bing.com') !== -1) return 'bing';
+    if (referrer.indexOf('linkedin.com') !== -1) return 'linkedin';
+    if (referrer.indexOf('twitter.com') !== -1 || referrer.indexOf('x.com') !== -1) return 'x / twitter';
+    if (referrer.indexOf('whatsapp.com') !== -1 || referrer.indexOf('wa.me') !== -1) return 'whatsapp';
+    return 'direct / unknown';
+  }
+
   function getAttribution() {
     var firstTouch = getFirstTouchAttribution();
     return {
@@ -98,6 +113,7 @@
       gclid: firstTouch.gclid || '',
       fbclid: firstTouch.fbclid || '',
       msclkid: firstTouch.msclkid || '',
+      source: inferSource(firstTouch),
       session_id: getSessionId(),
       client_id: getClientId()
     };
@@ -170,8 +186,7 @@
 
   function trackLead(formName) {
     trackEvent('generate_lead', {
-      form_name: formName || 'quote_request',
-      source: 'website'
+      form_name: formName || 'quote_request'
     }, { store: false });
   }
 
@@ -180,8 +195,7 @@
     pageTracked = true;
     trackEvent('page_view', {
       page_title: document.title,
-      page_location: window.location.href,
-      source: 'website'
+      page_location: window.location.href
     });
   }
 
@@ -190,8 +204,7 @@
     if (pathname.indexOf('thank-you') === -1) return;
     trackEvent('lead_thank_you_view', {
       page_title: document.title,
-      page_location: window.location.href,
-      source: 'website'
+      page_location: window.location.href
     });
   }
 
