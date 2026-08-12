@@ -14,6 +14,10 @@ export async function onRequest({ request, env }) {
     return json({ error: 'Invalid JSON body' }, 400);
   }
 
+  if (!env.LEADS_DB) {
+    return json({ error: 'Lead storage is not configured.' }, 503);
+  }
+
   const isReview = lead.service === 'Customer Review' || lead.form_name === 'Customer review form';
   if (isReview) {
     const rating = Number.parseInt(String(lead.rating || ''), 10);
@@ -41,6 +45,15 @@ export async function onRequest({ request, env }) {
         bookingId: ''
       }, status);
     }
+  }
+
+  const leadRecord = normalizeLead(lead, bookingId);
+  let storedLeadId = 0;
+  try {
+    storedLeadId = await storeLead(env, request, leadRecord, 'pending', []);
+  } catch (error) {
+    console.error('Lead database storage failed:', error instanceof Error ? error.message : String(error));
+    return json({ error: 'Your enquiry could not be stored safely. Please call or WhatsApp us.' }, 503);
   }
 
   const fromAddress = env.LEAD_FROM_EMAIL || 'Bryant & Co Cleaning <onboarding@resend.dev>';
@@ -116,11 +129,10 @@ export async function onRequest({ request, env }) {
   }
 
   try {
-    const leadRecord = normalizeLead(lead, bookingId);
-    await storeLead(env, request, leadRecord, delivered ? 'delivered' : 'failed', deliveryErrors);
+    await updateLeadDelivery(env.LEADS_DB, storedLeadId, delivered ? 'delivered' : 'failed', deliveryErrors);
     await storeLeadEvent(env, request, leadRecord, delivered ? 'generate_lead' : 'lead_delivery_failed');
   } catch (error) {
-    console.error('Lead database storage failed:', error instanceof Error ? error.message : String(error));
+    console.error('Lead delivery status update failed:', error instanceof Error ? error.message : String(error));
   }
 
   if (!delivered) {
@@ -140,6 +152,23 @@ function cleanLeadValue(value, maxLength = 1000) {
 function consentValue(value) {
   const text = cleanLeadValue(value).toLowerCase();
   return text === '1' || text === 'true' || text === 'yes' || text === 'on';
+}
+
+async function ensurePipelineColumns(db) {
+  const result = await db.prepare('PRAGMA table_info(leads)').all();
+  const columns = new Set((result.results || []).map((item) => item.name));
+  const additions = [
+    ['lead_status', "TEXT NOT NULL DEFAULT 'NEW'"],
+    ['quote_value_pence', 'INTEGER NOT NULL DEFAULT 0'],
+    ['won_revenue_pence', 'INTEGER NOT NULL DEFAULT 0'],
+    ['status_updated_at', 'TEXT']
+  ];
+
+  for (const [name, definition] of additions) {
+    if (!columns.has(name)) {
+      await db.prepare(`ALTER TABLE leads ADD COLUMN ${name} ${definition}`).run();
+    }
+  }
 }
 
 function normalizeLead(lead, bookingId) {
@@ -202,6 +231,10 @@ async function ensureLeadSchema(db) {
       marketing_consent INTEGER NOT NULL DEFAULT 0,
       delivery_status TEXT NOT NULL DEFAULT 'pending',
       delivery_errors TEXT,
+      lead_status TEXT NOT NULL DEFAULT 'NEW',
+      quote_value_pence INTEGER NOT NULL DEFAULT 0,
+      won_revenue_pence INTEGER NOT NULL DEFAULT 0,
+      status_updated_at TEXT,
       user_agent TEXT,
       ip_hash TEXT,
       landing_page TEXT,
@@ -221,8 +254,10 @@ async function ensureLeadSchema(db) {
       booking_id TEXT
     )
   `).run();
+  await ensurePipelineColumns(db);
   await db.prepare('CREATE INDEX IF NOT EXISTS idx_leads_submitted_at ON leads (submitted_at DESC)').run();
   await db.prepare('CREATE INDEX IF NOT EXISTS idx_leads_source ON leads (source)').run();
+  await db.prepare('CREATE INDEX IF NOT EXISTS idx_leads_status ON leads (lead_status)').run();
 
   await db.prepare(`
     CREATE TABLE IF NOT EXISTS lead_events (
@@ -263,7 +298,7 @@ async function storeLead(env, request, lead, deliveryStatus, deliveryErrors) {
   const ipHash = await hashIp(request.headers.get('cf-connecting-ip') || '');
   const userAgent = cleanLeadValue(request.headers.get('user-agent'), 1000);
 
-  await env.LEADS_DB.prepare(`
+  const result = await env.LEADS_DB.prepare(`
     INSERT INTO leads (
       submitted_at, name, phone, email, postcode, service, timeframe, message,
       page, source, marketing_consent, delivery_status, delivery_errors,
@@ -304,7 +339,15 @@ async function storeLead(env, request, lead, deliveryStatus, deliveryErrors) {
     lead.bookingId
   ).run();
 
-  return true;
+  return result && result.meta ? Number(result.meta.last_row_id || 0) : 0;
+}
+
+async function updateLeadDelivery(db, leadId, deliveryStatus, deliveryErrors) {
+  await db.prepare(`
+    UPDATE leads
+    SET delivery_status = ?, delivery_errors = ?
+    WHERE id = ?
+  `).bind(deliveryStatus, deliveryErrors.join(' | '), leadId).run();
 }
 
 async function storeLeadEvent(env, request, lead, eventName) {

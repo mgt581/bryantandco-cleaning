@@ -2,7 +2,9 @@ function clean(value) {
   return String(value || "").trim();
 }
 
-function hasAccessAuth(request) {
+function hasConfiguredAccessAuth(request, env) {
+  if (clean(env.CLOUDFLARE_ACCESS_ENABLED).toLowerCase() !== "true") return false;
+
   var headers = request.headers;
   var accessJwt = clean(headers.get("cf-access-jwt-assertion"));
   if (accessJwt) return true;
@@ -60,7 +62,11 @@ function csvResponse(rows) {
     "booking_id",
     "marketing_consent",
     "delivery_status",
-    "delivery_errors"
+    "delivery_errors",
+    "lead_status",
+    "quote_value_pence",
+    "won_revenue_pence",
+    "status_updated_at"
   ];
 
   var lines = [headers.join(",")];
@@ -77,6 +83,23 @@ function csvResponse(rows) {
       "cache-control": "no-store"
     }
   });
+}
+
+async function ensurePipelineColumns(db) {
+  var result = await db.prepare("PRAGMA table_info(leads)").all();
+  var columns = new Set((result.results || []).map(function(item) { return item.name; }));
+  var additions = [
+    ["lead_status", "TEXT NOT NULL DEFAULT 'NEW'"],
+    ["quote_value_pence", "INTEGER NOT NULL DEFAULT 0"],
+    ["won_revenue_pence", "INTEGER NOT NULL DEFAULT 0"],
+    ["status_updated_at", "TEXT"]
+  ];
+
+  for (var index = 0; index < additions.length; index += 1) {
+    if (!columns.has(additions[index][0])) {
+      await db.prepare("ALTER TABLE leads ADD COLUMN " + additions[index][0] + " " + additions[index][1]).run();
+    }
+  }
 }
 
 async function ensureLeadExportSchema(db) {
@@ -96,6 +119,10 @@ async function ensureLeadExportSchema(db) {
       marketing_consent INTEGER NOT NULL DEFAULT 0,
       delivery_status TEXT NOT NULL DEFAULT 'pending',
       delivery_errors TEXT,
+      lead_status TEXT NOT NULL DEFAULT 'NEW',
+      quote_value_pence INTEGER NOT NULL DEFAULT 0,
+      won_revenue_pence INTEGER NOT NULL DEFAULT 0,
+      status_updated_at TEXT,
       user_agent TEXT,
       ip_hash TEXT,
       landing_page TEXT,
@@ -115,7 +142,9 @@ async function ensureLeadExportSchema(db) {
       booking_id TEXT
     )`
   ).run();
+  await ensurePipelineColumns(db);
   await db.prepare("CREATE INDEX IF NOT EXISTS idx_leads_submitted_at ON leads (submitted_at DESC)").run();
+  await db.prepare("CREATE INDEX IF NOT EXISTS idx_leads_status ON leads (lead_status)").run();
 }
 
 export async function onRequestGet(context) {
@@ -123,9 +152,9 @@ export async function onRequestGet(context) {
   var token = clean(env.LEADS_EXPORT_TOKEN);
   var authHeader = clean(context.request.headers.get("authorization"));
   var bearerToken = authHeader.toLowerCase().startsWith("bearer ") ? authHeader.slice(7).trim() : "";
-  var requestToken = bearerToken || clean(new URL(context.request.url).searchParams.get("token"));
+  var requestToken = bearerToken;
 
-  if (hasAccessAuth(context.request)) {
+  if (hasConfiguredAccessAuth(context.request, env)) {
     requestToken = token;
   }
 
@@ -172,7 +201,11 @@ export async function onRequestGet(context) {
       booking_id,
       marketing_consent,
       delivery_status,
-      delivery_errors
+      delivery_errors,
+      lead_status,
+      quote_value_pence,
+      won_revenue_pence,
+      status_updated_at
     FROM leads
     ORDER BY submitted_at DESC
     LIMIT 1000`

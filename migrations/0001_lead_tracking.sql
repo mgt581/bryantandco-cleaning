@@ -13,6 +13,10 @@ CREATE TABLE IF NOT EXISTS leads (
   marketing_consent INTEGER NOT NULL DEFAULT 0,
   delivery_status TEXT NOT NULL DEFAULT 'pending',
   delivery_errors TEXT,
+  lead_status TEXT NOT NULL DEFAULT 'NEW' CHECK (lead_status IN ('TEST', 'NEW', 'GENUINE', 'SPAM', 'CONTACTED', 'QUOTED', 'WON', 'LOST')),
+  quote_value_pence INTEGER NOT NULL DEFAULT 0 CHECK (quote_value_pence >= 0),
+  won_revenue_pence INTEGER NOT NULL DEFAULT 0 CHECK (won_revenue_pence >= 0),
+  status_updated_at TEXT,
   user_agent TEXT,
   ip_hash TEXT,
   landing_page TEXT,
@@ -34,6 +38,7 @@ CREATE TABLE IF NOT EXISTS leads (
 
 CREATE INDEX IF NOT EXISTS idx_leads_submitted_at ON leads (submitted_at DESC);
 CREATE INDEX IF NOT EXISTS idx_leads_source ON leads (source);
+CREATE INDEX IF NOT EXISTS idx_leads_status ON leads (lead_status);
 
 CREATE TABLE IF NOT EXISTS lead_events (
   id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -248,6 +248,34 @@
       word-break: break-word;
     }
 
+    .pipeline-controls {
+      display: grid;
+      grid-template-columns: minmax(118px, 1fr) 92px 92px auto;
+      gap: 7px;
+      align-items: center;
+      min-width: 430px;
+    }
+
+    .pipeline-controls select,
+    .pipeline-controls input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px;
+      background: var(--panel-2);
+      color: var(--text);
+    }
+
+    .pipeline-controls button {
+      cursor: pointer;
+      border: 0;
+      border-radius: 8px;
+      padding: 9px 12px;
+      background: var(--accent-2);
+      color: #fff;
+      font-weight: 800;
+    }
+
     .footer {
       margin: 18px 0 0;
       color: var(--muted);
@@ -315,6 +343,32 @@
 
           <article class="card">
             <div class="card-head">
+              <h2>Lead pipeline</h2>
+              <span class="pill" id="pipelineCount">0 stages</span>
+            </div>
+            <div class="card-body">
+              <table>
+                <thead><tr><th>Status</th><th>Leads</th></tr></thead>
+                <tbody id="pipelineBody"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="card wide">
+            <div class="card-head">
+              <h2>Revenue by lead origin</h2>
+              <span class="pill" id="revenueOriginCount">0 sources</span>
+            </div>
+            <div class="card-body">
+              <table>
+                <thead><tr><th>Origin</th><th>Leads</th><th>Won</th><th>Quoted</th><th>Won revenue</th></tr></thead>
+                <tbody id="revenueOriginBody"></tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card-head">
               <h2>Services requested</h2>
               <span class="pill" id="serviceCount">0 services</span>
             </div>
@@ -366,7 +420,8 @@
                     <th>Service</th>
                     <th>Origin</th>
                     <th>Page</th>
-                    <th>Status</th>
+                    <th>Delivery</th>
+                    <th>Pipeline / values (£)</th>
                   </tr>
                 </thead>
                 <tbody id="leadBody"></tbody>
@@ -445,6 +500,16 @@
         return text.slice(0, limit - 1) + "…";
       }
 
+      function moneyFromPence(value) {
+        return "£" + (Number(value || 0) / 100).toFixed(2);
+      }
+
+      function statusOptions(selected) {
+        return ["TEST", "NEW", "GENUINE", "SPAM", "CONTACTED", "QUOTED", "WON", "LOST"].map(function (status) {
+          return '<option value="' + status + '"' + (status === selected ? " selected" : "") + '>' + status + '</option>';
+        }).join("");
+      }
+
       function originLabel(item) {
         var utmSource = String(item && item.utm_source ? item.utm_source : "").trim().toLowerCase();
         if (utmSource) return utmSource;
@@ -505,6 +570,12 @@
             row("Page views", events.page_view || 0, "Tracked on first touch")
           );
 
+          metricNodes.push(
+            row("Won leads", totals.won_leads || 0, "Pipeline status WON", totals.won_leads ? "good" : "warn"),
+            row("Quoted value", moneyFromPence(totals.quoted_value_pence), "Total stored quote value"),
+            row("Won revenue", moneyFromPence(totals.won_revenue_pence), "Revenue attributed to leads", totals.won_revenue_pence ? "good" : "warn")
+          );
+
           var metrics = document.getElementById("metrics");
           metrics.innerHTML = "";
           metricNodes.forEach(function (node) {
@@ -518,6 +589,8 @@
           document.getElementById("dailyCount").textContent = (data.daily_leads || []).length + " days";
           document.getElementById("leadCount").textContent = (data.recent_leads || []).length + " leads";
           document.getElementById("recentEventCount").textContent = (data.recent_events || []).length + " rows";
+          document.getElementById("pipelineCount").textContent = (data.pipeline_summary || []).length + " stages";
+          document.getElementById("revenueOriginCount").textContent = (data.revenue_origin_summary || []).length + " sources";
 
           setTable("dailyBody", data.daily_leads || [], function (item) {
             return "<tr><td>" + esc(item.day || "—") + "</td><td>" + esc(item.count) + "</td></tr>";
@@ -541,6 +614,22 @@
             return "<tr><td>" + esc(item.event_name) + "</td><td>" + esc(item.count) + "</td></tr>";
           });
 
+          setTable("pipelineBody", data.pipeline_summary || [], function (item) {
+            return "<tr><td>" + esc(item.status || "NEW") + "</td><td>" + esc(item.count) + "</td></tr>";
+          });
+
+          setTable("revenueOriginBody", data.revenue_origin_summary || [], function (item) {
+            return [
+              "<tr>",
+              "<td>" + esc(item.origin || "direct / unknown") + "</td>",
+              "<td>" + esc(item.leads || 0) + "</td>",
+              "<td>" + esc(item.won_leads || 0) + "</td>",
+              "<td>" + esc(moneyFromPence(item.quote_value_pence)) + "</td>",
+              "<td>" + esc(moneyFromPence(item.won_revenue_pence)) + "</td>",
+              "</tr>"
+            ].join("");
+          });
+
           setTable("leadBody", data.recent_leads || [], function (item) {
             var origin = originLabel(item);
             return [
@@ -551,6 +640,12 @@
               "<td>" + esc(shortText(origin, 36)) + "</td>",
               "<td>" + esc(shortText(item.page || item.landing_page || "—", 42)) + "</td>",
               "<td><span class=\"pill " + (item.delivery_status === "delivered" ? "" : "bad") + "\">" + esc(item.delivery_status || "pending") + "</span></td>",
+              '<td><div class="pipeline-controls" data-lead-id="' + esc(item.id) + '">',
+              '<select aria-label="Lead status">' + statusOptions(item.lead_status || "NEW") + '</select>',
+              '<input type="number" min="0" step="0.01" aria-label="Quote value in pounds" value="' + esc((Number(item.quote_value_pence || 0) / 100).toFixed(2)) + '">',
+              '<input type="number" min="0" step="0.01" aria-label="Won revenue in pounds" value="' + esc((Number(item.won_revenue_pence || 0) / 100).toFixed(2)) + '">',
+              '<button type="button">Save</button>',
+              "</div></td>",
               "</tr>"
             ].join("");
           });
@@ -568,6 +663,33 @@
           });
 
           sections.style.display = "grid";
+
+          document.getElementById("leadBody").addEventListener("click", function (event) {
+            var button = event.target.closest("button");
+            if (!button) return;
+            var controls = button.closest("[data-lead-id]");
+            var inputs = controls.querySelectorAll("input");
+            var payload = {
+              lead_status: controls.querySelector("select").value,
+              quote_value_pence: Math.round(Number(inputs[0].value || 0) * 100),
+              won_revenue_pence: Math.round(Number(inputs[1].value || 0) * 100)
+            };
+            button.disabled = true;
+            button.textContent = "Saving…";
+            fetch("/api/leads/" + encodeURIComponent(controls.dataset.leadId), {
+              method: "PATCH",
+              headers: { "content-type": "application/json", accept: "application/json" },
+              body: JSON.stringify(payload)
+            }).then(function (response) {
+              if (!response.ok) return response.json().then(function (body) { throw new Error(body.error || "Update failed."); });
+              window.location.reload();
+            }).catch(function (error) {
+              button.disabled = false;
+              button.textContent = "Retry";
+              statusNotice.style.display = "block";
+              statusNotice.textContent = error.message || "Lead update failed.";
+            });
+          });
         })
         .catch(function (error) {
           statusNotice.style.display = "block";

@@ -62,6 +62,7 @@ In Cloudflare Pages, add:
 
 - `LEADS_DB`: D1 database binding for lead and event storage.
 - `LEADS_EXPORT_TOKEN`: encrypted secret fallback for private API/CSV access.
+- `CLOUDFLARE_ACCESS_ENABLED=true`: confirms that Access-protected browser requests may use the Access assertion/cookie.
 
 The dashboard and CSV exports support Cloudflare Access authenticated requests. The export routes are:
 
@@ -73,6 +74,23 @@ Create a dedicated D1 database for Bryant & Co Cleaning leads, for example `brya
 ```text
 migrations/0001_lead_tracking.sql
 ```
+
+For a database that already has the original lead-tracking schema, run the additive pipeline migration instead:
+
+```text
+migrations/0002_lead_pipeline.sql
+```
+
+Protect these paths with the same Cloudflare Access application/policy:
+
+- `/dashboard` and `/dashboard.html`
+- `/api/dashboard`
+- `/api/leads/*`
+- `/api/lead-events/export`
+
+The dashboard never puts an admin token in HTML, JavaScript, links or query strings. Browser administration relies on Cloudflare Access. The encrypted `LEADS_EXPORT_TOKEN` is only a bearer-token fallback for controlled server/API use.
+
+The lead pipeline supports `TEST`, `NEW`, `GENUINE`, `SPAM`, `CONTACTED`, `QUOTED`, `WON` and `LOST`, plus quote value and won revenue stored as integer pence. Admins update those fields from the private dashboard.
 
 The functions also create missing lead tables automatically on first use, but running the migration first is cleaner.
 
