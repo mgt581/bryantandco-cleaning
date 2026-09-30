@@ -71,6 +71,38 @@ export async function onRequest({ request, env }) {
     ['Phone', lead.phone],
     ['Rating', lead.rating],
     ['Postcode', lead.postcode],
+    ['Company / trading name', lead.company_name],
+    ['Contact name', lead.contact_name],
+    ['Company number', lead.company_number],
+    ['Website', lead.website],
+    ['Base postcode', lead.base_postcode],
+    ['Areas / regions covered', lead.areas_covered],
+    ['Project location(s)', lead.project_locations],
+    ['Number of sites', lead.number_of_sites],
+    ['Sector', lead.sector],
+    ['Site type', lead.site_type],
+    ['Approximate floor area', lead.project_size],
+    ['Desired start date', lead.desired_start_date],
+    ['Completion deadline', lead.completion_deadline],
+    ['Construction phase', lead.construction_phase],
+    ['Window / glazing requirements', lead.window_requirements],
+    ['Contract frequency', lead.contract_frequency],
+    ['Access restrictions', lead.access_restrictions],
+    ['Scope required', lead.scope_required],
+    ['Services offered', lead.services_offered],
+    ['Number of cleaners available', lead.cleaners_available],
+    ['Commercial cleaning experience', lead.commercial_experience],
+    ['Construction / builders clean experience', lead.construction_experience],
+    ['Window cleaning capability', lead.window_cleaning_capability],
+    ['Carpet cleaning capability', lead.carpet_cleaning_capability],
+    ['Equipment available', lead.equipment_available],
+    ['Public liability insurance', lead.public_liability],
+    ['Employers liability', lead.employers_liability],
+    ['DBS capability / status', lead.dbs_status],
+    ['CSCS / site experience', lead.cscs_site_experience],
+    ['RAMS capability', lead.rams_capability],
+    ['Mobilisation notice', lead.mobilisation_notice],
+    ['References / previous commercial projects', lead.references_projects],
     ['Property size', lead.property_size],
     ['Preferred date', lead.preferred_date],
     ['Requested date', lead.booking_date ? lead.booking_date : ''],
@@ -178,7 +210,8 @@ async function ensurePipelineColumns(db) {
     ['lead_status', "TEXT NOT NULL DEFAULT 'NEW'"],
     ['quote_value_pence', 'INTEGER NOT NULL DEFAULT 0'],
     ['won_revenue_pence', 'INTEGER NOT NULL DEFAULT 0'],
-    ['status_updated_at', 'TEXT']
+    ['status_updated_at', 'TEXT'],
+    ['details_json', 'TEXT']
   ];
 
   for (const [name, definition] of additions) {
@@ -190,7 +223,7 @@ async function ensurePipelineColumns(db) {
 
 function normalizeLead(lead, bookingId) {
   const splitName = [lead.first_name, lead.last_name].map((item) => cleanLeadValue(item, 160)).filter(Boolean).join(' ');
-  const name = cleanLeadValue(lead.name || lead.full_name || splitName, 240);
+  const name = cleanLeadValue(lead.name || lead.full_name || lead.contact_name || lead.company_name || splitName, 240);
   const service = cleanLeadValue(lead.service || lead.home_service || lead.gallery_service || 'Website enquiry', 160);
   const page = cleanLeadValue(lead.page || lead.page_url, 1000);
 
@@ -220,8 +253,24 @@ function normalizeLead(lead, bookingId) {
     clientId: cleanLeadValue(lead.client_id, 120),
     formName: cleanLeadValue(lead.form_name, 200),
     propertySize: cleanLeadValue(lead.property_size, 120),
-    bookingId: cleanLeadValue(bookingId, 120)
+    bookingId: cleanLeadValue(bookingId, 120),
+    detailsJson: JSON.stringify(leadDetails(lead))
   };
+}
+
+function leadDetails(lead) {
+  const fieldNames = [
+    'company_name', 'contact_name', 'company_number', 'website', 'base_postcode',
+    'areas_covered', 'project_locations', 'number_of_sites', 'sector', 'site_type',
+    'project_size', 'desired_start_date', 'completion_deadline', 'construction_phase',
+    'window_requirements', 'contract_frequency', 'access_restrictions', 'scope_required',
+    'services_offered', 'cleaners_available', 'commercial_experience',
+    'construction_experience', 'window_cleaning_capability', 'carpet_cleaning_capability',
+    'equipment_available', 'public_liability', 'employers_liability', 'dbs_status',
+    'cscs_site_experience', 'rams_capability', 'mobilisation_notice', 'references_projects'
+  ];
+
+  return Object.fromEntries(fieldNames.map((name) => [name, cleanLeadValue(lead[name], 4000)]).filter(([, value]) => value));
 }
 
 async function hashIp(ip) {
@@ -268,7 +317,8 @@ async function ensureLeadSchema(db) {
       client_id TEXT,
       form_name TEXT,
       property_size TEXT,
-      booking_id TEXT
+      booking_id TEXT,
+      details_json TEXT
     )
   `).run();
   await ensurePipelineColumns(db);
@@ -321,8 +371,8 @@ async function storeLead(env, request, lead, deliveryStatus, deliveryErrors) {
       page, source, marketing_consent, delivery_status, delivery_errors,
       user_agent, ip_hash, landing_page, referrer, utm_source, utm_medium,
       utm_campaign, utm_term, utm_content, gclid, fbclid, msclkid, session_id,
-      client_id, form_name, property_size, booking_id
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      client_id, form_name, property_size, booking_id, details_json
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).bind(
     lead.submittedAt,
     lead.name,
@@ -353,7 +403,8 @@ async function storeLead(env, request, lead, deliveryStatus, deliveryErrors) {
     lead.clientId,
     lead.formName,
     lead.propertySize,
-    lead.bookingId
+    lead.bookingId,
+    lead.detailsJson
   ).run();
 
   return result && result.meta ? Number(result.meta.last_row_id || 0) : 0;

@@ -174,6 +174,45 @@ test("send-lead stores enquiry attribution and delivery status", async () => {
   }
 });
 
+test("send-lead retains commercial and partner application details", async () => {
+  const originalFetch = globalThis.fetch;
+  const db = captureDb();
+  globalThis.fetch = async () => new Response("", { status: 200 });
+
+  try {
+    const response = await sendLeadApi.onRequest({
+      env: {
+        RESEND_API_KEY: "test-key",
+        LEAD_TO_EMAILS: "owner@example.test",
+        LEADS_DB: db
+      },
+      request: request("https://example.test/api/send-lead", {
+        form_name: "Cleaning partner application form",
+        service: "Cleaning Partner Application",
+        company_name: "Example Cleaning Ltd",
+        contact_name: "Alex Example",
+        email: "partner@example.test",
+        phone: "07000000000",
+        areas_covered: "South West",
+        public_liability: "Yes",
+        rams_capability: "Yes"
+      })
+    });
+
+    assert.equal(response.status, 200);
+    assert.equal(db.rows.leads[0][1], "Alex Example");
+    assert.deepEqual(JSON.parse(db.rows.leads[0][30]), {
+      company_name: "Example Cleaning Ltd",
+      contact_name: "Alex Example",
+      areas_covered: "South West",
+      public_liability: "Yes",
+      rams_capability: "Yes"
+    });
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test("lead-event stores supported tracking events", async () => {
   const db = captureDb();
   const response = await leadEventApi.onRequestPost({

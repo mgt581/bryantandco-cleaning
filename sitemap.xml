@@ -36,6 +36,61 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://bryantandcocleaning.co.uk/nationwide-commercial-cleaning.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://bryantandcocleaning.co.uk/construction-cleaning.html</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://bryantandcocleaning.co.uk/sparkle-cleaning.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://bryantandcocleaning.co.uk/post-construction-cleaning.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://bryantandcocleaning.co.uk/multi-site-commercial-cleaning.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://bryantandcocleaning.co.uk/property-portfolio-cleaning.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://bryantandcocleaning.co.uk/commercial-window-cleaning.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://bryantandcocleaning.co.uk/contract-cleaning.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://bryantandcocleaning.co.uk/nationwide-coverage.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://bryantandcocleaning.co.uk/sectors.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://bryantandcocleaning.co.uk/cleaning-partners.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.65</priority>
+  </url>
+  <url>
     <loc>https://bryantandcocleaning.co.uk/end-of-tenancy-cleaning.html</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
