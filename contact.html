@@ -7,7 +7,7 @@
   <link rel="apple-touch-icon" href="images/logo.png">
   <link rel="icon" type="image/png" href="images/logo.png">
 
-  <title>Contact Us | Bryant &amp; Co Cleaning — Get a Free Quote in Bournemouth &amp; Dorset</title>
+  <title>Contact Bryant &amp; Co Cleaning | Bournemouth &amp; Dorset</title>
   <meta name="description" content="Contact Bryant &amp; Co Cleaning for a free, no-obligation quote. Professional cleaning services in Bournemouth, Poole, Christchurch and across Dorset. Call 07843969254 today.">
   <meta name="keywords" content="contact cleaning Bournemouth, free cleaning quote Dorset, book cleaner Bournemouth, cleaning company contact, Bryant and Co Cleaning contact">
   <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
@@ -85,6 +85,7 @@
         <ul class="nav__list">
           <li><a href="index.html"    class="nav__link">Home</a></li>
           <li><a href="services.html" class="nav__link">Our Services</a></li>
+          <li><a href="nationwide-commercial-cleaning.html" class="nav__link">Commercial</a></li>
           <li><a href="gallery.html"  class="nav__link">Gallery</a></li>
           <li><a href="ouravailability.html" class="nav__link">Our Availability</a></li>
           <li><a href="pricing.html" class="nav__link">Pricing</a></li>
@@ -95,7 +96,7 @@
         <a href="contact.html" class="btn btn--primary nav__cta">Get a Free Quote</a>
       </nav>
 
-      <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+      <button type="button" class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
     </div>
@@ -159,7 +160,7 @@
             <div>
               <span class="contact-info__label">Phone</span>
               <div class="contact-info__value">
-                <a href="tel:07843969254">07843969254</a> (Bryant & Co Cleaning)              </div>
+                <a href="tel:07843969254">07843969254</a> (Bryant &amp; Co Cleaning)              </div>
             </div>
           </div>
 
@@ -229,6 +230,12 @@
                 <input class="service-card-radio" type="radio" name="service" id="svc-commercial" value="Commercial Cleaning">
                 <label class="service-card-label" for="svc-commercial"> <span class="svc-icon">🏢</span>Commercial</label>
 
+                <input class="service-card-radio" type="radio" name="service" id="svc-national" value="Nationwide Commercial Cleaning">
+                <label class="service-card-label" for="svc-national"> <span class="svc-icon">🏗️</span>National Project</label>
+
+                <input class="service-card-radio" type="radio" name="service" id="svc-construction" value="Construction Cleaning">
+                <label class="service-card-label" for="svc-construction"> <span class="svc-icon">🧱</span>Construction</label>
+
                 <input class="service-card-radio" type="radio" name="service" id="svc-tenancy"    value="End of Tenancy">
                 <label class="service-card-label" for="svc-tenancy">    <span class="svc-icon">🔑</span>End of Tenancy</label>
 
@@ -287,11 +294,123 @@
               </div>
             </div>
 
+            <div class="form-row">
+              <div class="form-group">
+                <label for="company-name">Company / Organisation</label>
+                <input type="text" id="company-name" name="company_name" placeholder="Company name" autocomplete="organization">
+              </div>
+              <div class="form-group">
+                <label for="project-locations">Project Location(s)</label>
+                <input type="text" id="project-locations" name="project_locations" placeholder="Town, region or site list">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="number-of-sites">Number of Sites</label>
+                <input type="text" id="number-of-sites" name="number_of_sites" placeholder="e.g. 1, 5, national rollout">
+              </div>
+              <div class="form-group">
+                <label for="sector">Sector</label>
+                <select id="sector" name="sector">
+                  <option value="">— Please select —</option>
+                  <option>Main contractor / construction</option>
+                  <option>Property developer</option>
+                  <option>Facilities management</option>
+                  <option>Property portfolio / landlord</option>
+                  <option>Office / commercial premises</option>
+                  <option>Education</option>
+                  <option>Retail / hospitality</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            </div>
+
+            <fieldset class="form-section">
+              <legend>Commercial Project Details</legend>
+              <p class="form-section__intro">Optional for domestic enquiries. For commercial work, these details help us assess the scope and prepare the right response.</p>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="site-type">Site Type</label>
+                  <input type="text" id="site-type" name="site_type" placeholder="e.g. office, school, housing development">
+                </div>
+                <div class="form-group">
+                  <label for="project-size">Approximate Floor Area</label>
+                  <input type="text" id="project-size" name="project_size" placeholder="Square feet or m², if known">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="desired-start-date">Desired Start Date</label>
+                  <input type="date" id="desired-start-date" name="desired_start_date">
+                </div>
+                <div class="form-group">
+                  <label for="completion-deadline">Completion Deadline</label>
+                  <input type="date" id="completion-deadline" name="completion_deadline">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="construction-phase">Construction Phase</label>
+                  <select id="construction-phase" name="construction_phase">
+                    <option value="">— Not applicable / select —</option>
+                    <option>Initial builders clean</option>
+                    <option>Progressive cleaning</option>
+                    <option>Final builders clean</option>
+                    <option>Sparkle / handover clean</option>
+                    <option>Snag / revisit clean</option>
+                    <option>Occupied refurbishment</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="window-requirements">Window / Glazing Requirements</label>
+                  <select id="window-requirements" name="window_requirements">
+                    <option value="">— Please select —</option>
+                    <option>None</option>
+                    <option>Internal glazing</option>
+                    <option>External glazing</option>
+                    <option>Internal and external glazing</option>
+                    <option>To be confirmed</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="contract-frequency">Contract Frequency</label>
+                  <select id="contract-frequency" name="contract_frequency">
+                    <option value="">— Please select —</option>
+                    <option>One-off project</option>
+                    <option>Daily</option>
+                    <option>Weekly</option>
+                    <option>Fortnightly</option>
+                    <option>Monthly</option>
+                    <option>Phased / programme-based</option>
+                    <option>Other / to be agreed</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="access-restrictions">Access Restrictions</label>
+                  <input type="text" id="access-restrictions" name="access_restrictions" placeholder="Hours, permits, inductions or security">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="scope-required">Scope / Specification Summary</label>
+                <textarea id="scope-required" name="scope_required" placeholder="Areas, surfaces, standards, phasing, sign-off process and any RAMS requirements..."></textarea>
+                <small>Have a formal specification? Mention it here and we will arrange a secure way to receive it.</small>
+              </div>
+            </fieldset>
+
             <div class="booking-widget" data-booking-widget></div>
 
             <div class="form-group">
               <label for="message">Additional Details</label>
-              <textarea id="message" name="message" placeholder="Tell us about your property, preferred cleaning schedule, or any specific requirements..."></textarea>
+              <textarea id="message" name="message" placeholder="Tell us about your property, sites, cleaning scope, preferred dates, access requirements, RAMS needs or any specific requirements..."></textarea>
             </div>
 
             <div class="form-group">
@@ -359,6 +478,7 @@
           <nav class="footer-links">
             <a href="index.html">Home</a>
             <a href="services.html">Our Services</a>
+            <a href="nationwide-commercial-cleaning.html">Nationwide Commercial Cleaning</a>
             <a href="gallery.html">Gallery</a>
             <a href="contact.html">Contact Us</a>
             <a href="privacy.html">Privacy Policy</a>
@@ -369,6 +489,8 @@
           <nav class="footer-links">
             <a href="domestic-cleaning.html">Domestic Cleaning</a>
             <a href="commercial-cleaning.html">Commercial Cleaning</a>
+            <a href="construction-cleaning.html">Construction Cleaning</a>
+            <a href="multi-site-commercial-cleaning.html">Multi-Site Cleaning</a>
             <a href="end-of-tenancy-cleaning.html">End of Tenancy</a>
             <a href="deep-cleaning.html">Deep Cleaning</a>
             <a href="after-build-cleaning.html">After-Build Cleaning</a>
