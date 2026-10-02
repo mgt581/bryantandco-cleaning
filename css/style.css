@@ -421,6 +421,26 @@ p, li, a, h1, h2, h3, h4, h5 {
   color: var(--color-white);
 }
 
+@media (min-width: 769px) {
+  .hero {
+    min-height: clamp(680px, 76vh, 780px);
+  }
+
+  .hero__content {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-top: 0;
+    padding-bottom: 8rem;
+    transform: translateY(5rem);
+  }
+
+  .hero__bg-img {
+    object-position: center -6rem;
+  }
+}
+
 @media (max-width: 520px) {
   .hero {
     min-height: 700px;
