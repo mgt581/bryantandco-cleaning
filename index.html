@@ -38,6 +38,11 @@
   <!-- Stylesheet -->
   <link rel="stylesheet" href="css/style.css?v=fixed-price-policy-hero-4">
   <style>
+    /* Preserve the approved desktop hero spacing independently of shared styles. */
+    @media (min-width: 1025px) {
+      .hero--home { min-height: calc(clamp(680px, 76vh, 780px) + 6rem); }
+      .hero--home .hero__bg-img { object-position: center top; }
+    }
     .home-footer .footer-brand p,
     .home-footer .footer-bottom p,
     .home-footer .footer-built-by,
@@ -168,7 +173,7 @@
   </header>
 
   <!-- Hero -->
-  <section class="hero">
+  <section class="hero hero--home">
     <img class="hero__bg-img" src="images/hero3.png" alt="Bryant &amp; Co Cleaning — professional cleaning services in Bournemouth &amp; Dorset">
     <div class="container hero__content">
       <h1 class="hero__title">Professional Cleaning Services in Bournemouth, Poole and Dorset</h1>
