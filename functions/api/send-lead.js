@@ -513,7 +513,7 @@ async function reserveBooking(lead, env) {
     throw error;
   }
   if (!Number.isInteger(duration) || duration < 30 || duration > 480 || duration % 30 !== 0) {
-    const error = new Error('Please select a valid cleaning duration.');
+    const error = new Error('Please select valid booking details.');
     error.status = 400;
     throw error;
   }

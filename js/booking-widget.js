@@ -15,7 +15,6 @@
     var requestParams = new URLSearchParams(window.location.search);
     var requestedDate = requestParams.get('booking_date');
     var requestedStart = requestParams.get('booking_start');
-    var requestedDuration = Number(requestParams.get('booking_duration'));
     if (/^\d{4}-\d{2}-\d{2}$/.test(requestedDate || '')) {
       var requestedDateObject = new Date(requestedDate + 'T00:00:00');
       if (!Number.isNaN(requestedDateObject.getTime())) {
@@ -23,15 +22,14 @@
         state.month = new Date(requestedDateObject.getFullYear(), requestedDateObject.getMonth(), 1);
       }
     }
-    if ([60, 120, 180, 240, 300, 360].indexOf(requestedDuration) !== -1) state.duration = requestedDuration;
     if (/^\d{2}:\d{2}$/.test(requestedStart || '')) state.start = requestedStart;
 
     root.innerHTML = `
-      <div class="booking-widget__heading"><div><label class="booking-widget__title">Choose a date and time <span>(optional)</span></label><p>Free slots are shown below. Taken times are greyed out so you can avoid double-booking.</p></div><div class="booking-widget__heading-actions"><span class="booking-widget__badge">Live availability</span><a class="booking-widget__full-link" href="ouravailability.html">Open full calendar →</a></div></div>
+      <div class="booking-widget__heading"><div><label class="booking-widget__title">Choose a preferred date and start time <span>(optional)</span></label><p>We will confirm the final timing after reviewing your cleaning scope and agreeing the fixed quote.</p></div><div class="booking-widget__heading-actions"><span class="booking-widget__badge">Live availability</span><a class="booking-widget__full-link" href="ouravailability.html">Open full calendar →</a></div></div>
       <div class="booking-widget__legend" aria-label="Availability legend"><span><i class="booking-dot booking-dot--free"></i>Available</span><span><i class="booking-dot booking-dot--taken"></i>Taken</span></div>
       <div class="booking-widget__status" role="status" aria-live="polite">Loading live availability…</div>
       <div class="booking-widget__calendar"><div class="calendar-header"><button class="cal-nav booking-prev" type="button" aria-label="Previous month">&#8249;</button><span class="cal-month-label booking-month"></span><button class="cal-nav booking-next" type="button" aria-label="Next month">&#8250;</button></div><div class="cal-grid booking-grid" role="grid" aria-label="Available cleaning dates"></div></div>
-      <div class="booking-widget__selection"><div class="booking-widget__selected-date">Select a date to see available start times.</div><div class="form-row booking-widget__options"><div class="form-group"><label>Cleaning duration</label><select class="booking-duration" aria-label="Cleaning duration"><option value="60">1 hour</option><option value="120" selected>2 hours</option><option value="180">3 hours</option><option value="240">4 hours</option><option value="300">5 hours</option><option value="360">6 hours</option></select></div><div class="form-group"><label>Frequency</label><select class="booking-recurrence" aria-label="Booking frequency"><option value="once">One-off</option><option value="weekly">Every week</option><option value="fortnightly">Every 2 weeks</option><option value="monthly">Every month</option></select></div></div><div class="form-group booking-until-wrap" hidden><label>Recurring booking until</label><input class="booking-until" type="date" aria-label="Recurring booking end date"><small>We will request the same day and time for each occurrence up to this date.</small></div><div class="booking-time-label">Available start times</div><div class="time-slots booking-times" role="group" aria-label="Available start times"></div><p class="booking-widget__hint">You can leave the calendar blank if you only want a quote.</p></div>
+      <div class="booking-widget__selection"><div class="booking-widget__selected-date">Select a date to see available start times.</div><div class="form-row booking-widget__options"><div class="form-group"><label>Frequency</label><select class="booking-recurrence" aria-label="Booking frequency"><option value="once">One-off</option><option value="weekly">Every week</option><option value="fortnightly">Every 2 weeks</option><option value="monthly">Every month</option></select></div></div><div class="form-group booking-until-wrap" hidden><label>Recurring request until</label><input class="booking-until" type="date" aria-label="Recurring request end date"><small>We will request the same preferred day and start time for each occurrence up to this date.</small></div><div class="booking-time-label">Preferred start times</div><div class="time-slots booking-times" role="group" aria-label="Preferred start times"></div><p class="booking-widget__hint">You can leave the calendar blank. Your date and time are not confirmed until the scope and fixed price are agreed.</p></div>
       <input type="hidden" name="booking_date" class="booking-date"><input type="hidden" name="booking_start" class="booking-start"><input type="hidden" name="booking_duration" class="booking-duration-value" value="120"><input type="hidden" name="booking_recurrence" class="booking-recurrence-value" value="once"><input type="hidden" name="booking_until" class="booking-until-value">`;
 
     var status = root.querySelector('.booking-widget__status');
@@ -39,7 +37,6 @@
     var monthLabel = root.querySelector('.booking-month');
     var selectedDate = root.querySelector('.booking-widget__selected-date');
     var times = root.querySelector('.booking-times');
-    var durationSelect = root.querySelector('.booking-duration');
     var recurrenceSelect = root.querySelector('.booking-recurrence');
     var untilWrap = root.querySelector('.booking-until-wrap');
     var untilInput = root.querySelector('.booking-until');
@@ -48,7 +45,6 @@
     var durationInput = root.querySelector('.booking-duration-value');
     var recurrenceInput = root.querySelector('.booking-recurrence-value');
     var untilValue = root.querySelector('.booking-until-value');
-    durationSelect.value = String(state.duration);
     durationInput.value = String(state.duration);
     dateInput.value = state.date;
     startInput.value = state.start;
@@ -104,13 +100,12 @@
       times.innerHTML = ''; if (!state.date || !state.ready) return;
       var starts = availableStarts(parseIso(state.date), state.duration); selectedDate.textContent = niceDate(state.date) + (state.start ? ' — ' + niceTime(state.start) + ' selected' : ' — choose a start time');
       starts.forEach(function (slot) { var button = document.createElement('button'); button.type = 'button'; button.className = 'time-slot'; button.textContent = niceTime(slot.time); if (!slot.free) { button.disabled = true; button.classList.add('time-slot--taken'); button.setAttribute('aria-label', niceTime(slot.time) + ' taken'); } else button.addEventListener('click', function () { state.start = slot.time; startInput.value = slot.time; times.querySelectorAll('.time-slot').forEach(function (item) { item.classList.remove('selected'); }); button.classList.add('selected'); selectedDate.textContent = niceDate(state.date) + ' — ' + niceTime(state.start) + ' selected'; }); times.appendChild(button); });
-      if (!starts.some(function (slot) { return slot.free; })) { var note = document.createElement('p'); note.className = 'booking-widget__taken-note'; note.textContent = 'No start times are free for this duration. Try a shorter clean or another date.'; times.appendChild(note); }
+      if (!starts.some(function (slot) { return slot.free; })) { var note = document.createElement('p'); note.className = 'booking-widget__taken-note'; note.textContent = 'No preferred start times are available on this date. Please choose another date.'; times.appendChild(note); }
     }
     function setUntilDefault() { var base = state.date ? parseIso(state.date) : new Date(); state.until = iso(addMonths(base, 12)); untilInput.value = state.until; untilValue.value = state.until; }
 
     root.querySelector('.booking-prev').addEventListener('click', function () { var now = new Date(); var previous = new Date(state.month.getFullYear(), state.month.getMonth() - 1, 1); if (previous >= new Date(now.getFullYear(), now.getMonth(), 1)) { state.month = previous; renderCalendar(); loadMonth(); } });
     root.querySelector('.booking-next').addEventListener('click', function () { state.month = new Date(state.month.getFullYear(), state.month.getMonth() + 1, 1); renderCalendar(); loadMonth(); });
-    durationSelect.addEventListener('change', function () { state.duration = Number(durationSelect.value); durationInput.value = durationSelect.value; state.start = ''; startInput.value = ''; renderCalendar(); renderTimes(); });
     recurrenceSelect.addEventListener('change', function () { state.recurrence = recurrenceSelect.value; recurrenceInput.value = state.recurrence; untilWrap.hidden = state.recurrence === 'once'; if (state.recurrence === 'once') { state.until = ''; untilValue.value = ''; } else if (!state.until) setUntilDefault(); });
     untilInput.addEventListener('change', function () { state.until = untilInput.value; untilValue.value = state.until; });
     root.closest('form').addEventListener('reset', function () { setTimeout(function () { state.date = ''; state.start = ''; state.recurrence = 'once'; state.until = ''; dateInput.value = ''; startInput.value = ''; recurrenceInput.value = 'once'; untilValue.value = ''; untilWrap.hidden = true; selectedDate.textContent = 'Select a date to see available start times.'; renderCalendar(); renderTimes(); }, 0); });

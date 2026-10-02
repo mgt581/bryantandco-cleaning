@@ -23,7 +23,6 @@
   var status = root.querySelector('[data-calendar-status]');
   var surface = root.querySelector('[data-calendar-surface]');
   var viewButtons = root.querySelectorAll('[data-calendar-view]');
-  var durationSelect = root.querySelector('[data-calendar-duration]');
 
   function pad(value) { return String(value).padStart(2, '0'); }
   function iso(date) { return date.getFullYear() + '-' + pad(date.getMonth() + 1) + '-' + pad(date.getDate()); }
@@ -168,7 +167,7 @@
         body += '<button class="availability-slot ' + (free ? 'is-free' : (canStart ? 'is-taken' : 'is-unavailable')) + '" type="button" ' + (free ? 'data-request-date="' + iso(date) + '" data-request-time="' + value + '"' : 'disabled') + '><span>' + niceTime(value) + '</span><small>' + (free ? 'Request this slot' : (canStart ? 'Taken' : 'Outside opening hours')) + '</small></button>';
       }
     }
-    surface.innerHTML = '<div class="availability-calendar-head"><strong>' + niceDate(date) + '</strong><span>Cleaning duration: ' + (state.duration / 60) + ' hour' + (state.duration === 60 ? '' : 's') + '</span></div><div class="availability-day-view"><aside class="availability-day-summary"><h2>' + (hours ? 'Choose a start time' : 'Closed') + '</h2><p>Click a green slot to continue your request through the contact form.</p></aside><div class="availability-day-slots">' + body + '</div></div>';
+    surface.innerHTML = '<div class="availability-calendar-head"><strong>' + niceDate(date) + '</strong><span>Preferred start times for quote requests</span></div><div class="availability-day-view"><aside class="availability-day-summary"><h2>' + (hours ? 'Choose a preferred start time' : 'Closed') + '</h2><p>Click a green slot to continue your quote request. We will confirm timing after reviewing the cleaning scope.</p></aside><div class="availability-day-slots">' + body + '</div></div>';
   }
 
   function renderSurface() {
@@ -218,7 +217,6 @@
     state.cursor = new Date(state.selected.getFullYear(), state.selected.getMonth(), 1);
     loadAvailability();
   });
-  durationSelect.addEventListener('change', function () { state.duration = Number(durationSelect.value); renderSurface(); });
 
   renderSurface();
   loadAvailability();
