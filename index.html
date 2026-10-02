@@ -52,6 +52,10 @@
       font-weight: 500;
     }
     .home-footer .footer-company { font-size: .8rem; }
+    .home-services .service-card h3 { font-size: 1.35rem; line-height: 1.3; }
+    .home-services .service-card__icon { background: none; border-radius: 8px; overflow: hidden; }
+    .home-services .service-card__icon img { width: 100%; height: 100%; object-fit: cover; }
+    .home-services__links { display: flex; flex-wrap: wrap; justify-content: center; gap: .75rem; margin-top: 2.5rem; }
   </style>
 
   <!-- Schema.org LocalBusiness -->
@@ -251,96 +255,76 @@
   </section>
 
   <!-- Services Overview -->
-  <section class="section" aria-labelledby="services-heading">
+  <section class="section home-services" id="home-pricing-heading" aria-labelledby="services-heading">
     <div class="container">
       <div class="section-header fade-up">
         <span class="section-tag">Our Services</span>
-        <h2 id="services-heading">Everything You Need, Spotlessly Clean</h2>
-        <p>From regular domestic cleans to specialist deep, carpet and after-build cleans, we have a service tailored to your needs across the Southwest and the UK.</p>
+        <h2 id="services-heading">Our Cleaning Services &amp; Pricing</h2>
+        <p>Domestic, commercial and specialist cleaning across Bournemouth, Poole and Dorset, with selected Southwest and UK projects. Each quote reflects your property and the work required.</p>
       </div>
       <div class="services-grid">
-        <article class="service-card fade-up">
-          <div class="service-card__icon" aria-hidden="true"><img src="services-images/clean-surface.png" alt="Professional domestic house cleaning in Bournemouth by Bryant and Co Cleaning" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
+        <article class="service-card fade-up" id="domestic-commercial">
+          <div class="service-card__icon" aria-hidden="true"><img src="services-images/clean-surface-thumb.jpg" loading="lazy" width="60" height="60" alt="Professional domestic house cleaning in Bournemouth by Bryant and Co Cleaning" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
           <h3>Regular Home Cleaning</h3>
-          <p>Weekly, fortnightly or monthly domestic cleaning across Bournemouth, Poole and Dorset, quoted per clean around your property, priorities and schedule.</p>
+          <p>Weekly, fortnightly or monthly home cleaning across Bournemouth, Poole and Dorset. Quoted around your property, frequency and cleaning requirements.</p>
           <div class="service-card__actions"><a href="pricing.html#domestic-commercial" class="btn btn--outline-dark">Quoted per clean</a><a href="contact.html" class="btn btn--primary">Get a Quote</a></div>
         </article>
         <article class="service-card fade-up">
-          <div class="service-card__icon" aria-hidden="true"><img src="services-images/clean-surface.png" alt="One-off domestic house cleaning in Dorset by Bryant and Co Cleaning" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
+          <div class="service-card__icon" aria-hidden="true"><img src="services-images/clean-surface-thumb.jpg" loading="lazy" width="60" height="60" alt="One-off domestic house cleaning in Dorset by Bryant and Co Cleaning" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
           <h3>One-Off Cleaning</h3>
-          <p>Single-visit home cleaning for refreshes, catch-ups and special occasions, priced for the property condition and cleaning requirements.</p>
+          <p>A single-visit home clean for a refresh or catch-up, quoted for your property, condition and cleaning requirements.</p>
           <div class="service-card__actions"><a href="pricing.html#domestic-commercial" class="btn btn--outline-dark">Quoted per clean</a><a href="contact.html" class="btn btn--primary">Get a Quote</a></div>
         </article>
         <article class="service-card fade-up">
-          <div class="service-card__icon" aria-hidden="true"><img src="services-images/office-clean.png" alt="Professional commercial office cleaning in Dorset by Bryant and Co Cleaning" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
+          <div class="service-card__icon" aria-hidden="true"><img src="services-images/office-clean-thumb.jpg" loading="lazy" width="60" height="60" alt="Professional commercial office cleaning in Dorset by Bryant and Co Cleaning" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
           <h3>Commercial Cleaning</h3>
-          <p>Professional workplace cleaning with a tailored quotation based on site size, frequency, scope and requirements.</p>
+          <p>Cleaning for offices and workplaces, quoted around site size, frequency, scope and requirements.</p>
           <div class="service-card__actions"><a href="pricing.html#domestic-commercial" class="btn btn--outline-dark">Tailored quotation</a><a href="contact.html" class="btn btn--primary">Get a Quote</a></div>
         </article>
         <article class="service-card fade-up">
-          <div class="service-card__icon" aria-hidden="true"><img src="services-images/construction-cleaning.png" alt="Nationwide commercial and construction cleaning project delivery" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
+          <div class="service-card__icon" aria-hidden="true"><img src="services-images/construction-cleaning-thumb.jpg" loading="lazy" width="60" height="60" alt="Nationwide commercial and construction cleaning project delivery" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
           <h3>Nationwide Commercial Projects</h3>
-          <p>Managed UK-wide commercial, construction and multi-site cleaning delivery for larger scopes, quoted by project requirements.</p>
+          <p>Selected UK commercial, construction and multi-site projects, quoted separately around scope, access and programme.</p>
           <div class="service-card__actions"><a href="nationwide-commercial-cleaning.html" class="btn btn--outline-dark">Project quotation</a><a href="contact.html" class="btn btn--primary">Send Scope</a></div>
         </article>
         <article class="service-card fade-up">
-          <div class="service-card__icon" aria-hidden="true"><img src="services-images/end-off-tenacy.png" alt="End of tenancy cleaning for a property move-out in Dorset" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
+          <div class="service-card__icon" aria-hidden="true"><img src="services-images/end-off-tenacy-thumb.jpg" loading="lazy" width="60" height="60" alt="End of tenancy cleaning for a property move-out in Dorset" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
           <h3>End of Tenancy Cleaning</h3>
-          <p>Detailed move-out cleaning with a tailored quotation based on property size and condition. Extra scope work is discussed before work starts.</p>
+          <p>Detailed move-in and move-out cleaning, quoted for property size and condition. Extra scope is agreed before work starts.</p>
           <div class="service-card__actions"><a href="pricing.html#end-of-tenancy" class="btn btn--outline-dark">Tailored quotation</a><a href="contact.html" class="btn btn--primary">Get a Quote</a></div>
         </article>
         <article class="service-card fade-up">
-          <div class="service-card__icon" aria-hidden="true"><img src="services-images/Deep-clean.png" alt="Deep cleaning kitchen and home surfaces by Bryant and Co Cleaning" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
+          <div class="service-card__icon" aria-hidden="true"><img src="services-images/Deep-clean-thumb.jpg" loading="lazy" width="60" height="60" alt="Deep cleaning kitchen and home surfaces by Bryant and Co Cleaning" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
           <h3>Deep Cleaning</h3>
-          <p>Intensive top-to-bottom cleaning for homes and businesses, starting from £49.</p>
+          <p>Intensive, top-to-bottom cleaning for homes and businesses. The full scope and price are confirmed before work starts.</p>
           <div class="service-card__actions"><a href="pricing.html#deep-cleaning" class="btn btn--outline-dark">From £49</a><a href="contact.html" class="btn btn--primary">Get a Quote</a></div>
         </article>
         <article class="service-card fade-up">
-          <div class="service-card__icon" aria-hidden="true"><img src="services-images/construction-cleaning.png" alt="After-build construction cleaning removing dust and debris in the UK" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
+          <div class="service-card__icon" aria-hidden="true"><img src="services-images/construction-cleaning-thumb.jpg" loading="lazy" width="60" height="60" alt="After-build construction cleaning removing dust and debris in the UK" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
           <h3>Builders / After-Build Cleaning</h3>
-          <p>Post-construction and renovation cleaning to remove dust and debris, starting from £79.</p>
+          <p>Post-construction and renovation cleaning to remove dust and debris, with scope and access agreed before the clean.</p>
           <div class="service-card__actions"><a href="pricing.html#after-build" class="btn btn--outline-dark">From £79</a><a href="contact.html" class="btn btn--primary">Get a Quote</a></div>
         </article>
         <article class="service-card fade-up">
-          <div class="service-card__icon" aria-hidden="true"><img src="services-images/window-cleaning.png" alt="Professional residential and commercial window cleaning with streak-free finish" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
+          <div class="service-card__icon" aria-hidden="true"><img src="services-images/window-cleaning-thumb.jpg" loading="lazy" width="60" height="60" alt="Professional residential and commercial window cleaning with streak-free finish" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
           <h3>Window Cleaning</h3>
-          <p>One-off window cleaning from £29, or regular cleans every 4 or 8 weeks from £20.</p>
+          <p>Residential and commercial window cleaning. Regular visits every 4 or 8 weeks are available from £20.</p>
           <div class="service-card__actions"><a href="pricing.html#window-cleaning" class="btn btn--outline-dark">From £29 one-off</a><a href="contact.html" class="btn btn--primary">Get a Quote</a></div>
         </article>
         <article class="service-card fade-up">
-          <div class="service-card__icon service-card__icon--emoji" aria-hidden="true">🧼</div>
+          <div class="service-card__icon" aria-hidden="true"><img src="services-images/carpet-cleaning.jpg" alt="" width="60" height="60" loading="lazy"></div>
           <h3>Carpet Cleaning</h3>
-          <p>Professional carpet and upholstery refreshes to lift everyday dirt and leave rooms feeling fresh, from £59.</p>
+          <p>Carpet and upholstery cleaning to lift everyday dirt and refresh your rooms. The quote reflects the areas and treatment required.</p>
           <div class="service-card__actions"><a href="pricing.html#carpet-cleaning" class="btn btn--outline-dark">From £59</a><a href="contact.html" class="btn btn--primary">Get a Quote</a></div>
         </article>
       </div>
-      <div style="text-align:center;margin-top:2.5rem;" class="fade-up">
+      <div class="home-services__links fade-up">
         <a href="services.html" class="btn btn--outline-dark">View All Services</a>
+        <a href="pricing.html" class="btn btn--outline-dark">Full Pricing Details</a>
       </div>
     </div>
   </section>
 
-  <!-- Pricing Snapshot -->
-  <section class="section section--light" aria-labelledby="home-pricing-heading">
-    <div class="container">
-      <div class="section-header fade-up">
-        <span class="section-tag">Our Prices</span>
-        <h2 id="home-pricing-heading">Clear Fixed Quotes</h2>
-        <p>We price each clean around the property and work required, so you know the agreed price for the complete job before the clean. Authorised specialist starting prices are shown below.</p>
-      </div>
-      <div class="pricing-grid">
-        <article class="pricing-card fade-up" id="domestic-commercial"><h3>Regular Home Cleaning</h3><div class="pricing-card__price">Quoted per clean</div><div class="pricing-card__period">based on your home and schedule</div><ul class="pricing-card__features"><li>Weekly, fortnightly or monthly domestic cleaning</li><li>Priced for the property and work required</li><li>Available across Bournemouth, Poole and Dorset</li></ul><a href="contact.html" class="btn btn--primary" style="width:100%;justify-content:center;">Get a Quote</a></article>
-        <article class="pricing-card fade-up"><h3>One-Off Cleaning</h3><div class="pricing-card__price">Quoted per clean</div><div class="pricing-card__period">for the complete agreed job</div><ul class="pricing-card__features"><li>Single-visit domestic cleaning</li><li>Price based on property and cleaning requirements</li><li>Agreed before the clean starts</li></ul><a href="contact.html" class="btn btn--primary" style="width:100%;justify-content:center;">Get a Quote</a></article>
-        <article class="pricing-card fade-up"><h3>Commercial Cleaning</h3><div class="pricing-card__price">Tailored quotation</div><div class="pricing-card__period">based on site, scope and frequency</div><ul class="pricing-card__features"><li>Offices, workplaces and commercial spaces</li><li>Pricing depends on site size and requirements</li><li>Frequency and access agreed before work starts</li></ul><a href="contact.html" class="btn btn--primary" style="width:100%;justify-content:center;">Get a Quote</a></article>
-        <article class="pricing-card fade-up"><h3>Nationwide Commercial Projects</h3><div class="pricing-card__price">Project quotation</div><div class="pricing-card__period">for larger commercial scopes</div><ul class="pricing-card__features"><li>UK-wide commercial and construction cleaning</li><li>Quoted around site scope, programme and standards</li><li>Separate from normal local cleaning visits</li></ul><a href="nationwide-commercial-cleaning.html" class="btn btn--primary" style="width:100%;justify-content:center;">Commercial Hub</a></article>
-        <article class="pricing-card fade-up"><h3>Deep Cleaning</h3><div class="pricing-card__price">From £49</div><div class="pricing-card__period">starting price</div><ul class="pricing-card__features"><li>Detailed top-to-bottom cleaning</li><li>Homes and selected business spaces</li><li>Scope confirmed before work starts</li></ul><a href="pricing.html#deep-cleaning" class="btn btn--primary" style="width:100%;justify-content:center;">See Full Pricing</a></article>
-        <article class="pricing-card fade-up"><h3>End of Tenancy Cleaning</h3><div class="pricing-card__price">Tailored quotation</div><div class="pricing-card__period">based on property size and condition</div><ul class="pricing-card__features"><li>Move-in and move-out cleans</li><li>Letting-agent checklist options</li><li>Extra scope discussed before work starts</li></ul><a href="contact.html" class="btn btn--primary" style="width:100%;justify-content:center;">Get a Quote</a></article>
-        <article class="pricing-card featured fade-up"><div class="pricing-card__badge">Specialist cleaning</div><h3>Builders / After-Build Cleaning</h3><div class="pricing-card__price">From £79</div><div class="pricing-card__period">starting price</div><ul class="pricing-card__features"><li>Post-renovation and construction cleaning</li><li>Dust, debris and surface cleaning</li><li>Scope confirmed before work starts</li></ul><a href="pricing.html#after-build" class="btn btn--primary" style="width:100%;justify-content:center;">See Full Pricing</a></article>
-        <article class="pricing-card fade-up"><h3>Carpet Cleaning</h3><div class="pricing-card__price">From £59</div><div class="pricing-card__period">starting price</div><ul class="pricing-card__features"><li>Professional carpet and upholstery refresh</li><li>Everyday dirt and stain treatment</li><li>Exact price confirmed after scope review</li></ul><a href="pricing.html#carpet-cleaning" class="btn btn--primary" style="width:100%;justify-content:center;">See Full Pricing</a></article>
-        <article class="pricing-card fade-up"><h3>Window Cleaning</h3><div class="pricing-card__price">From £29</div><div class="pricing-card__period">one-off window cleaning</div><ul class="pricing-card__features"><li>Residential and commercial glazing</li><li>Regular windows every 4 or 8 weeks from £20</li><li>Price confirmed for your property and requirements</li></ul><a href="pricing.html#window-cleaning" class="btn btn--primary" style="width:100%;justify-content:center;">See Full Pricing</a></article>
-      </div>
-    </div>
-  </section>
 
   <!-- Review Promotion -->
   <section class="section review-promo" aria-labelledby="review-promo-heading">
