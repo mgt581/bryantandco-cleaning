@@ -26,6 +26,7 @@ export async function onRequest({ request, env }) {
   const postcode = value(form, 'postcode');
   const dateOfBirth = value(form, 'date_of_birth');
   const gender = value(form, 'gender');
+  const rightToWorkUk = value(form, 'right_to_work_uk');
   const yearsExperience = value(form, 'years_experience');
   const licenceAndCar = value(form, 'licence_and_car');
   const englishSpeaking = value(form, 'english_speaking');
@@ -38,6 +39,10 @@ export async function onRequest({ request, env }) {
 
   if (!firstName || !lastName || !email || !phone || !basedIn || !postcode || !dateOfBirth || !gender || !yearsExperience || !licenceAndCar || !englishSpeaking || !whatsappGroup || !zeroHoursAgreement || !about || !consent) {
     return json({ error: 'Please complete all required application fields.' }, 400);
+  }
+
+  if (form.getAll('right_to_work_uk').length !== 1 || !['Yes', 'No'].includes(rightToWorkUk)) {
+    return json({ error: 'Please select Yes or No for the right to work in the UK question.' }, 400);
   }
 
   if (zeroHoursAgreement === 'decline') {
@@ -104,6 +109,7 @@ export async function onRequest({ request, env }) {
     ['Postcode', postcode],
     ['Date of birth', dateOfBirth],
     ['Gender', gender],
+    ['Do you have the right to work in the UK?', rightToWorkUk],
     ['Overall work experience', yearsExperience],
     ['Owns a driving licence and car', licenceAndCar],
     ['English speaking', englishSpeaking],
