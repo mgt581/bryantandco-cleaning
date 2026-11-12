@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Cleaner Agreement | Bryant &amp; Co Cleaning</title>
+<link rel="icon" type="image/png" href="images/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1b3a6b;--navy-dark:#122850;--gold:#c9a84c;--gold-ink:#8a6d22;--bg:#f5f7fa;--card:#fff;--fg:#1a1a2e;--muted:#5a6678;--line:#e4e9f0;--ok:#1f7a45;--ok-bg:#e3f3e9;--err:#b3261e;--err-bg:#fbeaea}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+.band{background:var(--navy);color:#fff}
+.wrap{max-width:680px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}
+.band .wrap{padding-block:18px;display:flex;align-items:center;gap:12px}
+.band img{width:44px;height:44px;border-radius:8px}
+.band b{font-family:"Playfair Display",Georgia,serif;font-size:20px;display:block;line-height:1.2}
+.band span{font-size:12px;letter-spacing:.08em;text-transform:uppercase;opacity:.8}
+main .wrap{padding-block:24px 48px;display:flex;flex-direction:column;gap:18px}
+h1{font-family:"Playfair Display",Georgia,serif;font-size:27px;line-height:1.2;margin:0}
+h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-ink);margin:0}
+.lead{color:var(--muted);margin:6px 0 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px 14px}
+label{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:500;color:var(--muted)}
+.full{grid-column:1/-1}
+input[type=text],input[type=email],input[type=tel]{font:inherit;font-size:16px;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;min-width:0;width:100%}
+input:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.req::after{content:" *";color:var(--gold-ink)}
+.opt{font-weight:400;color:var(--muted)}
+.agreement{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+.agreement b{color:var(--navy)}
+.small{font-size:13px;color:var(--muted);margin:0}
+.check{flex-direction:row;align-items:flex-start;gap:10px;font-size:15px;color:var(--fg);font-weight:400}
+.check input{margin-top:3px;width:20px;height:20px;flex:none}
+.pad{position:relative;border:1px dashed #8a93a3;border-radius:8px;background:#fff;touch-action:none}
+.pad canvas{display:block;width:100%;height:170px}
+.pad span{position:absolute;left:14px;bottom:10px;font-size:12px;color:#8a93a3;pointer-events:none}
+button{font:inherit;font-weight:600;border-radius:8px;padding:12px 20px;cursor:pointer;border:1px solid transparent}
+.primary{background:var(--navy);color:#fff;width:100%}
+.primary:disabled{opacity:.55;cursor:wait}
+.ghost{background:transparent;border-color:var(--line);color:var(--fg);padding:7px 14px;font-size:13px;align-self:flex-start}
+.msg{padding:10px 14px;border-radius:8px;font-size:14px}
+.msg.err{background:var(--err-bg);color:var(--err)}
+.done{text-align:center;padding:32px 18px}
+.done h1{color:var(--ok)}
+.hp{position:absolute;left:-9999px}
+</style>
+</head>
+<body>
+<div class="band"><div class="wrap">
+  <img src="images/logo.png" alt="">
+  <div><b>Bryant &amp; Co Cleaning</b><span>Self-employed cleaner agreement</span></div>
+</div></div>
+
+<main><div class="wrap">
+  <form id="f" novalidate style="display:flex;flex-direction:column;gap:18px">
+    <div>
+      <h1>Your cleaner agreement</h1>
+      <p class="lead">Fill in your details, read the 7 short points, then sign with your finger. It takes about 2 minutes.</p>
+    </div>
+
+    <section class="card">
+      <h2>1 · Your details</h2>
+      <div class="grid">
+        <label class="full"><span class="req">Full name</span><input type="text" id="name" autocomplete="name"></label>
+        <label class="full"><span class="req">Address</span><input type="text" id="address" autocomplete="street-address"></label>
+        <label><span class="req">Phone</span><input type="tel" id="phone" autocomplete="tel"></label>
+        <label>Email <span class="opt">(for your copy)</span><input type="email" id="email" autocomplete="email"></label>
+        <label>National Insurance number <span class="opt">(optional)</span><input type="text" id="nino"></label>
+        <label>HMRC UTR <span class="opt">(leave blank if you don't have one)</span><input type="text" id="utr" inputmode="numeric"></label>
+      </div>
+      <h2>Bank details for your pay</h2>
+      <div class="grid">
+        <label class="full">Name on bank account<input type="text" id="bankName"></label>
+        <label>Sort code<input type="text" id="sortCode" inputmode="numeric" placeholder="00-00-00" maxlength="8"></label>
+        <label>Account number<input type="text" id="accountNo" inputmode="numeric" placeholder="8 digits" maxlength="8"></label>
+      </div>
+      <input class="hp" type="text" id="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+    </section>
+
+    <section class="card">
+      <h2>2 · The agreement</h2>
+      <p class="small" style="color:var(--fg)">Between <b>Bryant Group Holdings Ltd</b>, trading as Bryant &amp; Co Cleaning (company 13671131, 32 Heaton Road, Bournemouth BH10 5HW), and you.</p>
+      <ol class="agreement" id="agreement">
+        <li><b>You're self-employed.</b> No guaranteed hours. You choose which jobs to take and can work for others. No holiday or sick pay.</li>
+        <li><b>Jobs.</b> We post jobs in the WhatsApp group and you reply to take one. We send the address privately. Never share customers' details.</li>
+        <li><b>Pay.</b> £15 an hour, unless the job post says otherwise. Send an invoice by Sunday and we pay every Friday by bank transfer.</li>
+        <li><b>Tax.</b> You register with HMRC as self-employed and pay your own tax and National Insurance.</li>
+        <li><b>The work.</b> Clean to a good standard, look after keys and customers' homes, and tell us about any damage the same day. What you see in a customer's home stays private.</li>
+        <li><b>Can't make it?</b> Tell us at least 24 hours before. If you don't turn up without telling us, you aren't paid for that job. Two no-shows in 3 months and we may stop offering you work.</li>
+        <li><b>Ending.</b> Either of us can end this at any time by message. We pay for any work already done.</li>
+      </ol>
+      <label class="check"><input type="checkbox" id="agree"> I have read this agreement, I agree to it, and I am working as a self-employed subcontractor.</label>
+    </section>
+
+    <section class="card">
+      <h2>3 · Sign</h2>
+      <div class="pad"><canvas id="pad" aria-label="Sign here with your finger or mouse"></canvas><span id="hint">Sign here</span></div>
+      <button type="button" class="ghost" id="clear">Clear signature</button>
+      <p class="small">Signed for Bryant &amp; Co Cleaning by Alex Bryant, Director. Today's date is added automatically.</p>
+      <div class="msg err" id="err" hidden></div>
+      <button type="submit" class="primary" id="go">Sign and send</button>
+    </section>
+  </form>
+
+  <section class="card done" id="done" hidden>
+    <h1>Signed, thank you</h1>
+    <p id="donetext" style="margin:0"></p>
+  </section>
+</div></main>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var cv=$('pad'),ctx=cv.getContext('2d'),drawn=false,drawing=false,last=null;
+  function size(){var r=cv.getBoundingClientRect(),d=window.devicePixelRatio||1;cv.width=Math.round(r.width*d);cv.height=Math.round(r.height*d);ctx.setTransform(d,0,0,d,0,0);ctx.lineWidth=2.4;ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle='#122850';drawn=false;$('hint').hidden=false;}
+  size();var w=window.innerWidth;window.addEventListener('resize',function(){if(window.innerWidth!==w){w=window.innerWidth;size();}});
+  function pt(e){var r=cv.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top};}
+  cv.addEventListener('pointerdown',function(e){e.preventDefault();drawing=true;last=pt(e);cv.setPointerCapture(e.pointerId);});
+  cv.addEventListener('pointermove',function(e){if(!drawing)return;var p=pt(e);ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(p.x,p.y);ctx.stroke();last=p;if(!drawn){drawn=true;$('hint').hidden=true;}});
+  ['pointerup','pointercancel'].forEach(function(t){cv.addEventListener(t,function(){drawing=false;});});
+  $('clear').onclick=function(){ctx.clearRect(0,0,cv.width,cv.height);drawn=false;$('hint').hidden=false;};
+
+  function signature(){
+    var o=document.createElement('canvas'),s=Math.min(1,600/cv.width);o.width=Math.round(cv.width*s);o.height=Math.round(cv.height*s);
+    var c=o.getContext('2d');c.fillStyle='#fff';c.fillRect(0,0,o.width,o.height);c.drawImage(cv,0,0,o.width,o.height);return o.toDataURL('image/png');
+  }
+  function v(id){return $(id).value.trim();}
+  $('f').addEventListener('submit',function(e){
+    e.preventDefault();var err=$('err');err.hidden=true;
+    var miss=[];if(!v('name'))miss.push('your full name');if(!v('address'))miss.push('your address');if(!v('phone'))miss.push('your phone number');
+    if(miss.length){err.textContent='Please add '+miss.join(', ')+'.';err.hidden=false;return;}
+    if(!$('agree').checked){err.textContent='Please tick the box to say you agree.';err.hidden=false;return;}
+    if(!drawn){err.textContent='Please sign in the box.';err.hidden=false;return;}
+    var btn=$('go');btn.disabled=true;btn.textContent='Sending…';
+    var body={name:v('name'),address:v('address'),phone:v('phone'),email:v('email'),nino:v('nino'),utr:v('utr'),
+      bankName:v('bankName'),sortCode:v('sortCode'),accountNo:v('accountNo'),website:v('website'),
+      agree:true,signature:signature(),agreementText:$('agreement').innerText};
+    fetch('/api/agreement',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+      .then(function(r){return r.json().catch(function(){return{};}).then(function(j){return{ok:r.ok,j:j};});})
+      .then(function(x){
+        if(!x.ok){throw new Error(x.j.error||'Something went wrong. Please try again.');}
+        $('f').hidden=true;$('done').hidden=false;
+        $('donetext').textContent='Thanks '+body.name.split(' ')[0]+'. Your signed agreement has been sent to Bryant & Co Cleaning'+(body.email?' and a copy has been emailed to you.':'.');
+        window.scrollTo(0,0);
+      })
+      .catch(function(x){err.textContent=x.message||'We could not send it. Check your signal and try again.';err.hidden=false;btn.disabled=false;btn.textContent='Sign and send';});
+  });
+})();
+</script>
+</body>
+</html>
