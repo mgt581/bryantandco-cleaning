@@ -5,10 +5,8 @@
   var roots = document.querySelectorAll('[data-reviews-carousel]');
   if (!roots.length) return;
 
-  var fallbackReviews = [
-    { first_name: 'James', last_name: 'H.', rating: 5, message: 'Really impressed with the standard of cleaning. The team were friendly, punctual and left everything spotless.', location: 'Poole' },
-    { first_name: 'Linda', last_name: 'T.', rating: 5, message: 'Had a deep clean done before a family event and the results were incredible. Great communication throughout too.', location: 'Christchurch' }
-  ];
+  // Only real reviews from /api/reviews are shown. Never add placeholder reviews here.
+  var fallbackReviews = [];
 
   function escapeHtml(value) {
     return String(value == null ? '' : value)
@@ -35,6 +33,13 @@
     var track = root.querySelector('[data-reviews-track]');
     var status = root.querySelector('[data-reviews-status]');
     if (!track) return;
+    if (!reviews.length) {
+      track.innerHTML = '';
+      var emptyDots = root.querySelector('[data-reviews-dots]');
+      if (emptyDots) emptyDots.innerHTML = '';
+      if (status) status.textContent = 'Customer reviews will appear here shortly.';
+      return;
+    }
 
     track.innerHTML = reviews.map(function (review) {
       var rating = ratingValue(review);
@@ -70,7 +75,6 @@
   }
 
   function load(root) {
-    render(root, fallbackReviews);
     fetch('/api/reviews', { headers: { 'Accept': 'application/json' } })
       .then(function (response) { if (!response.ok) throw new Error('Review feed unavailable'); return response.json(); })
       .then(function (data) { render(root, Array.isArray(data.reviews) && data.reviews.length ? data.reviews : fallbackReviews); })
