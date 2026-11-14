@@ -205,7 +205,7 @@
     var requestButton = event.target.closest('[data-request-date][data-request-time]');
     if (requestButton) {
       var params = new URLSearchParams({ booking_date: requestButton.getAttribute('data-request-date'), booking_start: requestButton.getAttribute('data-request-time'), booking_duration: String(state.duration) });
-      window.location.href = 'contact.html?' + params.toString();
+      window.location.href = '/contact?' + params.toString();
     }
   });
 

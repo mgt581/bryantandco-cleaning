@@ -22,13 +22,13 @@
   <meta property="og:url" content="https://bryantandcocleaning.co.uk/">
   <meta property="og:site_name" content="Bryant &amp; Co Cleaning">
   <meta property="og:locale" content="en_GB">
-  <meta property="og:image" content="https://bryantandcocleaning.co.uk/images/logo.png">
+  <meta property="og:image" content="https://bryantandcocleaning.co.uk/images/og-image.jpg">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Bryant &amp; Co Cleaning | Bournemouth &amp; Dorset">
   <meta name="twitter:description" content="Professional cleaning services across Bournemouth, Dorset &amp; surrounding areas.">
-  <meta name="twitter:image" content="https://bryantandcocleaning.co.uk/images/logo.png">
+  <meta name="twitter:image" content="https://bryantandcocleaning.co.uk/images/og-image.jpg">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,13 +36,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=fixed-price-policy-hero-4">
+  <link rel="stylesheet" href="css/style.css?v=site-review-fixes-1">
   <style>
-    /* Preserve the approved desktop hero spacing independently of shared styles. */
-    @media (min-width: 1025px) {
-      .hero--home { min-height: calc(clamp(680px, 76vh, 780px) + 6rem); }
-      .hero--home .hero__bg-img { object-position: center top; }
-    }
+    /* Homepage-only styles. */
     .home-footer .footer-brand p,
     .home-footer .footer-bottom p,
     .home-footer .footer-built-by,
@@ -125,7 +121,7 @@
 
   <!-- Notification Bar -->
   <div class="notif-bar">
-    🌟 Now serving Bournemouth, Dorset, the Southwest &amp; customers across the UK — <a href="contact.html" style="color:#fff;text-decoration:underline;">Get a FREE quote today!</a>
+    🌟 Now serving Bournemouth, Dorset, the Southwest &amp; customers across the UK — <a href="/contact" style="color:#fff;text-decoration:underline;">Get a FREE quote today!</a>
   </div>
 
   <!-- Top Bar -->
@@ -145,7 +141,7 @@
   <!-- Header -->
   <header class="site-header">
     <div class="container">
-      <a href="index.html" class="logo" aria-label="Bryant and Co Cleaning — Home">
+      <a href="/" class="logo" aria-label="Bryant and Co Cleaning — Home">
         <div class="logo__mark">
           <img src="images/logo.png" alt="Bryant and Co Cleaning logo" onerror="this.parentElement.innerHTML='<span style=\'color:#fff;font-weight:700;font-size:1.2rem;\'>B&amp;C</span>'">
         </div>
@@ -157,17 +153,17 @@
 
       <nav class="nav" aria-label="Main navigation">
         <ul class="nav__list">
-          <li><a href="index.html"    class="nav__link active">Home</a></li>
-          <li><a href="services.html" class="nav__link">Our Services</a></li>
-          <li><a href="nationwide-commercial-cleaning.html" class="nav__link">Commercial</a></li>
-          <li><a href="gallery.html"  class="nav__link">Gallery</a></li>
-          <li><a href="ouravailability.html" class="nav__link">Our Availability</a></li>
-          <li><a href="pricing.html" class="nav__link">Pricing</a></li>
-          <li><a href="reviews.html" class="nav__link">Reviews</a></li>
-          <li><a href="join%20the%20team.html" class="nav__link">Join the Team</a></li>
-          <li><a href="contact.html"  class="nav__link">Contact Us</a></li>
+          <li><a href="/"    class="nav__link active">Home</a></li>
+          <li><a href="/services" class="nav__link">Our Services</a></li>
+          <li><a href="/nationwide-commercial-cleaning" class="nav__link">Commercial</a></li>
+          <li><a href="/gallery"  class="nav__link">Gallery</a></li>
+          <li><a href="/ouravailability" class="nav__link">Our Availability</a></li>
+          <li><a href="/pricing" class="nav__link">Pricing</a></li>
+          <li><a href="/reviews" class="nav__link">Reviews</a></li>
+          <li><a href="/join-the-team" class="nav__link">Join the Team</a></li>
+          <li><a href="/contact"  class="nav__link">Contact Us</a></li>
         </ul>
-        <a href="contact.html" class="btn btn--primary nav__cta">Get a Free Quote</a>
+        <a href="/contact" class="btn btn--primary nav__cta">Get a Free Quote</a>
       </nav>
 
       <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
@@ -178,7 +174,7 @@
 
   <!-- Hero -->
   <section class="hero hero--home">
-    <img class="hero__bg-img" src="images/hero3.png" alt="Bryant &amp; Co Cleaning — professional cleaning services in Bournemouth &amp; Dorset">
+    <picture><source srcset="images/hero.webp" type="image/webp"><img class="hero__bg-img" src="images/hero.jpg" width="1264" height="843" fetchpriority="high" alt="Bright, freshly cleaned living room"></picture>
     <div class="container hero__content">
       <h1 class="hero__title">Professional Cleaning Services in Bournemouth, Poole and Dorset</h1>
       <p class="hero__lead">Domestic, commercial, end of tenancy, deep, after-build, window and carpet cleaning across Bournemouth, Dorset, the Southwest and the UK.</p>
@@ -192,7 +188,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
         WhatsApp
       </a>
-      <a href="ouravailability.html" class="hero-btn hero-btn--book" aria-label="View our cleaning availability">
+      <a href="/ouravailability" class="hero-btn hero-btn--book" aria-label="View our cleaning availability">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
         Book Now
       </a>
@@ -225,35 +221,6 @@
     </div>
   </div>
 
-  <!-- FAQ -->
-  <section class="section section--light" aria-labelledby="faq-heading">
-    <div class="container">
-      <div class="section-header fade-up">
-        <span class="section-tag">FAQs</span>
-        <h2 id="faq-heading">Frequently Asked Cleaning Questions</h2>
-        <p>Answers to common questions from customers in Bournemouth, Poole, Christchurch and surrounding Dorset areas.</p>
-      </div>
-      <div class="features-grid">
-        <article class="feature-item fade-up">
-          <h3>How much does cleaning cost in Bournemouth?</h3>
-          <p>Pricing depends on property size, condition and service type. We provide free, no-obligation quotes with transparent pricing before any booking.</p>
-        </article>
-        <article class="feature-item fade-up">
-          <h3>Do you bring cleaning products and equipment?</h3>
-          <p>Yes. Our team arrives with professional cleaning products and equipment, including eco-friendly options where preferred.</p>
-        </article>
-        <article class="feature-item fade-up">
-          <h3>Which areas do you cover?</h3>
-          <p>We cover Bournemouth, Poole, Christchurch, Ferndown, Wimborne, Weymouth, the wider Southwest and now customers across the UK. Contact us to confirm availability.</p>
-        </article>
-        <article class="feature-item fade-up">
-          <h3>Can I book one-off or regular cleaning?</h3>
-          <p>Absolutely. We offer one-off cleans, weekly, fortnightly and monthly schedules for domestic and commercial properties.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
   <!-- Services Overview -->
   <section class="section home-services" id="home-pricing-heading" aria-labelledby="services-heading">
     <div class="container">
@@ -267,60 +234,60 @@
           <div class="service-card__icon" aria-hidden="true"><img src="services-images/clean-surface-thumb.jpg" loading="lazy" width="60" height="60" alt="Professional domestic house cleaning in Bournemouth by Bryant and Co Cleaning" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
           <h3>Regular Home Cleaning</h3>
           <p>Weekly, fortnightly or monthly home cleaning across Bournemouth, Poole and Dorset. Quoted around your property, frequency and cleaning requirements.</p>
-          <div class="service-card__actions"><a href="pricing.html#domestic-commercial" class="btn btn--outline-dark">Quoted per clean</a><a href="contact.html" class="btn btn--primary">Get a Quote</a></div>
+          <div class="service-card__actions"><a href="/pricing#domestic-commercial" class="btn btn--outline-dark">Quoted per clean</a><a href="/contact" class="btn btn--primary">Get a Quote</a></div>
         </article>
         <article class="service-card fade-up">
           <div class="service-card__icon" aria-hidden="true"><img src="services-images/clean-surface-thumb.jpg" loading="lazy" width="60" height="60" alt="One-off domestic house cleaning in Dorset by Bryant and Co Cleaning" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
           <h3>One-Off Cleaning</h3>
           <p>A single-visit home clean for a refresh or catch-up, quoted for your property, condition and cleaning requirements.</p>
-          <div class="service-card__actions"><a href="pricing.html#domestic-commercial" class="btn btn--outline-dark">Quoted per clean</a><a href="contact.html" class="btn btn--primary">Get a Quote</a></div>
+          <div class="service-card__actions"><a href="/pricing#domestic-commercial" class="btn btn--outline-dark">Quoted per clean</a><a href="/contact" class="btn btn--primary">Get a Quote</a></div>
         </article>
         <article class="service-card fade-up">
           <div class="service-card__icon" aria-hidden="true"><img src="services-images/office-clean-thumb.jpg" loading="lazy" width="60" height="60" alt="Professional commercial office cleaning in Dorset by Bryant and Co Cleaning" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
           <h3>Commercial Cleaning</h3>
           <p>Cleaning for offices and workplaces, quoted around site size, frequency, scope and requirements.</p>
-          <div class="service-card__actions"><a href="pricing.html#domestic-commercial" class="btn btn--outline-dark">Tailored quotation</a><a href="contact.html" class="btn btn--primary">Get a Quote</a></div>
+          <div class="service-card__actions"><a href="/pricing#domestic-commercial" class="btn btn--outline-dark">Tailored quotation</a><a href="/contact" class="btn btn--primary">Get a Quote</a></div>
         </article>
         <article class="service-card fade-up">
           <div class="service-card__icon" aria-hidden="true"><img src="services-images/construction-cleaning-thumb.jpg" loading="lazy" width="60" height="60" alt="Nationwide commercial and construction cleaning project delivery" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
           <h3>Nationwide Commercial Projects</h3>
           <p>Selected UK commercial, construction and multi-site projects, quoted separately around scope, access and programme.</p>
-          <div class="service-card__actions"><a href="nationwide-commercial-cleaning.html" class="btn btn--outline-dark">Project quotation</a><a href="contact.html" class="btn btn--primary">Send Scope</a></div>
+          <div class="service-card__actions"><a href="/nationwide-commercial-cleaning" class="btn btn--outline-dark">Project quotation</a><a href="/contact" class="btn btn--primary">Send Scope</a></div>
         </article>
         <article class="service-card fade-up">
           <div class="service-card__icon" aria-hidden="true"><img src="services-images/end-off-tenacy-thumb.jpg" loading="lazy" width="60" height="60" alt="End of tenancy cleaning for a property move-out in Dorset" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
           <h3>End of Tenancy Cleaning</h3>
           <p>Detailed move-in and move-out cleaning, quoted for property size and condition. Extra scope is agreed before work starts.</p>
-          <div class="service-card__actions"><a href="pricing.html#end-of-tenancy" class="btn btn--outline-dark">Tailored quotation</a><a href="contact.html" class="btn btn--primary">Get a Quote</a></div>
+          <div class="service-card__actions"><a href="/pricing#end-of-tenancy" class="btn btn--outline-dark">Tailored quotation</a><a href="/contact" class="btn btn--primary">Get a Quote</a></div>
         </article>
         <article class="service-card fade-up">
           <div class="service-card__icon" aria-hidden="true"><img src="services-images/Deep-clean-thumb.jpg" loading="lazy" width="60" height="60" alt="Deep cleaning kitchen and home surfaces by Bryant and Co Cleaning" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
           <h3>Deep Cleaning</h3>
           <p>Intensive, top-to-bottom cleaning for homes and businesses. The full scope and price are confirmed before work starts.</p>
-          <div class="service-card__actions"><a href="pricing.html#deep-cleaning" class="btn btn--outline-dark">From £49</a><a href="contact.html" class="btn btn--primary">Get a Quote</a></div>
+          <div class="service-card__actions"><a href="/pricing#deep-cleaning" class="btn btn--outline-dark">From £49</a><a href="/contact" class="btn btn--primary">Get a Quote</a></div>
         </article>
         <article class="service-card fade-up">
           <div class="service-card__icon" aria-hidden="true"><img src="services-images/construction-cleaning-thumb.jpg" loading="lazy" width="60" height="60" alt="After-build construction cleaning removing dust and debris in the UK" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
           <h3>Builders / After-Build Cleaning</h3>
           <p>Post-construction and renovation cleaning to remove dust and debris, with scope and access agreed before the clean.</p>
-          <div class="service-card__actions"><a href="pricing.html#after-build" class="btn btn--outline-dark">From £79</a><a href="contact.html" class="btn btn--primary">Get a Quote</a></div>
+          <div class="service-card__actions"><a href="/pricing#after-build" class="btn btn--outline-dark">From £79</a><a href="/contact" class="btn btn--primary">Get a Quote</a></div>
         </article>
         <article class="service-card fade-up">
           <div class="service-card__icon" aria-hidden="true"><img src="services-images/window-cleaning-thumb.jpg" loading="lazy" width="60" height="60" alt="Professional residential and commercial window cleaning with streak-free finish" style="width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block;"></div>
           <h3>Window Cleaning</h3>
           <p>Residential and commercial window cleaning. Regular visits every 4 or 8 weeks are available from £20.</p>
-          <div class="service-card__actions"><a href="pricing.html#window-cleaning" class="btn btn--outline-dark">From £29 one-off</a><a href="contact.html" class="btn btn--primary">Get a Quote</a></div>
+          <div class="service-card__actions"><a href="/pricing#window-cleaning" class="btn btn--outline-dark">From £29 one-off</a><a href="/contact" class="btn btn--primary">Get a Quote</a></div>
         </article>
         <article class="service-card fade-up">
           <div class="service-card__icon" aria-hidden="true"><img src="services-images/carpet-cleaning.jpg" alt="" width="60" height="60" loading="lazy"></div>
           <h3>Carpet Cleaning</h3>
           <p>Carpet and upholstery cleaning to lift everyday dirt and refresh your rooms. The quote reflects the areas and treatment required.</p>
-          <div class="service-card__actions"><a href="pricing.html#carpet-cleaning" class="btn btn--outline-dark">From £59</a><a href="contact.html" class="btn btn--primary">Get a Quote</a></div>
+          <div class="service-card__actions"><a href="/pricing#carpet-cleaning" class="btn btn--outline-dark">From £59</a><a href="/contact" class="btn btn--primary">Get a Quote</a></div>
         </article>
       </div>
       <div class="home-services__links fade-up">
-        <a href="services.html" class="btn btn--outline-dark">View All Services</a>
-        <a href="pricing.html" class="btn btn--outline-dark">Full Pricing Details</a>
+        <a href="/services" class="btn btn--outline-dark">View All Services</a>
+        <a href="/pricing" class="btn btn--outline-dark">Full Pricing Details</a>
       </div>
     </div>
   </section>
@@ -334,7 +301,7 @@
         <h2 id="review-promo-heading">Leave us a review and get 10% off your next clean</h2>
         <p>We love hearing honest feedback from our customers. After your completed clean, leave a review through our quick form and we’ll apply 10% off your next clean.</p>
         <p class="review-promo__note">One thank-you discount per customer. The offer is for honest reviews and applies to your next eligible clean; please see the review page for details.</p>
-        <div class="cta-banner__actions"><a href="reviews.html" class="btn btn--primary btn--lg">Leave a Review</a><a href="contact.html" class="btn btn--outline-dark btn--lg">Get a Quote</a></div>
+        <div class="cta-banner__actions"><a href="/reviews" class="btn btn--primary btn--lg">Leave a Review</a><a href="/contact" class="btn btn--outline-dark btn--lg">Get a Quote</a></div>
       </div>
     </div>
   </section>
@@ -350,7 +317,7 @@
       <div class="features-grid">
         <div class="feature-item fade-up">
           <div class="feature-item__icon" aria-hidden="true">🛡️</div>
-          <h3>Fully Insured &amp; Certified</h3>
+          <h3>Fully Insured &amp; Vetted</h3>
           <p>Comprehensive public liability insurance and all staff fully vetted and DBS checked for your complete peace of mind.</p>
         </div>
         <div class="feature-item fade-up">
@@ -398,7 +365,36 @@
           <button type="button" class="reviews-carousel__arrow" data-reviews-next aria-label="Next review">›</button>
         </div>
         <p class="reviews-carousel__status" data-reviews-status>Loading customer reviews…</p>
-        <a href="reviews.html" class="btn btn--white">Leave a Review</a>
+        <a href="/reviews" class="btn btn--white">Leave a Review</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section section--light" aria-labelledby="faq-heading">
+    <div class="container">
+      <div class="section-header fade-up">
+        <span class="section-tag">FAQs</span>
+        <h2 id="faq-heading">Frequently Asked Cleaning Questions</h2>
+        <p>Answers to common questions from customers in Bournemouth, Poole, Christchurch and surrounding Dorset areas.</p>
+      </div>
+      <div class="features-grid">
+        <article class="feature-item fade-up">
+          <h3>How much does cleaning cost in Bournemouth?</h3>
+          <p>Pricing depends on property size, condition and service type. We provide free, no-obligation quotes with transparent pricing before any booking.</p>
+        </article>
+        <article class="feature-item fade-up">
+          <h3>Do you bring cleaning products and equipment?</h3>
+          <p>Yes. Our team arrives with professional cleaning products and equipment, including eco-friendly options where preferred.</p>
+        </article>
+        <article class="feature-item fade-up">
+          <h3>Which areas do you cover?</h3>
+          <p>We cover Bournemouth, Poole, Christchurch, Ferndown, Wimborne, Weymouth, the wider Southwest and now customers across the UK. Contact us to confirm availability.</p>
+        </article>
+        <article class="feature-item fade-up">
+          <h3>Can I book one-off or regular cleaning?</h3>
+          <p>Absolutely. We offer one-off cleans, weekly, fortnightly and monthly schedules for domestic and commercial properties.</p>
+        </article>
       </div>
     </div>
   </section>
@@ -594,14 +590,14 @@
             <div class="form-group">
               <label style="display:flex;align-items:flex-start;gap:.5rem;font-weight:400;cursor:pointer;">
                 <input type="checkbox" name="consent" required style="width:auto;margin-top:.2rem;">
-                <span style="font-size:.88rem;">I agree to my data being used to provide a quote as per the <a href="privacy.html" target="_blank">Privacy Policy</a>. *</span>
+                <span style="font-size:.88rem;">I agree to my data being used to provide a quote as per the <a href="/privacy" target="_blank">Privacy Policy</a>. *</span>
               </label>
             </div>
 
             <button type="submit" class="btn btn--primary btn--lg" style="width:100%;justify-content:center;">
               Send My Quote Request ✉️
             </button>
-            <p class="form-note">* Required fields. We'll never share your details. See our <a href="privacy.html">Privacy Policy</a>.</p>
+            <p class="form-note">* Required fields. We'll never share your details. See our <a href="/privacy">Privacy Policy</a>.</p>
             <div class="form-success" role="alert">✅ Thank you! Your quote request has been received. We aim to respond promptly during business hours.</div>
           </form>
         </div>
@@ -614,7 +610,7 @@
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <a href="index.html" class="logo" aria-label="Bryant and Co Cleaning home">
+          <a href="/" class="logo" aria-label="Bryant and Co Cleaning home">
             <div class="logo__mark">
               <img src="images/logo.png" alt="Bryant and Co Cleaning logo" onerror="this.parentElement.innerHTML='<span style=\'color:#fff;font-weight:700;font-size:1.1rem;\'>B&amp;C</span>'">
             </div>
@@ -630,15 +626,15 @@
         <div class="footer-col">
           <h4>Quick Links</h4>
           <nav class="footer-links" aria-label="Footer navigation">
-            <a href="index.html">Home</a>
-            <a href="services.html">Our Services</a>
-            <a href="nationwide-commercial-cleaning.html">Nationwide Commercial Cleaning</a>
-            <a href="gallery.html">Gallery</a>
-            <a href="pricing.html">Pricing</a>
-            <a href="reviews.html">Reviews</a>
-            <a href="join%20the%20team.html">Join the Team</a>
-            <a href="contact.html">Contact Us</a>
-            <a href="privacy.html">Privacy Policy</a>
+            <a href="/">Home</a>
+            <a href="/services">Our Services</a>
+            <a href="/nationwide-commercial-cleaning">Nationwide Commercial Cleaning</a>
+            <a href="/gallery">Gallery</a>
+            <a href="/pricing">Pricing</a>
+            <a href="/reviews">Reviews</a>
+            <a href="/join-the-team">Join the Team</a>
+            <a href="/contact">Contact Us</a>
+            <a href="/privacy">Privacy Policy</a>
             <a href="https://www.bryantgroupholdings.co.uk" target="_blank" rel="noopener">Bryant Group Holdings</a>
           </nav>
         </div>
@@ -646,15 +642,15 @@
         <div class="footer-col">
           <h4>Our Services</h4>
           <nav class="footer-links" aria-label="Services navigation">
-            <a href="domestic-cleaning.html">Domestic Cleaning</a>
-            <a href="commercial-cleaning.html">Commercial Cleaning</a>
-            <a href="construction-cleaning.html">Construction Cleaning</a>
-            <a href="multi-site-commercial-cleaning.html">Multi-Site Cleaning</a>
-            <a href="end-of-tenancy-cleaning.html">End of Tenancy</a>
-            <a href="deep-cleaning.html">Deep Cleaning</a>
-            <a href="after-build-cleaning.html">After-Build Cleaning</a>
-            <a href="window-cleaning.html">Window Cleaning</a>
-            <a href="pricing.html#carpet-cleaning">Carpet Cleaning</a>
+            <a href="/domestic-cleaning">Domestic Cleaning</a>
+            <a href="/commercial-cleaning">Commercial Cleaning</a>
+            <a href="/construction-cleaning">Construction Cleaning</a>
+            <a href="/multi-site-commercial-cleaning">Multi-Site Cleaning</a>
+            <a href="/end-of-tenancy-cleaning">End of Tenancy</a>
+            <a href="/deep-cleaning">Deep Cleaning</a>
+            <a href="/after-build-cleaning">After-Build Cleaning</a>
+            <a href="/window-cleaning">Window Cleaning</a>
+            <a href="/carpet-cleaning">Carpet Cleaning</a>
           </nav>
         </div>
 
@@ -692,8 +688,8 @@
       <div class="footer-bottom">
         <p>&copy; <span id="year"></span> Bryant &amp; Co Cleaning. All rights reserved. Bryant &amp; Co Cleaning is a trading name of Bryant Group Holdings Ltd. (Co. No. 13671131).</p>
         <div style="display:flex;gap:1.5rem;">
-          <a href="privacy.html">Privacy Policy</a>
-          <a href="contact.html">Get a Quote</a>
+          <a href="/privacy">Privacy Policy</a>
+          <a href="/contact">Get a Quote</a>
         </div>
       </div>
     </div>
