@@ -289,10 +289,78 @@ test("plain-domain Facebook visits retain Facebook attribution", async () => {
   }
 });
 
+const ACCESS_TEAM = "https://team.example.cloudflareaccess.com";
+const ACCESS_AUD = "test-audience-tag";
+
+function base64Url(bytes) {
+  return Buffer.from(bytes).toString("base64").replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+async function accessKeyPair(kid) {
+  const pair = await crypto.subtle.generateKey(
+    { name: "RSASSA-PKCS1-v1_5", modulusLength: 2048, publicExponent: new Uint8Array([1, 0, 1]), hash: "SHA-256" },
+    true,
+    ["sign", "verify"]
+  );
+  const jwk = await crypto.subtle.exportKey("jwk", pair.publicKey);
+  return { kid, privateKey: pair.privateKey, jwk: { kid, kty: jwk.kty, n: jwk.n, e: jwk.e, alg: "RS256", use: "sig" } };
+}
+
+async function signAccessJwt(keyPair, claims) {
+  const now = Math.floor(Date.now() / 1000);
+  const header = base64Url(JSON.stringify({ alg: "RS256", kid: keyPair.kid, typ: "JWT" }));
+  const payload = base64Url(JSON.stringify(Object.assign({ aud: [ACCESS_AUD], iss: ACCESS_TEAM, iat: now, nbf: now, exp: now + 600, email: "owner@example.test" }, claims)));
+  const signature = await crypto.subtle.sign("RSASSA-PKCS1-v1_5", keyPair.privateKey, new TextEncoder().encode(`${header}.${payload}`));
+  return `${header}.${payload}.${base64Url(new Uint8Array(signature))}`;
+}
+
 test("dashboard and exports support private Access auth and reject missing auth", async () => {
   const db = captureDb();
-  const env = { LEADS_DB: db, LEADS_EXPORT_TOKEN: "secret-token", CLOUDFLARE_ACCESS_ENABLED: "true" };
-  const accessHeaders = { "cf-access-jwt-assertion": "fake-jwt" };
+  const env = {
+    LEADS_DB: db,
+    LEADS_EXPORT_TOKEN: "secret-token",
+    CLOUDFLARE_ACCESS_ENABLED: "true",
+    CLOUDFLARE_ACCESS_TEAM_DOMAIN: ACCESS_TEAM,
+    CLOUDFLARE_ACCESS_AUD: ACCESS_AUD
+  };
+  const realKey = await accessKeyPair("real-key");
+  const attackerKey = await accessKeyPair("real-key");
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url) => {
+    assert.equal(String(url), `${ACCESS_TEAM}/cdn-cgi/access/certs`);
+    return new Response(JSON.stringify({ keys: [realKey.jwk] }), { headers: { "content-type": "application/json" } });
+  };
+
+  try {
+  const accessHeaders = { "cf-access-jwt-assertion": await signAccessJwt(realKey, {}) };
+
+  // Tokens that must never grant access.
+  const rejected = [
+    { "cf-access-jwt-assertion": "fake-jwt" },
+    { cookie: "CF_Authorization=fake" },
+    { "cf-access-jwt-assertion": await signAccessJwt(attackerKey, {}) },
+    { "cf-access-jwt-assertion": await signAccessJwt(realKey, { exp: Math.floor(Date.now() / 1000) - 10 }) },
+    { "cf-access-jwt-assertion": await signAccessJwt(realKey, { aud: ["another-app"] }) },
+    { "cf-access-jwt-assertion": await signAccessJwt(realKey, { iss: "https://evil.cloudflareaccess.com" }) }
+  ];
+  for (const headers of rejected) {
+    for (const [api, path] of [[dashboardApi, "dashboard"], [leadsExportApi, "leads/export"], [leadEventsExportApi, "lead-events/export"]]) {
+      const response = await api.onRequestGet({ env, request: request(`https://example.test/api/${path}`, null, "GET", headers) });
+      assert.equal(response.status, 401, `${path} must reject ${JSON.stringify(headers).slice(0, 60)}`);
+    }
+    const patch = await leadUpdateApi.onRequestPatch({
+      env,
+      params: { id: "12" },
+      request: request("https://example.test/api/leads/12", { lead_status: "WON", quote_value_pence: 1, won_revenue_pence: 1 }, "PATCH", headers)
+    });
+    assert.equal(patch.status, 401);
+  }
+
+  const cookieResponse = await dashboardApi.onRequestGet({
+    env,
+    request: request("https://example.test/api/dashboard", null, "GET", { cookie: `other=1; CF_Authorization=${accessHeaders["cf-access-jwt-assertion"]}` })
+  });
+  assert.equal(cookieResponse.status, 200);
 
   const dashboardResponse = await dashboardApi.onRequestGet({
     env,
@@ -328,6 +396,9 @@ test("dashboard and exports support private Access auth and reject missing auth"
     request: request("https://example.test/api/dashboard?token=secret-token", null, "GET")
   });
   assert.equal(queryToken.status, 401);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });
 
 test("pipeline update validates auth, status and revenue fields", async () => {
