@@ -113,6 +113,7 @@ button{font:inherit;font-weight:600;border-radius:8px;padding:12px 20px;cursor:p
   </section>
 </div></main>
 
+<script>window.__agreementLoadedAt=Date.now();</script>
 <script>
 (function(){
   var $=function(id){return document.getElementById(id)};
@@ -138,7 +139,7 @@ button{font:inherit;font-weight:600;border-radius:8px;padding:12px 20px;cursor:p
     if(!drawn){err.textContent='Please sign in the box.';err.hidden=false;return;}
     var btn=$('go');btn.disabled=true;btn.textContent='Sending…';
     var body={name:v('name'),address:v('address'),phone:v('phone'),email:v('email'),nino:v('nino'),utr:v('utr'),
-      bankName:v('bankName'),sortCode:v('sortCode'),accountNo:v('accountNo'),website:v('website'),
+      bankName:v('bankName'),sortCode:v('sortCode'),accountNo:v('accountNo'),website:v('website'),form_elapsed_ms:Date.now()-window.__agreementLoadedAt,
       agree:true,signature:signature(),agreementText:$('agreement').innerText};
     fetch('/api/agreement',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
       .then(function(r){return r.json().catch(function(){return{};}).then(function(j){return{ok:r.ok,j:j};});})

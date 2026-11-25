@@ -18,34 +18,26 @@ export async function onRequest({ request, env }) {
     return json({ error: 'Lead storage is not configured.' }, 503);
   }
 
+  // Website reviews are paused while customers are pointed to Google reviews.
+  // Nothing is stored or published, so nobody can post straight to the site.
   const isReview = lead.service === 'Customer Review' || lead.form_name === 'Customer review form';
   if (isReview) {
-    const rating = Number.parseInt(String(lead.rating || ''), 10);
-    if (!lead.first_name || !lead.email || !Number.isInteger(rating) || rating < 1 || rating > 5 || !lead.message) {
-      return json({ error: 'Please provide your name, email, rating and review.' }, 400);
-    }
-    try {
-      await saveReview(lead, env, rating);
-    } catch (error) {
-      return json({ error: error && error.message ? error.message : 'The review could not be published yet.' }, 503);
-    }
+    return json({ error: 'We are not taking reviews through the website at the moment. Please leave us a Google review instead.' }, 410);
   }
 
-  // A selected time is treated as a booking request. The D1-backed booking
-  // check happens before the lead email is sent so two people cannot request
-  // the same slot without one of them receiving a conflict response.
-  let bookingId = '';
-  if (lead.booking_date) {
-    try {
-      bookingId = await reserveBooking(lead, env);
-    } catch (error) {
-      const status = error && error.status ? error.status : 500;
-      return json({
-        error: error && error.message ? error.message : 'Booking could not be created',
-        bookingId: ''
-      }, status);
-    }
+  // Spam checks. Bots that fill the hidden field or submit within a couple of
+  // seconds of the page loading get a normal-looking success, so they don't
+  // retry, but nothing is stored or emailed.
+  if (isLikelyBot(lead)) {
+    return json({ ok: true });
   }
+  if (await isRateLimited(env.LEADS_DB, request)) {
+    return json({ error: 'Too many enquiries from this connection. Please call or WhatsApp us on 07843969254.' }, 429);
+  }
+
+  // The online booking calendar has been removed, so any old booking_* fields
+  // are ignored and no slots are reserved.
+  const bookingId = '';
 
   const leadRecord = normalizeLead(lead, bookingId);
   let storedLeadId = 0;
@@ -455,228 +447,30 @@ async function storeLeadEvent(env, request, lead, eventName) {
   return true;
 }
 
-async function saveReview(lead, env, rating) {
-  if (!env.BOOKING_DB) {
-    throw new Error('Reviews are not configured yet. Please call 07843969254.');
-  }
+const SPAM_HONEYPOT_FIELD = 'company_website';
+const SPAM_MIN_FILL_MS = 2500;
+const RATE_LIMIT_WINDOW_MINUTES = 15;
+const RATE_LIMIT_MAX_LEADS = 5;
 
-  const db = env.BOOKING_DB;
-  await db.prepare(`
-    CREATE TABLE IF NOT EXISTS reviews (
-      id TEXT PRIMARY KEY,
-      first_name TEXT NOT NULL,
-      last_name TEXT,
-      email TEXT,
-      rating INTEGER NOT NULL,
-      message TEXT NOT NULL,
-      published INTEGER NOT NULL DEFAULT 1,
-      created_at TEXT NOT NULL
-    )
-  `).run();
-  await db.prepare('CREATE INDEX IF NOT EXISTS reviews_created_at_idx ON reviews(created_at)').run();
-  await db.prepare(`
-    INSERT INTO reviews (id, first_name, last_name, email, rating, message, published, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, 1, ?)
-  `).bind(
-    crypto.randomUUID(),
-    String(lead.first_name).trim(),
-    String(lead.last_name || '').trim(),
-    String(lead.email).trim(),
-    rating,
-    String(lead.message).trim(),
-    new Date().toISOString()
-  ).run();
+function isLikelyBot(lead) {
+  if (cleanLeadValue(lead[SPAM_HONEYPOT_FIELD])) return true;
+  const elapsed = Number(lead.form_elapsed_ms);
+  return Number.isFinite(elapsed) && elapsed >= 0 && elapsed < SPAM_MIN_FILL_MS;
 }
 
-async function reserveBooking(lead, env) {
-  const db = env.BOOKING_DB;
-  if (!db) {
-    const error = new Error('Live booking availability is not configured yet. Please call 07843969254.');
-    error.status = 503;
-    throw error;
-  }
-
-  const date = String(lead.booking_date || '');
-  const start = String(lead.booking_start || '');
-  const duration = Number(lead.booking_duration);
-  const recurrence = String(lead.booking_recurrence || 'once');
-  const until = recurrence === 'once' ? date : String(lead.booking_until || '');
-
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !/^\d{2}:\d{2}$/.test(start)) {
-    const error = new Error('Please select an available date and start time.');
-    error.status = 400;
-    throw error;
-  }
-  if (!['once', 'weekly', 'fortnightly', 'monthly'].includes(recurrence)) {
-    const error = new Error('Please select a valid booking frequency.');
-    error.status = 400;
-    throw error;
-  }
-  if (!Number.isInteger(duration) || duration < 30 || duration > 480 || duration % 30 !== 0) {
-    const error = new Error('Please select valid booking details.');
-    error.status = 400;
-    throw error;
-  }
-  if (recurrence !== 'once' && (!/^\d{4}-\d{2}-\d{2}$/.test(until) || until < date)) {
-    const error = new Error('Please select a valid end date for the recurring request.');
-    error.status = 400;
-    throw error;
-  }
-
-  const startDate = parseDate(date);
-  const endDate = parseDate(until);
-  if (!startDate || !endDate || monthsBetween(startDate, endDate) > 24) {
-    const error = new Error('Recurring booking requests can be made for up to 24 months.');
-    error.status = 400;
-    throw error;
-  }
-
-  const hours = openingHours(startDate.getUTCDay());
-  const startMinutes = timeToMinutes(start);
-  if (!hours || startMinutes === null || startMinutes < hours.open || startMinutes + duration > hours.close) {
-    const error = new Error('That time is outside our opening hours. Please choose another slot.');
-    error.status = 400;
-    throw error;
-  }
-
-  const dates = occurrenceDates(startDate, endDate, recurrence);
-  const slots = [];
-  dates.forEach((occurrenceDate) => {
-    const occurrenceHours = openingHours(occurrenceDate.getUTCDay());
-    if (!occurrenceHours || startMinutes < occurrenceHours.open || startMinutes + duration > occurrenceHours.close) {
-      const error = new Error('The selected recurring time does not fit the opening hours on every occurrence.');
-      error.status = 400;
-      throw error;
-    }
-    for (let minutes = startMinutes; minutes < startMinutes + duration; minutes += 30) {
-      slots.push({ date: formatDate(occurrenceDate), time: minutesToTime(minutes) });
-    }
-  });
-
-  const id = crypto.randomUUID();
-  const createdAt = new Date().toISOString();
-  const statements = [db.prepare(`
-    INSERT INTO bookings (
-      id, service, first_name, last_name, email, phone, postcode, property_size,
-      notes, start_date, start_time, duration_minutes, recurrence, recurrence_until,
-      status, created_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', ?)
-  `).bind(
-    id,
-    lead.service || lead.home_service || lead.gallery_service || 'Not specified',
-    lead.first_name || '',
-    lead.last_name || '',
-    lead.email || '',
-    lead.phone || '',
-    lead.postcode || '',
-    lead.property_size || '',
-    lead.message || '',
-    date,
-    start,
-    duration,
-    recurrence,
-    recurrence === 'once' ? null : until,
-    createdAt
-  )];
-
-  slots.forEach((slot) => {
-    statements.push(db.prepare(
-      'INSERT INTO booking_occurrences (slot_date, slot_time, booking_id) VALUES (?, ?, ?)'
-    ).bind(slot.date, slot.time, id));
-  });
-
+async function isRateLimited(db, request) {
+  const ipHash = await hashIp(request.headers.get('cf-connecting-ip') || '');
+  if (!db || !ipHash) return false;
   try {
-    await ensureBookingSchema(db);
-    await db.batch(statements);
+    const since = new Date(Date.now() - RATE_LIMIT_WINDOW_MINUTES * 60000).toISOString();
+    const row = await db.prepare(
+      'SELECT COUNT(*) AS n FROM leads WHERE ip_hash = ? AND submitted_at >= ?'
+    ).bind(ipHash, since).first();
+    return Number(row && row.n) >= RATE_LIMIT_MAX_LEADS;
   } catch (_) {
-    const error = new Error('That slot has just been requested by someone else. Please choose another available time.');
-    error.status = 409;
-    throw error;
+    // Never lose a real enquiry because the check itself failed.
+    return false;
   }
-
-  return id;
-}
-
-async function ensureBookingSchema(db) {
-  await db.prepare(`
-    CREATE TABLE IF NOT EXISTS bookings (
-      id TEXT PRIMARY KEY,
-      service TEXT NOT NULL,
-      first_name TEXT NOT NULL,
-      last_name TEXT NOT NULL,
-      email TEXT NOT NULL,
-      phone TEXT NOT NULL,
-      postcode TEXT,
-      property_size TEXT,
-      notes TEXT,
-      start_date TEXT NOT NULL,
-      start_time TEXT NOT NULL,
-      duration_minutes INTEGER NOT NULL,
-      recurrence TEXT NOT NULL DEFAULT 'once',
-      recurrence_until TEXT,
-      status TEXT NOT NULL DEFAULT 'pending',
-      created_at TEXT NOT NULL
-    )
-  `).run();
-  await db.prepare(`
-    CREATE TABLE IF NOT EXISTS booking_occurrences (
-      slot_date TEXT NOT NULL,
-      slot_time TEXT NOT NULL,
-      booking_id TEXT NOT NULL,
-      PRIMARY KEY (slot_date, slot_time),
-      FOREIGN KEY (booking_id) REFERENCES bookings(id)
-    )
-  `).run();
-  await db.prepare('CREATE INDEX IF NOT EXISTS booking_occurrences_date_idx ON booking_occurrences(slot_date)').run();
-}
-
-function occurrenceDates(startDate, endDate, recurrence) {
-  const dates = [];
-  let current = new Date(startDate);
-  while (current <= endDate) {
-    dates.push(new Date(current));
-    if (recurrence === 'once') break;
-    if (recurrence === 'weekly') current.setUTCDate(current.getUTCDate() + 7);
-    else if (recurrence === 'fortnightly') current.setUTCDate(current.getUTCDate() + 14);
-    else {
-      const day = current.getUTCDate();
-      const nextMonth = new Date(Date.UTC(current.getUTCFullYear(), current.getUTCMonth() + 1, 1));
-      const lastDay = new Date(Date.UTC(nextMonth.getUTCFullYear(), nextMonth.getUTCMonth() + 2, 0)).getUTCDate();
-      current = new Date(Date.UTC(nextMonth.getUTCFullYear(), nextMonth.getUTCMonth(), Math.min(day, lastDay)));
-    }
-  }
-  return dates;
-}
-
-function openingHours(day) {
-  if (day === 0) return null;
-  return day === 6 ? { open: 9 * 60, close: 16 * 60 } : { open: 8 * 60, close: 18 * 60 };
-}
-
-function parseDate(value) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
-  const date = new Date(`${value}T00:00:00Z`);
-  return formatDate(date) === value ? date : null;
-}
-
-function formatDate(date) {
-  return date.toISOString().slice(0, 10);
-}
-
-function timeToMinutes(value) {
-  const match = /^(\d{2}):(\d{2})$/.exec(value);
-  if (!match) return null;
-  const hours = Number(match[1]);
-  const minutes = Number(match[2]);
-  return hours <= 23 && minutes <= 59 ? hours * 60 + minutes : null;
-}
-
-function minutesToTime(value) {
-  return `${String(Math.floor(value / 60)).padStart(2, '0')}:${String(value % 60).padStart(2, '0')}`;
-}
-
-function monthsBetween(start, end) {
-  return (end.getUTCFullYear() - start.getUTCFullYear()) * 12 + end.getUTCMonth() - start.getUTCMonth();
 }
 
 function json(body, status = 200, extraHeaders = {}) {

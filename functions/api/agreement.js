@@ -12,6 +12,8 @@ export async function onRequest({ request, env }) {
   let body;
   try { body = await request.json(); } catch (_) { return json({ error: 'Please fill in the form and try again.' }, 400); }
   if (clean(body.website)) return json({ ok: true }); // honeypot
+  const elapsed = Number(body.form_elapsed_ms);
+  if (Number.isFinite(elapsed) && elapsed >= 0 && elapsed < 5000) return json({ ok: true }); // too fast for a person
 
   const f = {
     name: clean(body.name, 120), address: clean(body.address, 300), phone: clean(body.phone, 40),

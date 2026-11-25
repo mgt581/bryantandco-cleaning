@@ -113,6 +113,16 @@
   /* ---------- Contact Form Handling ---------- */
   const form = document.querySelector('.js-contact-form');
   if (form) {
+    // Spam trap: a hidden field people never see or fill in, plus the time
+    // the visitor spent on the page. The server quietly drops obvious bots.
+    const formLoadedAt = Date.now();
+    if (!form.querySelector('[name="company_website"]')) {
+      const trap = document.createElement('div');
+      trap.setAttribute('aria-hidden', 'true');
+      trap.style.cssText = 'position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;';
+      trap.innerHTML = '<label>Leave this empty<input type="text" name="company_website" tabindex="-1" autocomplete="off"></label>';
+      form.appendChild(trap);
+    }
     const zeroHoursSelect = form.id === 'team-application-form'
       ? form.querySelector('[data-zero-hours-select]')
       : null;
@@ -159,6 +169,7 @@
             body = new FormData(form);
             body.set('form_name', form.getAttribute('aria-label') || form.id || 'team_application');
             body.set('page_url', window.location.href);
+            body.set('form_elapsed_ms', String(Date.now() - formLoadedAt));
             Object.keys(attribution).forEach((key) => {
               body.set(key, attribution[key] || '');
             });
@@ -166,6 +177,7 @@
             const payload = Object.fromEntries(new FormData(form).entries());
             payload.form_name = form.getAttribute('aria-label') || form.id || 'quote_request';
             payload.page_url = window.location.href;
+            payload.form_elapsed_ms = Date.now() - formLoadedAt;
             Object.assign(payload, attribution);
             headers['Content-Type'] = 'application/json';
             body = JSON.stringify(payload);

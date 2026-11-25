@@ -1,3 +1,8 @@
 # Old "Join the Team" address (had spaces in the file name)
 /join%20the%20team.html  /join-the-team  301
 /join%20the%20team       /join-the-team  301
+# Booking calendar removed (Nov 2026): send old links to the quote form
+/ouravailability       /contact  301
+/ouravailability.html  /contact  301
+/booknow               /contact  301
+/booknow.html          /contact  301

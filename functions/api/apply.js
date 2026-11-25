@@ -18,6 +18,12 @@ export async function onRequest({ request, env }) {
     return json({ error: 'Please complete the application form and upload a selfie.' }, 400);
   }
 
+  // Spam trap (hidden field) and too-fast submissions: pretend success.
+  const elapsed = Number(value(form, 'form_elapsed_ms'));
+  if (value(form, 'company_website') || (value(form, 'form_elapsed_ms') && Number.isFinite(elapsed) && elapsed < 2500)) {
+    return json({ ok: true });
+  }
+
   const firstName = value(form, 'first_name');
   const lastName = value(form, 'last_name');
   const email = value(form, 'email');

@@ -34,6 +34,10 @@ function captureDb() {
       return {
         bind(...values) {
           return {
+            async first() {
+              if (sql.includes("COUNT(*) AS n FROM leads WHERE ip_hash")) return { n: rows.recentFromIp || 0 };
+              return null;
+            },
             async run() {
               if (sql.includes("INSERT INTO leads")) rows.leads.push(values);
               if (sql.includes("INSERT INTO lead_events")) rows.events.push(values);
@@ -208,6 +212,44 @@ test("send-lead retains commercial and partner application details", async () =>
       public_liability: "Yes",
       rams_capability: "Yes"
     });
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("send-lead pauses website reviews and drops obvious spam", async () => {
+  const originalFetch = globalThis.fetch;
+  let emailsSent = 0;
+  globalThis.fetch = async () => { emailsSent += 1; return new Response("", { status: 200 }); };
+  const env = (db) => ({ RESEND_API_KEY: "test-key", LEAD_TO_EMAILS: "owner@example.test", LEADS_DB: db });
+  const quote = { form_name: "Quote request form", first_name: "Real", last_name: "Person", phone: "07000000000", email: "real@example.test", service: "Deep Clean", message: "Please quote." };
+  const withIp = (url, body) => request(url, body, "POST", { "cf-connecting-ip": "203.0.113.9" });
+
+  try {
+    const db = captureDb();
+
+    const review = await sendLeadApi.onRequest({ env: env(db), request: request("https://example.test/api/send-lead", { service: "Customer Review", first_name: "Spam", email: "x@example.test", rating: "5", message: "Great" }) });
+    assert.equal(review.status, 410);
+
+    const honeypot = await sendLeadApi.onRequest({ env: env(db), request: request("https://example.test/api/send-lead", Object.assign({}, quote, { company_website: "http://spam.example" })) });
+    assert.equal(honeypot.status, 200);
+
+    const tooFast = await sendLeadApi.onRequest({ env: env(db), request: request("https://example.test/api/send-lead", Object.assign({}, quote, { form_elapsed_ms: 400 })) });
+    assert.equal(tooFast.status, 200);
+
+    assert.equal(db.rows.leads.length, 0, "reviews and spam must not be stored");
+    assert.equal(emailsSent, 0, "reviews and spam must not be emailed");
+
+    db.rows.recentFromIp = 5;
+    const limited = await sendLeadApi.onRequest({ env: env(db), request: withIp("https://example.test/api/send-lead", Object.assign({}, quote, { form_elapsed_ms: 30000 })) });
+    assert.equal(limited.status, 429);
+    assert.equal(db.rows.leads.length, 0);
+
+    db.rows.recentFromIp = 1;
+    const real = await sendLeadApi.onRequest({ env: env(db), request: withIp("https://example.test/api/send-lead", Object.assign({}, quote, { form_elapsed_ms: 30000, booking_date: "2026-12-01", booking_start: "09:00" })) });
+    assert.equal(real.status, 200);
+    assert.equal(db.rows.leads.length, 1, "a real enquiry is stored");
+    assert.equal(emailsSent, 1, "a real enquiry is emailed");
   } finally {
     globalThis.fetch = originalFetch;
   }
